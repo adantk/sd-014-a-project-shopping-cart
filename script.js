@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement(sku, name, image ) {
+function createProductItemElement(sku, name, image) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -32,7 +32,11 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({
+  sku,
+  name,
+  salePrice,
+}) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -40,23 +44,27 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
- async function FilterFetch (url, chave) { // filtra saida do fetch em json por chave retornando um valor
+async function FilterFetch(url, chave) { // filtra saida do fetch em json por chave retornando um valor
   const response = await fetch(`${url}`);
-   const data = await response.json();
-   return data[chave];
+  const data = await response.json();
+  return data[chave];
 }
-
 
 async function requestionApiMl(valorBusca) {
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=$${valorBusca}`;
-  let ItensResults = await FilterFetch(url, 'results');// array com todos resultados de acordo com a busca
-  ItensResults.forEach(item => {
+
+  const ItensResults = await FilterFetch(url, 'results'); // array com todos resultados de acordo com valorBusca 
+  ItensResults.forEach((item) => {
     const elementItems = document.querySelector('.items');
-    const { id, title: nameItem, thumbnail: ImgItem} = item;
+    const {
+      id,
+      title: nameItem,
+      thumbnail: ImgItem,
+    } = item;
     elementItems.appendChild(createProductItemElement(id, nameItem, ImgItem));
-  })
-} 
+  });
+}
 
-requestionApiMl('computador');
-
-window.onload = () => { };
+window.onload = () => {
+  requestionApiMl('computador');
+};
