@@ -1,6 +1,18 @@
 const productsSection = document.querySelector('.items');
 const cartList = document.querySelector('.cart__items');
+const totalPrice = document.querySelector('.total-price');
 
+function saveCart() {
+  localStorage.setItem('savedCart', cartList.innerHTML);
+  localStorage.setItem('savedPrice', totalPrice.innerText);
+}
+
+function loadCart() {
+  const getCart = localStorage.getItem('savedCart');
+  const getPrice = localStorage.getItem('savedPrice');
+  if (getCart) cartList.innerHTML = getCart;
+  if (getPrice) totalPrice.innerText = getPrice;
+}
 async function getProducts(search) {
   return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
     .then((res) => res.json())
@@ -21,6 +33,14 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function addTotal(price) {
+  totalPrice.innerText = Math.round((Number(totalPrice.innerText) + price) * 100) / 100;
+}
+
+function subTotal(price) {
+  totalPrice.innerText = Math.round((Number(totalPrice.innerText) - price) * 100) / 100;
+}
+
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -39,7 +59,10 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(e) {
   if (e.target.className === 'cart__item') {
+    const price = Number(e.target.innerText.split('PRICE: $')[1]);
     e.target.parentElement.removeChild(e.target);
+    subTotal(price);
+    saveCart();
   }
 }
 
@@ -57,28 +80,23 @@ async function displayProducts(search) {
   });
 }
 
-function saveCart() {
-  localStorage.setItem('savedCart', cartList.innerHTML);
-}
-
-function loadCart() {
-  const getCart = localStorage.getItem('savedCart');
-  if (getCart) cartList.innerHTML = getCart;
-}
-
 async function addToCart(e) {
   if (e.target.className === 'item__add') {
     const productId = getSkuFromProductItem(e.target.parentElement);
     const getProductInfo = await fetch(`https://api.mercadolibre.com/items/${productId}`);
     const productInfo = await getProductInfo.json();
     cartList.appendChild(createCartItemElement(productInfo));
+    console.log(productInfo.price);
+    addTotal(productInfo.price);
     saveCart();
   }
 }
 
 function clearCart(e) {
   if (e.target.className === 'empty-cart') {
-    while (cartList.firstChild) cartList.removeChild(cartList.firstChild); 
+    while (cartList.firstChild) cartList.removeChild(cartList.firstChild);
+    totalPrice.innerText = 0;
+    saveCart();
   }
 }
 
