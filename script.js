@@ -80,8 +80,11 @@ const createHTMLList = async () => {
   }
 };
 
+const fetchCartItem = async (sku) => {
+  const ItemID = sku;
+  const url = `https://api.mercadolibre.com/items/${ItemID}`;
+};
+
 window.onload = () => { 
   createHTMLList();
-  // getProductsList()
-  // .then((response) => console.log(response));
 };
