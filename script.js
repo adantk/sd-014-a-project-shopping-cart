@@ -1,4 +1,4 @@
-let cartSection;
+let cartSection; // Declared in the upper scope because script.js is linked to header on HTML => later on it will be fulfilled
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -90,16 +90,20 @@ async function fetchItemID(id) {
   }
 }
 
-// function saveToLocalStorage() {
-//   const cartSection = document.querySelector('.cart__items');
+function saveToLocalStorage() {
+  localStorage.setItem('cartList', cartSection.innerHTML);
+}
 
-//   localStorage.setItem('cartList', cartSection.innerHTML);
-// }
+function removeFromLocalStorage() {
 
-// function loadLocalStorage() {
-  
-//   localStorage.getItem('cartList');
-// }
+}
+
+function loadLocalStorage() {
+  const cartListStorage = localStorage.getItem('cartList');
+  // Gets the value of the key 'cartList' from the local storage
+
+  if (cartListStorage) cartSection.innerHTML = cartListStorage;
+}
 
 function addToCart() {
   document.addEventListener('click', async (event) => {
@@ -110,15 +114,17 @@ function addToCart() {
 
       cartSection.appendChild(cartItemElement);
 
-      // saveToLocalStorage();
+      saveToLocalStorage();
     }
   });
 }
 
-function removeToCart() {
+function removeFromCart() {
   document.addEventListener('click', async (event) => {
     if (event.target.classList.contains('cart__item')) {
       cartSection.removeChild(event.target);
+
+      removeFromLocalStorage();
     }
   });
 }
@@ -128,5 +134,6 @@ window.onload = () => {
 
   appendItems('computador');
   addToCart();
-  removeToCart();
+  removeFromCart();
+  loadLocalStorage();
 };
