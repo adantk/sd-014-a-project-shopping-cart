@@ -34,6 +34,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  console.log('funciona')
 }
 
 function createCartItemElement({
@@ -55,11 +56,18 @@ const callFetch = () => {
       dados.results.forEach((cur)=>{
         document.getElementsByClassName('items')[0].appendChild(createProductItemElement({sku: cur.id,name: cur.title,image: cur.thumbnail}))
       })
-      // createProductItemElement({sku: dados.results[0].id,name: dados.results[0].title,image: dados.results[0].thumbnail})
   })
 }
-
+const listItem = (id) => {
+  fetch(`https://api.mercadolibre.com/items/${id}`).then((resposta) => {
+    return resposta.json()
+  })
+  .then((dados)=>{
+    document.getElementsByClassName('cart__items')[0].appendChild(createCartItemElement({sku:dados.id,name: dados.title,salePrice: dados.price}))
+  })
+}
 callFetch()
+listItem('MLB1341706310')
 window.onload = () => {
   
 };
