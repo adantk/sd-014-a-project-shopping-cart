@@ -1,5 +1,6 @@
- const cartItemClickListener = () => {
-  // função para remver li futuramente.
+const cartItemClickListener = (event) => {
+  const elementOl = document.querySelector('.cart__items');
+  elementOl.removeChild(event.target);
   };
   
 function createProductImageElement(imageSource) {
