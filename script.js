@@ -51,12 +51,14 @@ function createCartItemElement({
 window.onload = () => {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json().then((dados) => {
-    
-    const produto = {
-      sku: dados.results[0].id,
-      name: dados.results[0].title,
-      image: dados.results[0].thumbnail,
-    };
-    document.querySelector('.items').appendChild(createProductItemElement(produto));
+    dados.results.forEach((result) => {
+      const produto = {
+        sku: result.id,
+        name: result.title,
+        image: result.thumbnail,
+      };
+      document.querySelector('.items').appendChild(createProductItemElement(produto));
+      console.log(result);
+    });
   }));
 };
