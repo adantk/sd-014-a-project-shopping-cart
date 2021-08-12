@@ -40,7 +40,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-async function getProductsList() {
+const fetchJSONResponse = async () => {
   const QUERY = 'computador';
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`;
 
@@ -54,9 +54,34 @@ async function getProductsList() {
   } catch (error) {
     console.log(error);
   }
-}
+};
+
+const getProductsList = async () => {
+  try {
+    const JSONResponse = await fetchJSONResponse();
+    const list = JSONResponse.results;
+    return list;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const createHTMLList = async () => {
+  try {
+    const productList = await getProductsList();
+    
+    productList.forEach(({ id, title, thumbnail }) => {
+      const product = createProductItemElement({ sku: id, name: title, image: thumbnail });
+      const itemsSection = document.querySelector('.items');
+      itemsSection.appendChild(product);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 window.onload = () => { 
-  getProductsList()
-  .then((response) => console.log(response.results));
+  createHTMLList();
+  // getProductsList()
+  // .then((response) => console.log(response));
 };
