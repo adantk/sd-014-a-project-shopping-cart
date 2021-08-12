@@ -60,7 +60,7 @@ async function appendItems(query) {
 
     itemsList.forEach(({ id, title, thumbnail }) => {
       const itemElement = createProductItemElement({ id, title, thumbnail });
-  
+
       itemsSection.appendChild(itemElement);
     });
   } catch (error) {
@@ -91,10 +91,21 @@ function addToCart() {
 
       cartSection.appendChild(cartItemElement);
     }
-});
+  });
+}
+
+function removeToCart() {
+  const cartSection = document.querySelector('.cart__items');
+
+  document.addEventListener('click', async (event) => {
+    if (event.target.classList.contains('cart__item')) {
+      cartSection.removeChild(event.target);
+    }
+  });
 }
 
 window.onload = () => {
   appendItems('computador');
   addToCart();
+  removeToCart();
 };
