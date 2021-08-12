@@ -79,6 +79,14 @@ const addCartItem = async (event, cartSection) => {
   saveLocalStorage(cartSection);
 };
 
+const getLocalStorageItems = (cartItem) => {
+  const localStorageItems = JSON.parse(localStorage.getItem ('cartItems'));
+  const cartSection = cartItem;
+  cartSection.innerHTML = localStorageItems;
+  const cartItems = document.querySelectorAll('li');
+  cartItems.forEach((current) => current.addEventListener('click', cartItemClickListener));
+};
+
 const addButtonEvent = (cartItem) => {
   const addButton = document.querySelectorAll('.item__add');
 
@@ -93,4 +101,5 @@ window.onload = async () => {
 
   renderProducts(results);
   addButtonEvent(cartSection);
+  getLocalStorageItems(cartSection);
 };
