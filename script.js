@@ -60,12 +60,14 @@ const fetchJSONResponse = async () => {
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`;
 
   try {
-   const response = await fetch(url); 
+    document.querySelector('.loading').innerText = 'loading...';
+    const response = await fetch(url); 
 
-   if (response.ok) {
-     const jsonResponse = await response.json();
-    return jsonResponse;
-   }
+    if (response.ok) {
+      const jsonResponse = await response.json();
+      document.querySelector('.loading').innerText = '';
+      return jsonResponse;
+    }
   } catch (error) {
     console.log(error);
   }
@@ -104,7 +106,8 @@ const fetchCartItem = async (sku) => {
  
     if (response.ok) {
       const jsonResponse = await response.json();
-     return jsonResponse;
+      
+      return jsonResponse;
     }
    } catch (error) {
      console.log(error);
