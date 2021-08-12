@@ -49,6 +49,8 @@ function fetchComputer(query) {
     }, // formato da resposta;
   };
   fetch(API_URL, myObject)
+    // 1o param = O endereço para o qual a requisição será feita, ou seja, a url do serviço;
+    // 2o param = Um objeto contendo as especificações da requisição. Para essa API , atribuiremos a esse objeto as chaves method e headers;
     .then((response) => response.json())
     .then((data) => data.results)
     .then((results) => results.forEach((item) => document.querySelector('.items')
