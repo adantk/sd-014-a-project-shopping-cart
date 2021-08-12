@@ -139,7 +139,15 @@ const getLocalCart = async () => {
     await updateTotalPrice();
 };
 
+const emptyCart = async () => {
+  const cartToEmpty = document.querySelector('.cart__items');
+  cartToEmpty.innerHTML = '';
+  localStorage.removeItem('localCart');
+  await updateTotalPrice();
+};
+
 window.onload = () => { 
+  document.querySelector('.empty-cart').addEventListener('click', emptyCart);
   getLocalCart();
 
   createHTMLList()
