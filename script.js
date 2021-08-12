@@ -9,6 +9,17 @@ const mercadolivreAPI = () => {
   });
 };
 
+const itemAPI = (id) => {
+  const endpoint = `https://api.mercadolibre.com/items/${id}`;
+  return new Promise((resolve) => {
+    fetch(endpoint).then((response) => {
+      response.json().then((item) => {
+        resolve(item);
+      });
+    });
+  });
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -22,6 +33,26 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+
+const createCartItemElement = ({ id: sku, title: name, price: salePrice }) => {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+};
+
+const adicionaItem = () => {
+  const botao = document.querySelectorAll('.item__add');
+  botao.forEach((button) =>
+    button.addEventListener('click', async (event) => {
+      const evento = event.target;
+      const sku = getSkuFromProductItem(evento.parentElement);
+      const wait = await itemAPI(sku);
+      const carrinho = document.querySelector('.cart__items');
+      carrinho.appendChild(createCartItemElement(wait));
+    }));
+};
 
 const createProductItemElement = async () => {
   const results = await mercadolivreAPI();
@@ -38,6 +69,7 @@ const createProductItemElement = async () => {
 
     items.appendChild(section);
   });
+  adicionaItem();
 };
 
 function getSkuFromProductItem(item) {
@@ -46,14 +78,6 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-}
-
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
 }
 
 window.onload = () => {
