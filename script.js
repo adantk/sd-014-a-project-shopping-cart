@@ -31,6 +31,7 @@ const totalPrice = async () => {
 buttonClearAll.addEventListener('click', () => { 
   cartItems.innerHTML = '';
   totalPrice(); 
+  saveLocalStorage();
 });
 // requisito 7
 const loading = () => {
