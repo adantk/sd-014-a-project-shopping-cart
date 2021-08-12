@@ -35,7 +35,7 @@ const updateTotalPrice = async () => {
   const totalPrice = pricesList.reduce((sum, current) => sum + current, 0);
 
   const totalPriceText = document.querySelector('.total-price');
-  totalPriceText.innerText = `Preço total: R$ ${totalPrice}`;
+  totalPriceText.innerText = totalPrice;
 };
 
 function cartItemClickListener(event) {
