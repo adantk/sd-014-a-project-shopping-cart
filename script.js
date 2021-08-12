@@ -58,5 +58,5 @@ async function getProductsList() {
 
 window.onload = () => { 
   getProductsList()
-  .then((response) => console.log(response));
+  .then((response) => console.log(response.results));
 };
