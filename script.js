@@ -30,9 +30,7 @@ function createProductItemElement({
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
+  item__add
   // coloque seu código aqui
 }
 
@@ -67,4 +65,23 @@ const fetchML = () => {
     })
 }
 
-window.onload = fetchML();
+const criarBotao = () => {
+  const clickBotao = document.querySelectorAll('.item__add')
+  clickBotao.forEach((botao) => {
+    botao.addEventListener('click' , console.log('Click'))
+  })
+}
+
+window.onload = () => {
+  fetchML();
+  criarBotao();
+}
+
+
+// let botaoAddCarrinho1 = document.querySelector("#boxItems");
+// let botaoAddCarrinho2 = botaoAddCarrinho1.section
+// botaoAddCarrinho.addEventListener('click' , function(event) {
+//   console.log('teste')
+// })
+
+
