@@ -39,6 +39,7 @@ function getSkuFromProductItem(item) {
 }
 async function cartItemClickListener(event) {
   // coloque seu código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -48,7 +49,10 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-async function buttonListener(event) {
+// Esta função é chamada quando qualquer botão da lista é criado, sua função é
+// colher as informações atualizadas do item, criar através do createCartItemElement
+// e dar append na parte destinada ao carrinho de compras
+async function funcaoEscutadoraBottoes(event) {
   const id = getSkuFromProductItem(event.target.parentNode);
   const array = await fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((response) => response.json());
@@ -79,7 +83,7 @@ async function getItemsFromAPI() {
     const array = await fetchItems();
     const arrayMap = formatMap(array);
     arrayMap.forEach((elem) => appendChilds(items, createProductItemElement(elem)));
-    buttonEventListener(buttonListener);
+    buttonEventListener(funcaoEscutadoraBottoes);
   } catch (error) {
     console.log(error);
   }
