@@ -1,31 +1,3 @@
-const searchApi = (productName = 'computador') => new Promise(async (resolve, reject) => {
-  const url = `https://api.mercadolibre.com/sites/MLB/search?q=${productName}`;
-  try {
-    const result = await (await fetch(url)).json();
-    return resolve(result.results);
-  } catch (error) {
-    reject(error);
-  };
-});
-
-const displayResult = async (itemSearched) => {
-  const productsContainer = document.getElementById('product-container');
-  try {
-    const resultArr = await searchApi(itemSearched);
-    resultArr.forEach(({ id, title, thumbnail }) => {
-      const itemParams = {
-        name: title,
-        sku: id,
-        image: thumbnail
-      }
-      const productElement = createProductItemElement(itemParams);
-      productsContainer.appendChild(productElement);
-    });
-  } catch (error) {
-    throw error; //  arrumar isso aqui para dar erro na tela
-  }
-};
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -52,6 +24,29 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+const displayResult = (result) => {
+  const productsContainer = document.getElementById('product-container');
+  result.forEach(({ id, title, thumbnail }) => {
+    const itemParams = {
+      name: title,
+      sku: id,
+      image: thumbnail,
+    };
+    const productElement = createProductItemElement(itemParams);
+    productsContainer.appendChild(productElement);
+  });
+};
+
+const searchApi = async (productName = 'computador') => {
+  const url = `https://api.mercadolibre.com/sites/MLB/search?q=${productName}`;
+  try {
+    const result = await (await fetch(url)).json();
+    displayResult(result.results);
+  } catch (error) {
+    return error; // fix this display error
+  }
+};
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -68,4 +63,4 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { displayResult() };
+window.onload = () => { searchApi(); };
