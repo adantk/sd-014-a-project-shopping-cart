@@ -80,11 +80,15 @@ const renderProducts = (arr) => {
 };
 
 const fetchAPIItemsURL = async (id) => {
-  const url = `https://api.mercadolibre.com/items/${id}`;
-  const response = await fetch(url);
-  const result = await response.json();
+  try {
+    const url = `https://api.mercadolibre.com/items/${id}`;
+    const response = await fetch(url);
+    const result = await response.json();
 
-  return result;
+    return result;
+  } catch (error404) {
+    console.log('Não encontrei esta URL', error404);
+  }
 };
 
 const addCartItem = async (event, cartSection) => {
