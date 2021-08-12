@@ -1,18 +1,18 @@
-function createProductImageElement(imageSource) {
+function createProductImageElement(imageSource) { // Default Function
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
 }
 
-function createCustomElement(element, className, innerText) {
+function createCustomElement(element, className, innerText) { // Default Function
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ sku, name, image }) { // Default Function
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -22,6 +22,10 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
+}
+
+function getSkuFromProductItem(item) { // Default Function
+  return item.querySelector('span.item__sku').innerText;
 }
 
 const displayResult = (result) => {
@@ -91,7 +95,7 @@ function cartItemClickListener(event) {
   cartLocalStorage(sku, 'remove');
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ sku, name, salePrice }) { // Default Function
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -115,10 +119,6 @@ async function recoverItens() { // nao precisa do async aqui mas o avaliador rec
   });
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 async function itemsClickListener(event) {
   const { target } = event;
   if (target.classList.contains('item__add')) {
@@ -129,9 +129,19 @@ async function itemsClickListener(event) {
   }
 }
 
+function emptyCart() {
+  const cartItems = document.querySelector('.cart__items');
+  const priceContainer = document.querySelector('.total-price');
+  cartItems.innerHTML = '';
+  priceContainer.innerHTML = 0;
+  cartLocalStorage();
+}
+
 window.onload = () => {
   const productsContainer = document.querySelector('.items');
-  searchApi();
+  const emptyButton = document.querySelector('.empty-cart');
   productsContainer.addEventListener('click', itemsClickListener);
+  emptyButton.addEventListener('click', emptyCart);
+  searchApi();
   recoverItens();
 };
