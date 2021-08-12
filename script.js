@@ -25,7 +25,7 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 const displayResult = (result) => {
-  const productsContainer = document.getElementById('product-container');
+  const productsContainer = document.querySelector('.items');
   result.forEach(({ id, title, thumbnail }) => {
     const itemParams = {
       name: title,
