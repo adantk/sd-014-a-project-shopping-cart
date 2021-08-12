@@ -18,8 +18,15 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+//  https://www.w3schools.com/jsref/jsref_splice.asp
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  //  console.log(event.target);
+  const sku = event.target.innerText.split(' ')[1];
+  //  console.log(sku);
+  const lista = localStorage.getItem('carrinho').split(',');
+  lista.find((item, index) => (item === sku ? lista.splice(index, 1) : false));
+  localStorage.setItem('carrinho', lista);
   listaCompras.removeChild(event.target);
 }
 
@@ -31,9 +38,25 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+function guardaLocalStorage({ id }) {
+  const lista = [];
+  if (localStorage.getItem('carrinho') === null) {
+    lista.push(id);
+    localStorage.setItem('carrinho', lista);
+  } else {
+    const listaVelha = localStorage.getItem('carrinho').split(',');
+    listaVelha.forEach((item) => lista.push(item));
+    lista.push(id);
+    localStorage.setItem('carrinho', lista);
+    //  console.log(lista);
+  }
+}
+
 async function pegaItem(evento) {
+  //  console.log(evento.target.parentNode.firstChild);
   const id = evento.target.parentNode.firstChild.innerText;
   const objeto = await retornoAPI(`https://api.mercadolibre.com/items/${id}`);
+  guardaLocalStorage(objeto);
   listaCompras.appendChild(createCartItemElement(objeto));
 }
 
@@ -72,4 +95,21 @@ insereNoDOM();
   return item.querySelector('span.item__sku').innerText;
 } */
 
-window.onload = () => { };
+function verificacaoInicial() {
+  const lista = localStorage.getItem('carrinho').split(',');
+  lista.forEach((item) => {
+    retornoAPI(`https://api.mercadolibre.com/items/${item}`)
+    .then((r) => listaCompras.appendChild(createCartItemElement(r)));
+  });
+  //  console.log(lista);
+}
+
+window.onload = () => {
+  if (localStorage.getItem('carrinho') !== null) {
+    if (localStorage.getItem('carrinho') === '') {
+      localStorage.clear();
+    } else {
+      verificacaoInicial();
+    }
+  }
+};
