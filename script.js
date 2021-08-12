@@ -32,12 +32,12 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
-  li.className = 'cart__item';
+  li.className = `cart__item ${sku}`;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
@@ -53,7 +53,7 @@ function appendItem(item, classElement) {
   document.querySelector(classElement).appendChild(item);
 }
 
-async function putItemOnCart(id) {
+async function processItemToCart(id) {
   const { title, price } = await fetchData(itemsUrl + id);
   const item = createCartItemElement({ sku: id, name: title, salePrice: price });
   appendItem(item, '.cart__items');
@@ -63,7 +63,7 @@ function addCartButtonListener() {
   const addItem = document.querySelectorAll('.item__add');
   addItem.forEach((btn) => {
     btn.addEventListener('click', (ev) => {
-      putItemOnCart(ev.target.parentElement.firstChild.innerText);
+      processItemToCart(ev.target.parentElement.firstChild.innerText);
     });
   });
 }
