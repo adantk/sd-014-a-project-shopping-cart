@@ -76,9 +76,16 @@ async function addToCart(e) {
   }
 }
 
+function clearCart(e) {
+  if (e.target.className === 'empty-cart') {
+    while (cartList.firstChild) cartList.removeChild(cartList.firstChild); 
+  }
+}
+
 window.onload = () => {
   displayProducts('computador');
   document.body.addEventListener('click', addToCart);
   document.body.addEventListener('click', cartItemClickListener);
+  document.body.addEventListener('click', clearCart);
   loadCart();
 };
