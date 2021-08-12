@@ -29,7 +29,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+// codigo aq;
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -40,17 +40,8 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-function fetchComputer(query) {
-  const API_URL = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
-  const myObject = {
-    method: 'GET', // tipo do request;
-    headers: {
-      Accept: 'application/json',
-    }, // formato da resposta;
-  };
-  fetch(API_URL, myObject)
-    // 1o param = O endereço para o qual a requisição será feita, ou seja, a url do serviço;
-    // 2o param = Um objeto contendo as especificações da requisição. Para essa API , atribuiremos a esse objeto as chaves method e headers;
+async function fetchComputer(query) {
+  await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => response.json())
     .then((data) => data.results)
     .then((results) => results.forEach((item) => document.querySelector('.items')
@@ -59,6 +50,16 @@ function fetchComputer(query) {
       )));
 }
 
-window.onload = () => {
-  fetchComputer('computer');
+const itemAdd = () => {
+  const button = document.querySelectorAll('.item__add');
+  console.log(button);
+
+  button.forEach((btn) =>
+  btn.addEventListener('click', () =>
+  console.log('teste')));
+};
+
+window.onload = async () => {
+await fetchComputer('computer');
+await itemAdd();
 };
