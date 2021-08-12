@@ -3,6 +3,18 @@ const saveLocalStorage = (storageItem) => {
   localStorage.setItem('cartItems', JSON.stringify(cartItems));
 };
 
+const setTotalPrice = () => {
+  const cartItems = document.querySelectorAll('li');
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.innerHTML = 0;
+
+  cartItems.forEach((current) => {
+    const salePrice = parseFloat(current.innerText.split('$')[1]);
+
+    totalPrice.innerHTML = parseFloat(totalPrice.innerHTML) + salePrice;
+  });
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -36,6 +48,7 @@ function getSkuFromProductItem(item) {
 const cartItemClickListener = (event) => {
   const cartItems = document.querySelector('.cart__items');
   cartItems.removeChild(event.target);
+  setTotalPrice();
   saveLocalStorage(cartItems);
 };
 
@@ -76,7 +89,16 @@ const addCartItem = async (event, cartSection) => {
   const { id: sku, title: name, price: salePrice } = itemData;
 
   cartSection.appendChild(createCartItemElement({ sku, name, salePrice }));
+  setTotalPrice();
   saveLocalStorage(cartSection);
+};
+
+const removeAllCartItems = (cartSection) => {
+  while (cartSection.firstChild) {
+    cartSection.removeChild(cartSection.firstChild);
+  }
+  saveLocalStorage(cartSection);
+  setTotalPrice();
 };
 
 const getLocalStorageItems = (cartItem) => {
@@ -85,6 +107,7 @@ const getLocalStorageItems = (cartItem) => {
   cartSection.innerHTML = localStorageItems;
   const cartItems = document.querySelectorAll('li');
   cartItems.forEach((current) => current.addEventListener('click', cartItemClickListener));
+  setTotalPrice();
 };
 
 const addButtonEvent = (cartItem) => {
@@ -98,8 +121,10 @@ const addButtonEvent = (cartItem) => {
 window.onload = async () => { 
   const cartSection = document.querySelector('.cart__items');
   const results = await fetchAPIComputerURL();
+  const rmvItemsBtn = document.querySelector('.empty-cart');
 
   renderProducts(results);
   addButtonEvent(cartSection);
   getLocalStorageItems(cartSection);
+  rmvItemsBtn.addEventListener('click', () => removeAllCartItems(cartSection));
 };
