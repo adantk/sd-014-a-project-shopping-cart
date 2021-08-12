@@ -5,11 +5,17 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
+  if (element === 'button'){
+    e.addEventListener('click', event => console.log(event.target.parentElement));
+  }
   return e;
+
 }
 
 function createProductItemElement(sku, name, image) {
@@ -29,7 +35,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  console.log(event.target);
 }
 
 function createCartItemElement({
@@ -63,7 +69,10 @@ async function requestionApiMl(valorBusca) {
     } = item;
     elementItems.appendChild(createProductItemElement(id, nameItem, ImgItem));
   });
+
 }
+
+const todosButons = document.querySelectorAll('.item_add');
 
 window.onload = () => {
   requestionApiMl('computador');
