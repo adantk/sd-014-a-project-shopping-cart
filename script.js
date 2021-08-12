@@ -1,18 +1,18 @@
-function createProductImageElement(imageSource) {
+function createProductImageElement(imageSource) { //callback lista de itens
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
 }
 
-function createCustomElement(element, className, innerText) {
+function createCustomElement(element, className, innerText) { //callback lista de itens
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   return e;
 }
 
-function createProductItemElement({
+function createProductItemElement({ // cria lista de itens
   sku,
   name,
   image
@@ -28,16 +28,16 @@ function createProductItemElement({
   return section;
 }
 
-function getSkuFromProductItem(item) {
+function getSkuFromProductItem(item) { // retorna a SKU do pai
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener(event) { // função para apagar linha selecionada
   // coloque seu código aqui
   console.log('funciona')
 }
 
-function createCartItemElement({
+function createCartItemElement({ // cria lista
   sku,
   name,
   salePrice
@@ -48,13 +48,19 @@ function createCartItemElement({
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+const findId = (e) => {
+  listItem(getSkuFromProductItem(e.target.parentNode))
+}
+
 const callFetch = () => {
   fetch("https://api.mercadolibre.com/sites/MLB/search?q=computador").then((resposta) => {
     return resposta.json()
     })
     .then((dados) => {
-      dados.results.forEach((cur)=>{
+      dados.results.forEach((cur,i)=>{
         document.getElementsByClassName('items')[0].appendChild(createProductItemElement({sku: cur.id,name: cur.title,image: cur.thumbnail}))
+        document.getElementsByClassName('item__add')[i].addEventListener('click',findId)
       })
   })
 }
@@ -67,7 +73,6 @@ const listItem = (id) => {
   })
 }
 callFetch()
-listItem('MLB1341706310')
 window.onload = () => {
   
 };
