@@ -1,3 +1,7 @@
+ const cartItemClickListener = () => {
+  // função para remver li futuramente.
+  };
+  
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -9,13 +13,8 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-const addInOl = (element) => {
-  const elementoOl = document.querySelector('.cart__items');
-  elementoOl.appendChild(element);
-}
-
 function createCartItemElement(ObjetoParametro) {
-  const { id: sku, title: name, price: salePrice} = ObjetoParametro
+  const { id: sku, title: name, price: salePrice } = ObjetoParametro;
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -23,26 +22,26 @@ function createCartItemElement(ObjetoParametro) {
   return li;
 }
 
-async function fetchBySku(sku) {
-  const urlForFetch = `https://api.mercadolibre.com/items/${sku}`
-  const response = await fetch(urlForFetch).then(response => response);
+async function fetchItemBySku(sku) {
+  const urlForFetch = `https://api.mercadolibre.com/items/${sku}`;
+  const response = await fetch(urlForFetch).then((resposta) => resposta);
   const responseJson = await response.json();
-  addInOl(createCartItemElement(responseJson))
+  const elementOl = document.querySelector('.cart__items');
+  elementOl.appendChild(createCartItemElement(responseJson));
 }
 
-
-const cartItemClickListener = (event) => {
+const ItemClickAddCart = (event) => {
   const elementoItemAdd = event.target.parentElement;
   const skuItemAdd = getSkuFromProductItem(elementoItemAdd);
-  fetchBySku(skuItemAdd);
-}
+  fetchItemBySku(skuItemAdd);
+};
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
-  if (element === 'button'){
-    e.addEventListener('click', cartItemClickListener);
+  if (element === 'button') {
+    e.addEventListener('click', ItemClickAddCart);
   }
   return e;
 }
@@ -50,12 +49,10 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement(sku, name, image) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
 
@@ -78,8 +75,6 @@ async function requestionApiMl(valorBusca) {
     elementItems.appendChild(createProductItemElement(id, nameItem, ImgItem));
   });
 }
-
-const todosButons = document.querySelectorAll('.item_add');
 
 window.onload = () => {
   requestionApiMl('computador');
