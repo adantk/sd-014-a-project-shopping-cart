@@ -28,7 +28,14 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const getSkuFromCartItem = (item) => {
+  const text = item.innerText;
+  const sku = text.slice(5, 18);
+  return sku;
+};
+
 function cartItemClickListener(event) {
+  localStorage.removeItem(getSkuFromCartItem(event.target));
   const cartList = event.target.parentElement;
   cartList.removeChild(event.target);
 }
