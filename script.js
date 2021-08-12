@@ -1,4 +1,6 @@
 const url = 'https://api.mercadolibre.com/sites/MLB/';
+const urlItem = 'https://api.mercadolibre.com/items/';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -33,7 +35,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, base_price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -41,15 +43,34 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-async function searchProduct() {
-  const response = await (await fetch(`${url}search?q=computer`)).json();
+async function searchItem(item) {
+  const response = await (await fetch(`${urlItem}${item}`))
+  .json();
   return response;
+}
+
+async function searchProduct() {
+  const response = await fetch(`${url}search?q=computer`).then((r) => r.json());
+  return response;
+}
+
+async function adcEventsInButtons() {
+  const button = document.querySelectorAll('.item__add');
+  console.log(button);
+  button.forEach((elem) => elem.addEventListener('click', async (event) => {
+    const cart = document.querySelector('.cart__items');
+    const id = event.target.parentElement.firstChild.innerText;
+    const search = await searchItem(id);
+    console.log(search);
+    cart.appendChild(createCartItemElement(search));
+  }));
 }
 
 window.onload = async () => {
   const search = await searchProduct();
   const item = document.querySelector('.items');
-  search.results.forEach((element) => {
+  await search.results.forEach((element) => {
     item.appendChild(createProductItemElement(element));
   });
+  await adcEventsInButtons();
  };
