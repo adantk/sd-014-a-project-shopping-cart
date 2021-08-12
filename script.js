@@ -1,5 +1,8 @@
 const items = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
+const cart = document.querySelector('.cart');
+const priceTag = document.createElement('span');
+const spanTag = document.createElement('span');
 // função feita apenas para dar apend em elementos
 const appendChilds = (parent, element) => parent.appendChild(element);
 // escutador de eventos dos botoes da lista, chamado apenas depois da criação na função assincrona
@@ -10,6 +13,18 @@ function buttonEventListener(classe, callback) {
 }
 // Função criada para salvar no localStorage a cada mudança
 const saveLocalStorage = () => localStorage.setItem('shopCart', cartItems.innerHTML);
+// função para o requisito 5, total price
+const totalPrice = async () => {
+  const cartItem = document.querySelectorAll('.cart__item');
+  let sum = 0;
+  cartItem.forEach((e) => { sum += Number(e.id); });
+  priceTag.className = 'total-price';
+  priceTag.innerText = sum;
+  spanTag.className = 'text-center';
+  spanTag.innerHTML = 'O total é R$';
+  appendChilds(spanTag, priceTag);
+  appendChilds(cart, spanTag);
+};
 // função ja dada
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -43,6 +58,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  totalPrice();
   saveLocalStorage();
 }
 
@@ -50,6 +66,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.id = salePrice;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -68,6 +85,7 @@ async function funcaoEscutadoraBottoes(event) {
   };
   appendChilds(cartItems, createCartItemElement(arrayObj));
   saveLocalStorage();
+  totalPrice();
 }
 
 // Sessao dedicada à busca do fetch para o requisito 1
@@ -99,4 +117,5 @@ window.onload = () => {
     cartItems.innerHTML = localStorage.shopCart;
   }
   buttonEventListener('.cart__item', cartItemClickListener);
+  totalPrice();
 };
