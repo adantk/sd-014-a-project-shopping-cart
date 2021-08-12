@@ -5,14 +5,27 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
+function fetchForSku(sku) {
+
+}
+
+
+const cartItemClickListener = (event) => {
+  const elementoItemAdd = event.target.parentElement;
+  const skuItemAdd = getSkuFromProductItem(elementoItemAdd);
+  fetchForSku(skuItemAdd);
+}
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   if (element === 'button'){
-    e.addEventListener('click', event => console.log(event.target.parentElement));
+    e.addEventListener('click', cartItemClickListener);
   }
   return e;
 
@@ -30,13 +43,6 @@ function createProductItemElement(sku, name, image) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  console.log(event.target);
-}
 
 function createCartItemElement({
   sku,
@@ -58,7 +64,6 @@ async function FilterFetch(url, chave) { // filtra saida do fetch em json por ch
 
 async function requestionApiMl(valorBusca) {
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=$${valorBusca}`;
-
   const ItensResults = await FilterFetch(url, 'results'); // array com todos resultados de acordo com valorBusca 
   ItensResults.forEach((item) => {
     const elementItems = document.querySelector('.items');
@@ -69,7 +74,6 @@ async function requestionApiMl(valorBusca) {
     } = item;
     elementItems.appendChild(createProductItemElement(id, nameItem, ImgItem));
   });
-
 }
 
 const todosButons = document.querySelectorAll('.item_add');
