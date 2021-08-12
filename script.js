@@ -109,6 +109,7 @@ const addToCart = async (event) => {
   const cart = document.querySelector('.cart__items');
 
   cart.appendChild(item);
+  localStorage.setItem(itemSku, item);
 };
 
 const addEventToList = () => {
