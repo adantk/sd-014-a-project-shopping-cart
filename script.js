@@ -61,11 +61,15 @@ const loadingEnd = () => {
 };
 
 const fetchAPIComputerURL = async () => {
-  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-  const response = await fetch(url);
-  const { results } = await response.json();
+  try {
+    const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+    const response = await fetch(url);
+    const { results } = await response.json();
 
-  return results;
+    return results;
+  } catch (error404) {
+    console.log('Não encontrei esta URL', error404);
+  }
 };
 
 const renderProducts = (arr) => {
