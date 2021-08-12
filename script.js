@@ -1,3 +1,14 @@
+const myCart = document.querySelector('.cart__items');
+
+const saveMyCart = () => {
+  localStorage.clear();
+  localStorage.setItem('myCartListStorage', myCart.innerHTML);
+};
+
+const loadMyCart = () => {
+  myCart.innerHTML = localStorage.getItem('myCartListStorage');
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,34 +39,29 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// remove o item do carrinho quando clicado (createCartItemElement)
 function cartItemClickListener(event) {
   event.target.remove();
+  saveMyCart();
 }
 
-// adiciona pesquisa na página
 const addMySearch = (resultados) => {
   const myContainer = document.querySelector('.items');
   resultados.forEach((item) => myContainer.appendChild(createProductItemElement(item)));
 }
 
-// busca api
 const getMercadoList = async (query) => {
-  const myEndPoint =  await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`);
+  const myEndPoint = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`);
   const myInfo = await myEndPoint.json();
- 
+
   addMySearch(myInfo.results);
 }
 
-const myCart = document.querySelector('.cart__items');
-
-// adiciona produto
-const addToMyCart = (product) =>{
+const addToMyCart = (product) => {
   document.querySelector('.cart__items').appendChild(createCartItemElement(product));
+  saveMyCart();
 }
 
-// pega info daquele item clicado
-const getMercadoItem = async ( { target }) => {
+const getMercadoItem = async ({ target }) => {
   const myItemID = getSkuFromProductItem(target.parentNode);
   // alert(myItemID);
   const myResponse = await fetch(`https://api.mercadolibre.com/items/${myItemID}`);
@@ -63,7 +69,6 @@ const getMercadoItem = async ( { target }) => {
   addToMyCart(myInfo);
 }
 
-// trigger para adicionar
 const addToCartButtons = () => {
   const myButtons = document.querySelectorAll('.item__add');
   myButtons.forEach((btAdd) => {
@@ -81,5 +86,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
 window.onload = async () => {
   await getMercadoList('computador');
+  loadMyCart();
   addToCartButtons();
 };
+
