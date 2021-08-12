@@ -116,7 +116,7 @@ const addToCart = async (event) => {
   const cart = document.querySelector('.cart__items');
 
   cart.appendChild(item);
-  localStorage.setItem(itemSku, item);
+  localStorage.setItem(itemSku, item.innerHTML);
 };
 
 const addEventToList = () => {
@@ -124,7 +124,18 @@ const addEventToList = () => {
   list.addEventListener('click', addToCart);
 };
 
+const getLocalCart = () => {
+  const localCart = Object.values(localStorage);
+  console.log(localCart);
+  localCart.forEach((item) => {
+    const cart = document.querySelector('.cart__items');
+    cart.appendChild(item);
+  });
+};
+
 window.onload = () => { 
+  getLocalCart();
+
   createHTMLList()
   .then(() => addEventToList())
   .catch(() => window.onload());
