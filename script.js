@@ -32,7 +32,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -44,9 +44,9 @@ async function getItems(query) {
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
 
   if (url === 'https://api.mercadolibre.com/sites/MLB/search?q=computador') {
-    return fetch(url)
-      .then((response) => response.json())
-      .then((json) => json.results);
+    const response = await fetch(url);
+    const json = await response.json();
+    return json.results;
   }
 
   throw new Error('Endpoint não existe');
@@ -68,6 +68,33 @@ async function appendItems(query) {
   }
 }
 
+async function fetchItemID(id) {
+  const url = `https://api.mercadolibre.com/items/${id}`;
+
+  if (id) {
+    const response = await fetch(url);
+    const json = await response.json();
+    return json;
+  }
+
+  throw new Error('Endpoint não existe');
+}
+
+function addToCart() {
+  const cartSection = document.querySelector('.cart__items');
+
+  document.addEventListener('click', async (event) => {
+    if (event.target.classList.contains('item__add')) {
+      const itemID = getSkuFromProductItem(event.target.parentNode);
+      const { id, title, price } = await fetchItemID(itemID);
+      const cartItemElement = createCartItemElement({ id, title, price });
+
+      cartSection.appendChild(cartItemElement);
+    }
+});
+}
+
 window.onload = () => {
   appendItems('computador');
+  addToCart();
 };
