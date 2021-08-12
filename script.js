@@ -34,6 +34,10 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function cartItemClickListener(event) { /* Com base na função 'remove': https://developer.mozilla.org/en-US/docs/Web/API/Element/remove */
+  event.target.remove();
+}
+
 const createCartItemElement = ({ id: sku, title: name, price: salePrice }) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -42,8 +46,8 @@ const createCartItemElement = ({ id: sku, title: name, price: salePrice }) => {
   return li;
 };
 
-function cartItemClickListener(event) { /* Com base na função 'remove': https://developer.mozilla.org/en-US/docs/Web/API/Element/remove */
-  event.target.remove();
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
 }
 
 const adicionaItem = () => {
@@ -75,10 +79,6 @@ const createProductItemElement = async () => {
   });
   adicionaItem();
 };
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
 
 window.onload = () => {
   mercadolivreAPI();
