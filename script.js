@@ -46,9 +46,10 @@ const fetchML = (pesquisa) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${pesquisa}`)
   .then((resposta) => resposta.json())
   .then((objeto) => {
-  const {results} = objeto;
+  const { results } = objeto;
   return results; 
-  }).then((results) => results.forEach((resultado) => {
+  })
+  .then((results) => results.forEach((resultado) => {
     const { id: sku, title: name, thumbnail: image } = resultado;
     const item = createProductItemElement({ sku, name, image });
     const items = document.getElementsByClassName('items')[0];
@@ -56,5 +57,5 @@ const fetchML = (pesquisa) => {
   }))
   .catch((erro) => console.log(erro));
 };
-window.onload = () => fetchML("computador");
+window.onload = () => fetchML('computador');
 
