@@ -48,7 +48,7 @@ const searchApi = async (productName = 'computador') => {
 };
 
 function cartItemClickListener(event) {
-
+  event.target.remove()
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
