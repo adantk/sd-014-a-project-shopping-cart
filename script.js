@@ -1,3 +1,5 @@
+const ENDPOINT = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -38,6 +40,16 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+}
+
+/**
+ * Puxa os produtos do Mercado Livre
+ * @returns lista dos produtos
+ */
+async function fetchProducts() {
+  const response = await fetch(ENDPOINT);
+  const json = await response.json();
+  return json.results;
 }
 
 window.onload = () => { };
