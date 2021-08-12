@@ -1,5 +1,10 @@
 const baseUrl = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const itemsUrl = 'https://api.mercadolibre.com/items/';
+let cart;
+
+function pushToLocalStorage() {
+  localStorage.setItem('data', cart.innerHTML);
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -33,6 +38,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  pushToLocalStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -57,6 +63,7 @@ async function processItemToCart(id) {
   const { title, price } = await fetchData(itemsUrl + id);
   const item = createCartItemElement({ sku: id, name: title, salePrice: price });
   appendItem(item, '.cart__items');
+  pushToLocalStorage();
 }
 
 function addCartButtonListener() {
@@ -68,8 +75,19 @@ function addCartButtonListener() {
   });
 }
 
+function pullFromLocalStorage() {
+  cart = document.querySelector('.cart__items');
+  cart.innerHTML = localStorage.getItem('data') || '';
+  const items = document.querySelectorAll('.cart__item');
+  items.forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
+}
+
 window.onload = async () => {
   const { results } = await fetchData(baseUrl);
+  
+  pullFromLocalStorage();
 
   await results.forEach((element) => {
     const infos = { 
