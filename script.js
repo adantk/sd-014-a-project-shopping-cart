@@ -35,9 +35,9 @@ const getSkuFromCartItem = (item) => {
 };
 
 function cartItemClickListener(event) {
-  localStorage.removeItem(getSkuFromCartItem(event.target));
   const cartList = event.target.parentElement;
   cartList.removeChild(event.target);
+  localStorage.setItem('localCart', cartList.innerHTML);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -116,7 +116,7 @@ const addToCart = async (event) => {
   const cart = document.querySelector('.cart__items');
 
   cart.appendChild(item);
-  localStorage.setItem(itemSku, item.innerHTML);
+  localStorage.setItem('localCart', cart.innerHTML);
 };
 
 const addEventToList = () => {
