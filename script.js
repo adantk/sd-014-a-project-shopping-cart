@@ -50,7 +50,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 window.onload = () => {
   fetchProducts('computador')
-  .then((result) => result.forEach((pc) => {
-    itemSection.appendChild(createProductItemElement(pc));
+  .then((results) => results.forEach((result) => {
+    itemSection.appendChild(createProductItemElement(result));
   }));
 };
