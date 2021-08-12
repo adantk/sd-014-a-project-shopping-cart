@@ -107,6 +107,16 @@ const eraseSaved = () => {
   });
 };
 
+// 6 - clear cart
+const clearCart = () => {
+  const clearButton = document.querySelector('.empty-cart');
+  clearButton.addEventListener('click', () => {
+    ol.innerHTML = '';
+    priceText.innerHTML = '0';
+    localStorage.clear();
+  });
+};
+
 const loadLocalStorage = () => {
   if (localStorage.saved !== undefined && localStorage.price !== undefined) {
     ol.innerHTML = localStorage.saved;
@@ -119,4 +129,5 @@ window.onload = () => {
   fetchItems();
   findID();
   eraseSaved();
+  clearCart();
 };
