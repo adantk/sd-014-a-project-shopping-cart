@@ -42,6 +42,10 @@ const createCartItemElement = ({ id: sku, title: name, price: salePrice }) => {
   return li;
 };
 
+function cartItemClickListener(event) { /* Com base na função 'remove': https://developer.mozilla.org/en-US/docs/Web/API/Element/remove */
+  event.target.remove();
+}
+
 const adicionaItem = () => {
   const botao = document.querySelectorAll('.item__add');
   botao.forEach((button) =>
@@ -74,10 +78,6 @@ const createProductItemElement = async () => {
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  // coloque seu código aqui
 }
 
 window.onload = () => {
