@@ -1,3 +1,7 @@
+const updateCart = () => { 
+  const elementOl = document.querySelector('.cart__items');
+}
+
 const cartItemClickListener = (event) => {
   const elementOl = document.querySelector('.cart__items');
   elementOl.removeChild(event.target);
@@ -29,6 +33,7 @@ async function fetchItemBySku(sku) {
   const responseJson = await response.json();
   const elementOl = document.querySelector('.cart__items');
   elementOl.appendChild(createCartItemElement(responseJson));
+  localStorage.setItem('Cart', )
 }
 
 const ItemClickAddCart = (event) => {
