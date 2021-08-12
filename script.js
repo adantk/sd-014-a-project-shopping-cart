@@ -1,4 +1,5 @@
 const ol = document.querySelector('.cart__items');
+const priceText = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -41,14 +42,29 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText; // retornando o id do produto com base na posição da section passado por parametro
 }
 
+// saving both cart items ante price on local storage
 const saveInLocalStorage = () => {
   localStorage.setItem('saved', ol.innerHTML);
+  localStorage.setItem('price', priceText.innerHTML);
+};
+
+// 5 - sum products prices
+const sumPrices = () => {
+  const olPrices = document.querySelectorAll('.cart__item');
+  let sum = 0;
+
+  olPrices.forEach((element) => {
+    sum += parseFloat(element.innerHTML.split('$')[1]); // separando somente o preço do produto, que fica após o $ e somando a variavel sum
+  });
+  priceText.innerHTML = Math.round(sum * 100) / 100; // deixando o número so com duas casas decimais
+  saveInLocalStorage();
 };
 
 // 3 - erase product on cart
 function cartItemClickListener(event) {
   event.target.remove();
   saveInLocalStorage();
+  sumPrices();
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -59,9 +75,10 @@ function createCartItemElement({ id, title, price }) {
 
   ol.appendChild(li);
   saveInLocalStorage();
+  sumPrices();
 }
 
-// 2 - fecht id and calling the cart creation function
+// 2 - fecht id and call the cart creation function
 const fetchID = (id) => {
   fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((result) => result.json()).then((data) => {
@@ -83,15 +100,18 @@ const findID = () => {
 
 // 4 - erase saved items
 const eraseSaved = () => {
-  ol.addEventListener('click', (e) => {
-    if (e.target.classList.contains('cart__item')) {
-      cartItemClickListener(e);
+  ol.addEventListener('click', (li) => {
+    if (li.target.classList.contains('cart__item')) {
+      cartItemClickListener(li);
     }
   });
 };
 
 const loadLocalStorage = () => {
-  if (localStorage.saved !== undefined) ol.innerHTML = localStorage.saved;
+  if (localStorage.saved !== undefined && localStorage.price !== undefined) {
+    ol.innerHTML = localStorage.saved;
+    priceText.innerHTML = localStorage.price;
+  }
 };
 
 window.onload = () => { 
