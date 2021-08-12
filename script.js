@@ -58,4 +58,3 @@ const fetchML = (pesquisa) => {
   .catch((erro) => console.log(erro));
 };
 window.onload = () => fetchML('computador');
-
