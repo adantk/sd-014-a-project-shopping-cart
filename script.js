@@ -34,7 +34,7 @@ function getSkuFromProductItem(item) { // retorna a SKU do pai
 
 function cartItemClickListener(event) { // função para apagar linha selecionada
   // coloque seu código aqui
-  console.log('funciona')
+  event.target.remove()
 }
 
 function createCartItemElement({ // cria lista
