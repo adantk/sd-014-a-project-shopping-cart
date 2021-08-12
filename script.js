@@ -1,12 +1,7 @@
-const updateCart = () => { 
-  const elementOl = document.querySelector('.cart__items');
-}
+const updateCartStorage = (elementForAdd) => { 
+  localStorage.setItem('olCart', elementForAdd.innerHTML);
+};
 
-const cartItemClickListener = (event) => {
-  const elementOl = document.querySelector('.cart__items');
-  elementOl.removeChild(event.target);
-  };
-  
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -18,22 +13,25 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function createCartItemElement(ObjetoParametro) {
+function createCartItemElement(ObjetoParametro, elementoPaiLi) { // segundo parametro é o proprio elemento pai desse elemento, que sera usado para adicionar um addeventlistener 
   const { id: sku, title: name, price: salePrice } = ObjetoParametro;
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => {
+    elementoPaiLi.removeChild(event.target);
+    updateCartStorage(elementoPaiLi);
+  });
   return li;
 }
 
-async function fetchItemBySku(sku) {
+async function fetchItemBySku(sku) { //
   const urlForFetch = `https://api.mercadolibre.com/items/${sku}`;
   const response = await fetch(urlForFetch).then((resposta) => resposta);
   const responseJson = await response.json();
   const elementOl = document.querySelector('.cart__items');
-  elementOl.appendChild(createCartItemElement(responseJson));
-  localStorage.setItem('Cart', )
+  elementOl.appendChild(createCartItemElement(responseJson, elementOl));
+  updateCartStorage(elementOl);
 }
 
 const ItemClickAddCart = (event) => {
