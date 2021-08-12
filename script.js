@@ -40,4 +40,24 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+const getItems = async () => {
+  const query = 'computador';
+  // const endpoint = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  const endpoint = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
+
+  const request = await fetch(endpoint);
+  const response = await request.json();
+  const getResult = response.results;
+
+  const items = document.querySelector('.items');
+  getResult.forEach((result) => {
+    items.appendChild(createProductItemElement({
+      name: result.title,
+      sku: result.id,
+      image: result.thumbnail,
+    }));
+  });
+};
+// Agradeço ao Matheus Martino pela monitoria de revisão do Bloco 9!
+
+window.onload = () => { getItems(); };
