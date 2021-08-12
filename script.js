@@ -55,8 +55,15 @@ const itemAdd = () => {
   console.log(button);
 
   button.forEach((btn) =>
-  btn.addEventListener('click', () =>
-  console.log('teste')));
+  btn.addEventListener('click', async (event) => {
+    const id = event.target.parentElement.firstChild.innerText;
+    console.log(id);
+    const resp = await fetch(`https://api.mercadolibre.com/items/${id}`)
+    .then((response) => response.json());
+
+    document.querySelector('.cart__items')
+    .appendChild(createCartItemElement({ sku: resp.id, name: resp.title, salePrice: resp.price }));
+  }));
 };
 
 window.onload = async () => {
