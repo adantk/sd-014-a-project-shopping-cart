@@ -22,13 +22,13 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
-}
+} 
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
   // coloque seu código aqui
 }
 
@@ -40,17 +40,33 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const getFetchComputador = () => {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-  .then((response) => {
-    response.json().then((dados) => {
-      dados.results.forEach((arrays) => document.querySelector('.items')
-      .appendChild(createProductItemElement({
-         sku: arrays.id, 
-        name: arrays.title,
-         image: arrays.thumbnail })));            
-         }); 
+function criarCarrinho() {
+  const botao = document.querySelectorAll('.item__add');
+  botao.forEach((itens) => {
+  itens.addEventListener('click', async (event) => {
+    const elemento = event.target.parentElement;
+    const sku = elemento.firstChild.innerText;   
+    const aPis = await fetch(`https://api.mercadolibre.com/items/${sku}`); 
+    const requestJson = await aPis.json();
+    document.querySelector('.cart__items').appendChild(createCartItemElement({ 
+      sku: requestJson.id, 
+      name: requestJson.title, 
+      salePrice: requestJson.price }));   
     });
-}; 
+});  
+}
 
-window.onload = () => { getFetchComputador(); };
+const getFetchComputador = async () => {
+ const requisição = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const responseJson = await requisição.json();
+  responseJson.results.filter((array) => (document.querySelector('.items')
+  .appendChild(createProductItemElement({  
+     sku: array.id,   
+     name: array.title,   
+      image: array.thumbnail }))));
+      criarCarrinho(); 
+    };
+
+window.onload = () => { 
+    getFetchComputador();   
+};
