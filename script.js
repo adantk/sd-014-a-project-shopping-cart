@@ -38,7 +38,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-function guardaLocalStorage({ id }) {
+function guardaCarrinho({ id }) {
   const lista = [];
   if (localStorage.getItem('carrinho') === null) {
     lista.push(id);
@@ -52,12 +52,26 @@ function guardaLocalStorage({ id }) {
   }
 }
 
+function guardaPreco({ price }, op) {
+  console.log(price);
+  if (localStorage.getItem('total') === null) {
+    localStorage.setItem('total', price);
+  } else {
+    let total = parseFloat(localStorage.getItem('total'));
+    if (op === 'soma') total += price;
+    if (op === 'sub') total -= price;
+    localStorage.setItem('total', total);
+    //  console.log(lista);
+  }
+}
+
 async function pegaItem(evento) {
   //  console.log(evento.target.parentNode.firstChild);
   const id = evento.target.parentNode.firstChild.innerText;
   const objeto = await retornoAPI(`https://api.mercadolibre.com/items/${id}`);
-  guardaLocalStorage(objeto);
+  guardaCarrinho(objeto);
   listaCompras.appendChild(createCartItemElement(objeto));
+  guardaPreco(objeto, 'soma');
 }
 
 function createCustomElement(element, className, innerText) {
