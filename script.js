@@ -3,10 +3,13 @@ const cartItems = document.querySelector('.cart__items');
 // função feita apenas para dar apend em elementos
 const appendChilds = (parent, element) => parent.appendChild(element);
 // escutador de eventos dos botoes da lista, chamado apenas depois da criação na função assincrona
-function buttonEventListener(callback) {
-  const buttons = document.querySelectorAll('.item__add');
+// tambem é um escutador que é ativado apos a pagina ser recarregada, para poder eliminar elementos do localStorage
+function buttonEventListener(classe, callback) {
+  const buttons = document.querySelectorAll(classe);
   buttons.forEach((e) => e.addEventListener('click', callback));
 }
+// Função criada para salvar no localStorage a cada mudança
+const saveLocalStorage = () => localStorage.setItem('shopCart', cartItems.innerHTML);
 // função ja dada
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -37,9 +40,10 @@ function createProductItemElement({ sku, name, image }) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-async function cartItemClickListener(event) {
+function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  saveLocalStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -63,6 +67,7 @@ async function funcaoEscutadoraBottoes(event) {
     salePrice: array.price,
   };
   appendChilds(cartItems, createCartItemElement(arrayObj));
+  saveLocalStorage();
 }
 
 // Sessao dedicada à busca do fetch para o requisito 1
@@ -83,9 +88,15 @@ async function getItemsFromAPI() {
     const array = await fetchItems();
     const arrayMap = formatMap(array);
     arrayMap.forEach((elem) => appendChilds(items, createProductItemElement(elem)));
-    buttonEventListener(funcaoEscutadoraBottoes);
+    buttonEventListener('.item__add', funcaoEscutadoraBottoes);
   } catch (error) {
     console.log(error);
   }
 }
-window.onload = () => { getItemsFromAPI(); };
+window.onload = () => { 
+  getItemsFromAPI();
+  if (localStorage.shopCart) {
+    cartItems.innerHTML = localStorage.shopCart;
+  }
+  buttonEventListener('.cart__item', cartItemClickListener);
+};
