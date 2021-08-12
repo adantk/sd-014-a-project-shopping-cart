@@ -3,6 +3,7 @@ const cartItems = document.querySelector('.cart__items');
 const cart = document.querySelector('.cart');
 const priceTag = document.createElement('span');
 const spanTag = document.createElement('span');
+const divLoading = document.createElement('div');
 const buttonClearAll = document.querySelector('.empty-cart');
 // função feita apenas para dar apend em elementos
 const appendChilds = (parent, element) => parent.appendChild(element);
@@ -31,6 +32,12 @@ buttonClearAll.addEventListener('click', () => {
   cartItems.innerHTML = '';
   totalPrice(); 
 });
+// requisito 7
+const loading = () => {
+  divLoading.className = 'loading';
+  divLoading.innerText = 'loading';
+  appendChilds(items, divLoading);
+};
 // função ja dada
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -109,8 +116,10 @@ const formatMap = (arr, lastKey = 'image', thing = 'thumbnail') => arr.map((elem
 }));
 async function getItemsFromAPI() {
   try {
+    loading();
     const array = await fetchItems();
     const arrayMap = formatMap(array);
+    divLoading.remove();
     arrayMap.forEach((elem) => appendChilds(items, createProductItemElement(elem)));
     buttonEventListener('.item__add', funcaoEscutadoraBottoes);
   } catch (error) {
