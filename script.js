@@ -1,3 +1,5 @@
+const ol = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -25,6 +27,7 @@ function createProductItemElement({ id, title, thumbnail }) {
   items.appendChild(section);
 }
 
+// 1 - find and display products on the screen
 const fetchItems = () => {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((result) => result.json()).then((data) => {
@@ -38,9 +41,14 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText; // retornando o id do produto com base na posição da section passado por parametro
 }
 
+const saveInLocalStorage = () => {
+  localStorage.setItem('saved', ol.innerHTML);
+};
+
+// 3 - erase product on cart
 function cartItemClickListener(event) {
-  const ol = document.querySelector('.cart__items');
-  ol.removeChild(event.target);
+  event.target.remove();
+  saveInLocalStorage();
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -48,11 +56,12 @@ function createCartItemElement({ id, title, price }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
-  
-  const ol = document.querySelector('.cart__items');
+
   ol.appendChild(li);
+  saveInLocalStorage();
 }
 
+// 2 - fecht id and calling the cart creation function
 const fetchID = (id) => {
   fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((result) => result.json()).then((data) => {
@@ -60,18 +69,34 @@ const fetchID = (id) => {
   });
 };
 
-const addProduct = () => {
+// 2 - find id to fetch
+const findID = () => {
   const button = document.querySelector('.items');
 
   button.addEventListener('click', (e) => {
     if (e.target.classList.contains('item__add')) {
-      const id = getSkuFromProductItem(e.target.parentElement);
-      fetchID(id); // passando a posição exata do elemento section, que é pai do botao clicado
+      const id = getSkuFromProductItem(e.target.parentElement); // capturando a posição exata do elemento section, que é pai do botao clicado
+      fetchID(id);
     }
   });
 };
 
+// 4 - erase saved items
+const eraseSaved = () => {
+  ol.addEventListener('click', (e) => {
+    if (e.target.classList.contains('cart__item')) {
+      cartItemClickListener(e);
+    }
+  });
+};
+
+const loadLocalStorage = () => {
+  if (localStorage.saved !== undefined) ol.innerHTML = localStorage.saved;
+};
+
 window.onload = () => { 
+  loadLocalStorage();
   fetchItems();
-  addProduct();
+  findID();
+  eraseSaved();
 };
