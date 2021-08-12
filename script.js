@@ -3,6 +3,7 @@ const cartItems = document.querySelector('.cart__items');
 const cart = document.querySelector('.cart');
 const priceTag = document.createElement('span');
 const spanTag = document.createElement('span');
+const buttonClearAll = document.querySelector('.empty-cart');
 // função feita apenas para dar apend em elementos
 const appendChilds = (parent, element) => parent.appendChild(element);
 // escutador de eventos dos botoes da lista, chamado apenas depois da criação na função assincrona
@@ -25,6 +26,11 @@ const totalPrice = async () => {
   appendChilds(spanTag, priceTag);
   appendChilds(cart, spanTag);
 };
+// Requisito 6
+buttonClearAll.addEventListener('click', () => { 
+  cartItems.innerHTML = '';
+  totalPrice(); 
+});
 // função ja dada
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
