@@ -41,44 +41,58 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 async function getItems(query) {
+  if (!query) alert('Nenhum termo informado');
+
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
 
-  if (url === 'https://api.mercadolibre.com/sites/MLB/search?q=computador') {
+  try {
     const response = await fetch(url);
     const json = await response.json();
-    return json.results;
-  }
 
-  throw new Error('Endpoint não existe');
-}
+    if (json.results) return json.results;
 
-async function appendItems(query) {
-  const itemsSection = document.querySelector('.items');
-
-  try {
-    const itemsList = await getItems(query);
-
-    itemsList.forEach(({ id, title, thumbnail }) => {
-      const itemElement = createProductItemElement({ id, title, thumbnail });
-
-      itemsSection.appendChild(itemElement);
-    });
+    throw new Error('Endpoint não existe');
   } catch (error) {
     console.log(error);
   }
 }
 
+async function appendItems(query) {
+  const itemsSection = document.querySelector('.items');
+
+  const itemsList = await getItems(query);
+
+  if (itemsList) {
+    itemsList.forEach(({ id, title, thumbnail }) => {
+      const itemElement = createProductItemElement({ id, title, thumbnail });
+
+      itemsSection.appendChild(itemElement);
+    });
+  }
+}
+
 async function fetchItemID(id) {
+  if (!id) alert('ID não informado');
+
   const url = `https://api.mercadolibre.com/items/${id}`;
 
-  if (id) {
+  try {
     const response = await fetch(url);
     const json = await response.json();
-    return json;
-  }
 
-  throw new Error('Endpoint não existe');
+    if (json) return json;
+
+    throw new Error('Endpoint não existe');
+  } catch (error) {
+    console.log(error);
+  }
 }
+
+// function saveToLocalStorage() {
+//   const cartSection = document.querySelector('.cart__items');
+
+//   localStorage.setItem('cartList', cartSection.innerHTML);
+// }
 
 function addToCart() {
   const cartSection = document.querySelector('.cart__items');
@@ -90,6 +104,8 @@ function addToCart() {
       const cartItemElement = createCartItemElement({ id, title, price });
 
       cartSection.appendChild(cartItemElement);
+
+      // saveToLocalStorage();
     }
   });
 }
