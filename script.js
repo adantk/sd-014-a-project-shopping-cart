@@ -39,7 +39,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
+// requisito 1 grupo de estudo com Alvaro Raminelli dev Pleno CoinBase
 window.onload = async () => {
     // const chartList = []; 
     // chartList.forEach((item) => {
