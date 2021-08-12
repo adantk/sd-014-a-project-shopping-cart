@@ -1,4 +1,74 @@
 const itemContainer = document.querySelector('.items');
+const cart = document.querySelector('.cart__items');
+
+
+
+function fetchInfos(id) {
+  return fetch(`https://api.mercadolibre.com/items/${id}`)
+    .then((resp) => {
+      return resp.json()
+    })
+}
+
+
+ function getItemsFromAPI() {
+  return fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+    .then((resp) => {
+      return resp.json();
+    }).then((resp) => {
+      return resp.results.forEach(product => {
+        const item = createProductItemElement({ 
+           sku: product.id,
+           name: product.title,
+           image: product.thumbnail });
+        item.addEventListener('click', async () => {
+          const itemInfo = await fetchInfos(product.id);
+          const itemForCart = createCartItemElement({ 
+            sku: itemInfo.id,
+            name: itemInfo.title,
+            salePrice: itemInfo.price });
+          cart.append(itemForCart);
+        })
+        
+        itemContainer.append(item);
+      })
+    })
+}
+
+function cartItemClickListener(event) {
+  event.target.remove();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function createProductImageElement(imageSource) {
@@ -12,24 +82,9 @@ function createProductImageElement(imageSource) {
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
-  e.innerText = innerText; 
+  e.innerText = innerText;
   return e;
 }
-
-function getItemsFromAPI () {
-  return fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-  .then((resp) => {
-    return resp.json();
-  }).then((resp) => {
-    console.log(resp.results)
-    console.log(resp.results[0].id)
-    return resp.results.forEach(product => {
-      itemContainer.append(createProductItemElement({sku: product.id, name: product.name, image: product.thumbnail}));
-    })
-  })
-}
-
-
 
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
@@ -48,9 +103,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
+
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -60,6 +113,9 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+
+// getItemsFromAPI();
+
 window.onload = () => {
   getItemsFromAPI();
- };
+};
