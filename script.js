@@ -40,8 +40,8 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
- // coloque seu código aqui
+function cartItemClickListener(event) { // item 3
+  event.target.remove();
 }
 
 function createCartItemElement({ // usado no item 2
