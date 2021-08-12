@@ -8,13 +8,23 @@ const searchApi = (productName = 'computador') => new Promise(async (resolve, re
   };
 });
 
-const displayResult = async () => {
-  const resultArr = await searchApi();
+const displayResult = async (itemSearched) => {
   const productsContainer = document.getElementById('product-container');
-  resultArr.forEach((current) => {
-
-  })
-}
+  try {
+    const resultArr = await searchApi(itemSearched);
+    resultArr.forEach(({ id, title, thumbnail }) => {
+      const itemParams = {
+        name: title,
+        sku: id,
+        image: thumbnail
+      }
+      const productElement = createProductItemElement(itemParams);
+      productsContainer.appendChild(productElement);
+    });
+  } catch (error) {
+    throw error; //  arrumar isso aqui para dar erro na tela
+  }
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -58,4 +68,4 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { apiRequest() };
+window.onload = () => { displayResult() };
