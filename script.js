@@ -63,10 +63,31 @@ function cartLocalStorage(item, method) {
   localStorage.itemsCard = JSON.stringify(modifyArr(arr, item, method));
 }
 
+async function getItemDetails(itemId) {
+  const url = `https://api.mercadolibre.com/items/${itemId}`;
+  try {
+    return await (await fetch(url)).json();
+  } catch (error) {
+    return error; // fix this display error
+  }
+}
+
+async function totalPrice(itemId, method, price) {
+  const priceContainer = document.querySelector('.total-price');
+  let priceNow = price;
+  if (!price) priceNow = parseFloat((await getItemDetails(itemId)).price, 10);
+  if (method === '+') {
+    priceContainer.innerHTML = parseFloat(priceContainer.innerHTML, 10) + priceNow;
+  }else {
+    priceContainer.innerHTML = parseFloat(priceContainer.innerHTML, 10) - priceNow;
+  }
+}
+
 function cartItemClickListener(event) {
   const text = event.target.innerText;
   const sku = text.split('|')[0].split('SKU: ')[1].trim();
   event.target.remove();
+  totalPrice(sku, '-');
   cartLocalStorage(sku, 'remove');
 }
 
@@ -82,33 +103,29 @@ function displayItemOnCard(item) {
   const cardList = document.querySelector('.cart__items');
   const { id: sku, title: name, price: salePrice } = item;
   const itemElement = createCartItemElement({ sku, name, salePrice });
+  totalPrice(sku, '+', parseFloat(salePrice, 10));
   cardList.appendChild(itemElement);
-}
-
-async function getItemDetails(itemId) {
-  const url = `https://api.mercadolibre.com/items/${itemId}`;
-  try {
-    displayItemOnCard(await (await fetch(url)).json());
-  } catch (error) {
-    return error; // fix this display error
-  }
 }
 
 async function recoverItens() {
   const items = JSON.parse(localStorage.itemsCard);
-  items.forEach((item) => getItemDetails(item));
+  for (let i = 0; i < items.length; i += 1) { // tive q usar for() pois a funcao tem q ser async
+    const result = await getItemDetails(items[i]);
+    displayItemOnCard(result)
+  }
 }
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function itemsClickListener(event) {
+async function itemsClickListener(event) {
   const { target } = event;
   if (target.classList.contains('item__add')) {
     const itemID = getSkuFromProductItem(target.parentNode);
     cartLocalStorage(itemID, 'add');
-    getItemDetails(itemID);
+    const result = await getItemDetails(itemID);
+    displayItemOnCard(result);
   }
 }
 
