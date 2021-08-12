@@ -1,3 +1,4 @@
+const items = document.querySelector('.items');
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -11,6 +12,8 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+
+const appendChilds = (parent, element) => parent.appendChild(element);
 
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
@@ -40,4 +43,25 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+const fetchItems = async (type = 'sites/MLB/', element = 'search?q=computador') => 
+   fetch(`https://api.mercadolibre.com/${type}${element}`)
+    .then((response) => response.json())
+    .then((response) => response.results)
+    .catch(() => { throw new Error('API retornou erros'); });
+  // .then((e) => console.log(e));
+
+const formatMap = (arr, sku = 'id', name = 'title', thing = 'thumbnail') => arr.map((elem) => ({
+    sku: elem[sku],
+    name: elem[name],
+    image: elem[thing],
+  }));
+async function getItemsFromAPI() {
+  try {
+    const array = await fetchItems();
+    const arrayMap = formatMap(array);
+    arrayMap.forEach((elem) => appendChilds(items, createProductItemElement(elem)));
+  } catch (error) {
+    console.log(error);
+  }
+}
+window.onload = () => { getItemsFromAPI(); };
