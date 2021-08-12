@@ -28,12 +28,6 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-const getSkuFromCartItem = (item) => {
-  const text = item.innerText;
-  const sku = text.slice(5, 18);
-  return sku;
-};
-
 function cartItemClickListener(event) {
   const cartList = event.target.parentElement;
   cartList.removeChild(event.target);
@@ -125,12 +119,11 @@ const addEventToList = () => {
 };
 
 const getLocalCart = () => {
-  const localCart = Object.values(localStorage);
-  console.log(localCart);
-  localCart.forEach((item) => {
     const cart = document.querySelector('.cart__items');
-    cart.appendChild(item);
-  });
+    cart.innerHTML = localStorage.getItem('localCart');
+    Array.from(cart.children).forEach((item) => {
+      item.addEventListener('click', cartItemClickListener);
+    });
 };
 
 window.onload = () => { 
