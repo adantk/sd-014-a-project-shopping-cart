@@ -12,19 +12,25 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+//* Requisito 3
+function cartItemClickListener(e) {
+  e.remove();
+  // Referencia <https://developer.mozilla.org/en-US/docs/Web/API/Element/remove>
+}
+
 //* Requisito 2
 // Cria lista do carrinho
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (e) => cartItemClickListener(e.target));
   return li;
 }
 
 // Acessa a API pelo Id
 const urlApiId = 'https://api.mercadolibre.com/items/';
-async function cartItemClickListener(event) {
+async function fetchApiId(event) {
   return fetch(`${urlApiId}${event}`)
   .then((response) => response.json())
   .then((dados) => {
@@ -35,7 +41,7 @@ async function cartItemClickListener(event) {
 // Obtem o Id | Adiciona evento no botao, e retorna o id depois de clicado.
 const eventoBotaoReturnId = () => document.querySelectorAll('.item__add').forEach((button) => button
   .addEventListener('click', (e) => 
-  cartItemClickListener(e.target.parentElement.firstChild.innerText)));
+  fetchApiId(e.target.parentElement.firstChild.innerText)));
 
 //* Requisito 1
 // Cria section e adiciona class
