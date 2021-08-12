@@ -5,6 +5,10 @@ const cartItems = document.querySelector('.cart__items');
 const totalPrice = document.querySelector('.total-price');
 const emptyCart = document.querySelector('.empty-cart');
 
+const loading = document.createElement('div');
+loading.className = 'loading';
+loading.innerText = 'loading...';
+
 const sum = (a, b) => a + b;
 const sub = (a, b) => a - b;
 
@@ -30,6 +34,9 @@ const clearCart = () => {
   totalPrice.innerText = 0;
   saveCart();
 };
+
+const addLoading = () => { document.body.appendChild(loading); };
+const removeLoading = () => { document.body.removeChild(loading); };
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -82,9 +89,11 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 const fetchAPI = (URL) => fetch(URL).then((response) => response.json());
 
 const fetchItems = () => {
+  addLoading();
   fetchAPI(API_URL)
     .then(({ results }) => {
       results.forEach((item) => { itemsContainer.appendChild(createProductItemElement(item)); });
+      removeLoading();
     });
 };
 
@@ -92,11 +101,13 @@ const addItemsToCart = (event) => {
   const addButton = event.target;
   if (addButton.className === 'item__add') {
     const itemId = getSkuFromProductItem(addButton.parentElement);
+    addLoading();
     fetchAPI(API_ITEM + itemId)
       .then((itemInfo) => {
         cartItems.appendChild(createCartItemElement(itemInfo));
         updatePrice(itemInfo.price, sum);
         saveCart();
+        removeLoading();
       });
   }
 };

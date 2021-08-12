@@ -59,3 +59,10 @@
 .cart__item {
   cursor: pointer;
 }
+
+.loading {
+  position: fixed;
+  background-color: whitesmoke;
+  top: 0;
+  left: 0;
+}
