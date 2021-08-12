@@ -40,9 +40,10 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
- function FilterFetch (url, chave) { // filtra saida do fetch em json por chave retornando um valor
-  return fetch(`${url}`).then(response => response.json())
-  .then(data => data[chave]);
+ async function FilterFetch (url, chave) { // filtra saida do fetch em json por chave retornando um valor
+  const response = await fetch(`${url}`);
+   const data = await response.json();
+   return data[chave];
 }
 
 
@@ -50,9 +51,9 @@ async function requestionApiMl(valorBusca) {
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=$${valorBusca}`;
   let ItensResults = await FilterFetch(url, 'results');// array com todos resultados de acordo com a busca
   ItensResults.forEach(item => {
-    const ElementItems = document.querySelector('.items');
+    const elementItems = document.querySelector('.items');
     const { id, title: nameItem, thumbnail: ImgItem} = item;
-    createProductItemElement(id, nameItem, ImgItem)
+    elementItems.appendChild(createProductItemElement(id, nameItem, ImgItem));
   })
 } 
 
