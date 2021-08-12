@@ -9,11 +9,8 @@ const loading = document.createElement('div');
 loading.className = 'loading';
 loading.innerText = 'loading...';
 
-const sum = (a, b) => a + b;
-const sub = (a, b) => a - b;
-
-const updatePrice = (price, callback) => {
-  totalPrice.innerText = callback(parseFloat(totalPrice.innerText, 10), price);
+const updatePrice = (price) => {
+  totalPrice.innerText = parseFloat(totalPrice.innerText, 10) + price;
 };
 
 const saveCart = () => {
@@ -72,7 +69,7 @@ function cartItemClickListener(event) {
   if (event.target.className === 'cart__item') {
     const item = event.target;
     const price = parseFloat(item.innerText.match(/\$(.*)/)[1]);
-    updatePrice(price, sub);
+    updatePrice(-price);
     cartItems.removeChild(item);
     saveCart();
   }
@@ -105,7 +102,7 @@ const addItemsToCart = (event) => {
     fetchAPI(API_ITEM + itemId)
       .then((itemInfo) => {
         cartItems.appendChild(createCartItemElement(itemInfo));
-        updatePrice(itemInfo.price, sum);
+        updatePrice(itemInfo.price);
         saveCart();
         removeLoading();
       });
