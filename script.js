@@ -1,5 +1,6 @@
 const secaoItens = document.querySelector('.items');
 const listaCompras = document.querySelector('.cart__items');
+const localValor = document.querySelector('.total-price');
 
 function retornoAPI(url) {
   if (url === 'https://api.mercadolibre.com/sites/MLB/search?q=computador') {
@@ -52,6 +53,12 @@ function guardaCarrinho({ id }) {
   }
 }
 
+function inserePrecoNoDom() {
+  const valor = localStorage.getItem('total');
+  console.log(valor);
+  document.querySelector('#valor').innerText = valor;
+}
+
 function guardaPreco({ price }, op) {
   console.log(price);
   if (localStorage.getItem('total') === null) {
@@ -72,6 +79,7 @@ async function pegaItem(evento) {
   guardaCarrinho(objeto);
   listaCompras.appendChild(createCartItemElement(objeto));
   guardaPreco(objeto, 'soma');
+  inserePrecoNoDom();
 }
 
 function createCustomElement(element, className, innerText) {
@@ -96,14 +104,14 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-async function insereNoDOM() {
+async function inserePCNoDOM() {
   const itens = await retornoAPI('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   itens.forEach((item) => {
     const produto = createProductItemElement(item);
     secaoItens.appendChild(produto);
   });
 }
-insereNoDOM();
+inserePCNoDOM();
 
 /*  function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
@@ -124,6 +132,7 @@ window.onload = () => {
       localStorage.clear();
     } else {
       verificacaoInicial();
+      inserePrecoNoDom();
     }
   }
 };
