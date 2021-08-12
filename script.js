@@ -41,10 +41,6 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 const cartItemClickListener = (event) => {
   const cartItems = document.querySelector('.cart__items');
   cartItems.removeChild(event.target);
@@ -106,7 +102,7 @@ const removeAllCartItems = (cartSection) => {
 };
 
 const getLocalStorageItems = (cartItem) => {
-  const localStorageItems = JSON.parse(localStorage.getItem ('cartItems'));
+  const localStorageItems = JSON.parse(localStorage.getItem('cartItems'));
   const cartSection = cartItem;
   cartSection.innerHTML = localStorageItems;
   const cartItems = document.querySelectorAll('li');
