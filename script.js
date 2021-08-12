@@ -50,11 +50,11 @@ const getItems = async () => {
   const getResult = response.results;
 
   const items = document.querySelector('.items');
-  getResult.forEach((result) => {
+  getResult.forEach(({ title, id, thumbnail }) => {
     items.appendChild(createProductItemElement({
-      name: result.title,
-      sku: result.id,
-      image: result.thumbnail,
+      name: title,
+      sku: id,
+      image: thumbnail,
     }));
   });
 };
