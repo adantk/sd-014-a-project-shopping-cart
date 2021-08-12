@@ -1,3 +1,5 @@
+// Parte do código inspirada pelo PR do Victor Diniz da T13A: https://github.com/tryber/sd-013-a-project-shopping-cart/pull/8
+
 const productsSection = document.querySelector('.items');
 const cartList = document.querySelector('.cart__items');
 const totalPrice = document.querySelector('.total-price');
@@ -74,7 +76,9 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 async function displayProducts(search) {
+  productsSection.appendChild(createCustomElement('h1', 'loading', 'loading...'));
   const products = await getProducts(search);
+  productsSection.innerHTML = '';
   await products.forEach((product) => {
     productsSection.appendChild(createProductItemElement(product));
   });
@@ -83,8 +87,11 @@ async function displayProducts(search) {
 async function addToCart(e) {
   if (e.target.className === 'item__add') {
     const productId = getSkuFromProductItem(e.target.parentElement);
+    cartList.appendChild(createCustomElement('h1', 'loading', 'loading...'));
+    const loadingMessage = document.querySelector('.loading');
     const getProductInfo = await fetch(`https://api.mercadolibre.com/items/${productId}`);
     const productInfo = await getProductInfo.json();
+    cartList.removeChild(loadingMessage);
     cartList.appendChild(createCartItemElement(productInfo));
     console.log(productInfo.price);
     addTotal(productInfo.price);
