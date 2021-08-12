@@ -96,13 +96,12 @@ const fetchCartItem = async (sku) => {
    }
 };
 
-const addToCart = (event) => {
+const addToCart = async (event) => {
   if (event.target.className !== 'item__add') return;
   const itemSection = event.target.parentElement;
   const itemSku = getSkuFromProductItem(itemSection);
-  const { id, name, price } = fetchCartItem(itemSku);
-
-  const item = createCartItemElement({ sku: id, name, salePrice: price });
+  const { id, title, price } = await fetchCartItem(itemSku);
+  const item = createCartItemElement({ sku: id, name: title, salePrice: price });
   const cart = document.querySelector('.cart__items');
 
   cart.appendChild(item);
