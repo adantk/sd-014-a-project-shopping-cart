@@ -91,18 +91,14 @@ async function fetchItemID(id) {
 }
 
 function saveToLocalStorage() {
-  localStorage.setItem('cartList', cartSection.innerHTML);
-}
-
-function removeFromLocalStorage() {
-
+  localStorage.setItem('cartList', cartSection.innerHTML); // Sets cartSection as the value of the key 'cartList' in the local storage
 }
 
 function loadLocalStorage() {
   const cartListStorage = localStorage.getItem('cartList');
   // Gets the value of the key 'cartList' from the local storage
 
-  if (cartListStorage) cartSection.innerHTML = cartListStorage;
+  if (cartListStorage) cartSection.innerHTML = cartListStorage; // If the key 'cartList' exists (local storage), sets the value of the key 'cartList' in cartSection HTML
 }
 
 function addToCart() {
@@ -124,7 +120,7 @@ function removeFromCart() {
     if (event.target.classList.contains('cart__item')) {
       cartSection.removeChild(event.target);
 
-      removeFromLocalStorage();
+      saveToLocalStorage();
     }
   });
 }
