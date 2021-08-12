@@ -1,3 +1,5 @@
+const cartSelector = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -118,7 +120,7 @@ const addToCart = async (event) => {
   const { id, title, price } = await fetchCartItem(itemSku);
 
   const item = createCartItemElement({ sku: id, name: title, salePrice: price });
-  const cart = document.querySelector('.cart__items');
+  const cart = document.querySelector(cartSelector);
 
   cart.appendChild(item);
   await updateTotalPrice();
@@ -131,7 +133,7 @@ const addEventToList = () => {
 };
 
 const getLocalCart = async () => {
-    const cart = document.querySelector('.cart__items');
+    const cart = document.querySelector(cartSelector);
     cart.innerHTML = localStorage.getItem('localCart');
     Array.from(cart.children).forEach((item) => {
       item.addEventListener('click', cartItemClickListener);
@@ -140,7 +142,7 @@ const getLocalCart = async () => {
 };
 
 const emptyCart = async () => {
-  const cartToEmpty = document.querySelector('.cart__items');
+  const cartToEmpty = document.querySelector(cartSelector);
   cartToEmpty.innerHTML = '';
   localStorage.removeItem('localCart');
   await updateTotalPrice();
