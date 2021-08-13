@@ -1,3 +1,16 @@
+const cartItemsClass = '.cart__items';
+
+const loadCartFromStorage = () => {
+  const cart = document.querySelector(cartItemsClass);
+  const cartLocalStorage = localStorage.getItem('cartList');
+  cart.innerHTML = (cartLocalStorage);
+  Array.from(cart.children).forEach((item) => 
+    item.addEventListener('click', cartItemClickListener));
+    /** Consultei o repositório do Gustavo Dias para resolver essa parte final com 'cart.children'
+    * Link: https://github.com/tryber/sd-014-a-project-shopping-cart/tree/gustavo-dias-project-shopping-cart
+    */ 
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -16,7 +29,9 @@ const fetchRequestEndpoint = async (idProduct) => {
 };
 
 async function cartItemClickListener(event) {
+  const cart = document.querySelector(cartItemsClass);
   event.target.remove();
+  localStorage.setItem('cartList', cart.innerHTML);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -31,8 +46,13 @@ const addItemToCart = async (event) => {
   const idProductAdd = await getSkuFromProductItem(event);
   const returnEndPoint = await fetchRequestEndpoint(idProductAdd);
   const { id, title, price } = await returnEndPoint;
-  const cart = document.querySelector('.cart__items');
+  const cart = document.querySelector(cartItemsClass);
   cart.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
+  saveToLocalStorage(cart);
+};
+
+const saveToLocalStorage = (cart) => { 
+  localStorage.setItem('cartList', cart.innerHTML)
 };
 
 function createCustomElement(element, className, innerText) {
@@ -54,17 +74,20 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-
-
 const fetchProduct = async (search) => {
- return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
-  .then((response) => response.json().then((searchResult) => searchResult.results));
+ const responseRaw = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`);
+ const responseJson = await responseRaw.json();
+ return responseJson.results;
 };
 
 const loadElements = async (search) => {
   const result = await fetchProduct(search);
   result.forEach(({ id, title, thumbnail }) => document.querySelector('.items')
     .appendChild(createProductItemElement({ sku: id, name: title, image: thumbnail })));
+    
 };
-  
-window.onload = () => loadElements('computador');
+
+window.onload = () => {
+  loadElements('computador');
+  loadCartFromStorage();
+}
