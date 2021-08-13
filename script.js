@@ -49,7 +49,7 @@ function createCartItemElement({ sku, name, salePrice }) {
  * Busca dados da API do Mercado Livre
  * @param {string} endpoint Endpoint da API
  * @param {string=} query (opcional) Consulta
- * @returns 
+ * @returns JSON da consulta
  */
 async function fetchMLData(endpoint, query) {
   const path = `${endpoint}${query || ''}`;
@@ -58,9 +58,21 @@ async function fetchMLData(endpoint, query) {
   return data;
 }
 
-/**
- * Adiciona os produtos na seção principal
- */
+async function fetchProductInfo(productId) {
+  return fetchMLData(ENDPOINTS.item, productId)
+  .then(({ title: name, price: salePrice }) => (
+    { sku: productId, name, salePrice }
+  ));
+}
+
+async function addProductToCart(productId) {
+  const productInfo = await fetchProductInfo(productId);
+  const cartItemElement = createCartItemElement(productInfo);
+  cartItemElement.addEventListener('click', cartItemClickListener);
+  document.querySelector('.cart__items').appendChild(cartItemElement);
+}
+
+/** Adiciona os produtos na seção principal */
 async function addProducts(section) {
   const products = await fetchMLData(ENDPOINTS.list, 'computador')
     .then((data) => data.results);
@@ -70,30 +82,18 @@ async function addProducts(section) {
   });
 }
 
-/**
- * Callback dos botões de Adicionar ao Carrinho
- * @param {Event} event Evento
- */
-async function addToCart(event) {
+function clickAddProductToCartListener(event) {
   if (event.target.classList.contains('item__add')) {
     const productId = getSkuFromProductItem(event.target.parentElement);
-    const productInfo = await fetchMLData(ENDPOINTS.item, productId)
-      .then(({ title: name, price: salePrice }) => (
-        { sku: productId, name, salePrice }
-      ));
-    const productElement = createCartItemElement(productInfo);
-    productElement.addEventListener('click', cartItemClickListener);
-    document.querySelector('.cart__items').appendChild(productElement);
+    addProductToCart(productId);
   }
 }
 
-/**
- * Carregamento de dados e preparação de listeners
- */
+/** Carregamento de dados e preparação de listeners */
 async function preparePage() {
   const productsSection = document.querySelector('.items');
   await addProducts(productsSection);
-  productsSection.addEventListener('click', addToCart);
+  productsSection.addEventListener('click', clickAddProductToCartListener);
 }
 
 window.onload = () => { 
