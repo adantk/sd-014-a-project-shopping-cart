@@ -36,8 +36,45 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
-window.onload = () => { };
+const deselectButton = document.querySelectorAll('.cart__item');
+console.log(deselectButton);
+
+const cartButton = () => {
+  const addCarrinho = document.querySelectorAll('.item__add'); // Busca todos os botões das 'caixas' informativas dos produtos
+  addCarrinho.forEach((button) => button.addEventListener('click', (target) => { // Ao clicar, executa a função descrita
+    const alvo = target.target.previousSibling.previousSibling.previousSibling.innerText;
+    fetch(`https://api.mercadolibre.com/items/${alvo}`)
+      .then((data) => data.json()) // Transforma a info recebida em JSON
+      .then((json) => {
+        const local = document.getElementsByClassName('cart__items');
+        const infos = {
+          sku: json.id,
+          name: json.title,
+          salePrice: json.price,
+        };
+        local[0].appendChild(createCartItemElement(infos));
+      });
+  }));
+};
+
+const requisito1 = () => {
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador') // Acessa a API do Mercado Livre
+    .then((data) => data.json()) // Transforma a info recebida em JSON
+    .then((json) => {
+      const local = document.getElementsByClassName('items'); 
+      json.results.forEach((product) => {
+        const infos = { // Cons Infos vai ser o objeto parametro a ser enviado para a função createProductItemElement
+          sku: product.id,
+          name: product.title,
+          image: product.thumbnail,
+        };
+        local[0].appendChild(createProductItemElement(infos)); // Chama a função createProduct... e a section criada nela (com as informações do produto) são adicionadas (appendChild) na section #items
+      });
+    })
+    .then(() => cartButton.call());
+};
+
+window.onload = () => requisito1();
