@@ -4,7 +4,7 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
-
+//comecando projeto Jhonathancs iniciando projeto
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
