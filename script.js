@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,7 +14,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -40,4 +42,45 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+const fetchItemsPromise = (search) => new Promise((resolve, reject) => {
+    fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
+      .then((response) => {
+        if (response.ok) {
+        response.json()
+          .then((dados) => {            
+              // console.log(dados);
+              resolve(dados);
+          });
+        } else {
+            reject(new Error('fetch dont work'));
+          }
+      });
+  });
+  
+const fetchItems = async (search) => {
+  try {
+    const resolve = await fetchItemsPromise(`${search}`);
+    const { results } = resolve;
+
+    results.forEach((item) => {
+      document.querySelector('.items')
+      .appendChild(createCartItemElement(item));
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// function createItemList(list) {
+//   const promise = fetchItems(`${list}`);
+//   const { results } = promise;
+//   const sectionItems = document.querySelector('.items');
+//   // const items = results.forEach((item) => {
+//   const { id, title, thumbnail } = promise;
+//     //  createProductItemElement({ [item].id, item.title, item.thumbnail })
+//     console.log(promise);
+// }
+
+// window.onload = () => {
+  fetchItems('bla');
+// };
