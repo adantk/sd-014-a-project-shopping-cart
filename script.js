@@ -29,11 +29,18 @@ function getSkuFromProductItem(item) { // Default Function
 }
 
 const searchApi = async (url) => {
+  const cart = document.querySelector('.cart');
+  const loading = document.createElement('span');
+  loading.innerText = 'loading...';
+  loading.className = 'loading';
+  loading.style.position = 'absolute';
+  cart.append(loading);
   try {
-    // const result = await (await fetch(url)).json();
-    // displayResult(result.results);
-    return await (await fetch(url)).json();
+    const result = await (await fetch(url)).json();
+    cart.removeChild(loading)
+    return result;
   } catch (error) {
+    cart.removeChild(loading)
     return error; // fix this display error
   }
 };
@@ -72,11 +79,11 @@ async function totalPrice(itemId, method, price) {
   const priceContainer = document.querySelector('.total-price');
   const url = `https://api.mercadolibre.com/items/${itemId}`;
   let priceNow = price;
-  if (!price) priceNow = parseFloat((await searchApi(url)).price, 10);
+  if (!price) priceNow = parseFloat((await searchApi(url)).price);
   if (method === '+') {
-    priceContainer.innerHTML = (parseFloat(priceContainer.innerHTML, 10) + priceNow).toFixed(2);
+    priceContainer.innerHTML = Number((parseFloat(priceContainer.innerHTML) + priceNow).toFixed(2));
   } else {
-    priceContainer.innerHTML = (parseFloat(priceContainer.innerHTML, 10) - priceNow).toFixed(2);
+    priceContainer.innerHTML = Number((parseFloat(priceContainer.innerHTML) - priceNow).toFixed(2));
   }
 }
 
