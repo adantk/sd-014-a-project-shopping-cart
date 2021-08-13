@@ -39,20 +39,43 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-const fetchApi = async (produto) => {
+
+const fetchApi = async () => {
+  const produto = 'computador';
   const endpoint = `https://api.mercadolibre.com/sites/MLB/search?q=${produto}`;
   const mercadoLivre = await fetch(endpoint)
   .then((response) => response.json().then((prod) => prod));
 
-  // ja estavmos visualizando o array de objetos - console.log(mercadoLivre);
+  return mercadoLivre;
+  /* Estudo realizado junto com o Gustavo Dias - forma de explicar direfente de como verificar se a Promise esta tendo o retorno desejado. */
+  // if (response.ok) { 
+  //   const jsonResponse = await response.json();
+  //  return jsonResponse;
+  // }
 };
 
 const getProduto = async () => {
   const produtos = await fetchApi();
+  const item = document.querySelector('.items');
+
+  produtos.results.forEach((resul) => {
+    item.appendChild(createProductItemElement(
+      { 
+        sku: resul.id, 
+        name: resul.title,
+        image: resul.thumbnail,
+      },
+      ));
+  });
+  console.log(produtos.results);
+
+  // const item = document.querySelector('.items');
+  // console.log(item);
+  //item.appendChild(createProductItemElement({ sku, name, image }));
 };
 
 getProduto();
 
 window.onload = () => { 
-  fetchApi('computador');
+  fetchApi();
 };
