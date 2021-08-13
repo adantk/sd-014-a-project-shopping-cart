@@ -1,9 +1,10 @@
+const classList = document.querySelector('.items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
-  
 }
 
 function createCustomElement(element, className, innerText) {
@@ -40,5 +41,21 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+// FUNÇÕES MINHA DAQUI PRA BRAIXO 
+const listJsonMercadoLivre = async () => {
+  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  const response = await fetch(url);
+  const request = await response.json();
+  const resultList = await request.results;
+  return resultList.map((list) => {
+    const store = createProductItemElement({ sku: list.id,
+       name: list.title, 
+       image: list.thumbnail });
+    return classList.appendChild(store);
+  });
+};
+
+listJsonMercadoLivre();
 
 window.onload = () => { };
