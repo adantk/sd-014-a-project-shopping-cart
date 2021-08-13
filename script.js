@@ -14,17 +14,18 @@ function updatePrice() {
   totalPrice.innerText = precoTotal;
 }
 
+// função que salva o HTML do carrinho no localStorage.
+function autoSaveCart() {
+  localStorage.setItem('cart', cart.innerHTML);
+}
+
 // função que adiciona o listener no botão que remove todos os itens do carrinho.
 function removeButton() {
   removeItemsButton.addEventListener('click', () => {
     document.querySelector('.cart__items').innerHTML = '';
     updatePrice();
+    autoSaveCart();
   });
-}
-
-// função que salva o HTML do carrinho no localStorage.
-function autoSaveCart() {
-  localStorage.setItem('cart', cart.innerHTML);
 }
 
 // função chamada no listener após o carregamento da página que permite remover o item selecionado do carrinho.
