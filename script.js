@@ -1,3 +1,38 @@
+const fetchProducts = [];
+const query = 'computadores';
+const fetchURL = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
+const options = {
+  method: 'GET',
+  headers: { Authorization: 'Bearer $ACCESS_TOKEN' },
+};
+
+// async function getProducts() {
+  //   fetch(fetchURL)
+  //   .then((response) => response.json())
+  //   .then((list) => list.results.map((crr) => fetchProducts
+  //   .push({ sku: crr.id, name: crr.title, salePrice: crr.price, image: crr.thumbnail })));
+  // }
+  
+async function getJSON() {
+  const response = await fetch(fetchURL, options).then((response) => response.json());
+  return response;
+}
+
+async function mapJSON() {
+  const { results } = await getJSON();
+  results.map((crr) => {
+    const { id: sku, title: name, price: salePrice, thumbnail: image } = crr;
+    return fetchProducts.push({ sku, name, salePrice, image });
+  });
+}
+
+// async function getProduct() {
+//   const itemURL = `https://api.mercadolibre.com/items/${itemID}`;
+//   const response = await fetch(itemURL, options).then((response) => response.json());
+//   return response;
+// }
+
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -24,6 +59,15 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+async function renderProducts() {
+  await mapJSON();
+  const itemsSection = document.querySelector('.items');
+  for (let i = 0; i < fetchProducts.length; i += 1) {
+    const product = createProductItemElement(fetchProducts[i]);
+    itemsSection.appendChild(product);
+  }
+}
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -40,4 +84,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+window.onload = () => { 
+  renderProducts();
+};
