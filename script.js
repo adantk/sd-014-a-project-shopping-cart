@@ -32,7 +32,8 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener() {
+function cartItemClickListener(event) {
+  event.target.parentElement.removeChild(event.target);
 }
 
 function createCartItemElement({
@@ -79,5 +80,4 @@ async function jsonComputer() {
 window.onload = async () => {
   await jsonComputer();
   await addventListeBotton();
-  getSkuFromProductItem();
 };
