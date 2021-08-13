@@ -76,8 +76,7 @@ async function addProducts(section) {
  */
 async function addToCart(event) {
   if (event.target.classList.contains('item__add')) {
-    // pega SKU (ID) do primeiro span
-    const productId = event.target.parentElement.firstElementChild.innerText;
+    const productId = getSkuFromProductItem(event.target.parentElement);
     const productInfo = await fetchMLData(ENDPOINTS.item, productId)
       .then(({ title: name, price: salePrice }) => (
         { sku: productId, name, salePrice }
