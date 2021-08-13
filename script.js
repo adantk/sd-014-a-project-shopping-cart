@@ -30,17 +30,18 @@ function getSkuFromProductItem(item) {
 
 const TotalPrice = () => {
   const total = document.querySelector('.total-price');
+  const x = document.querySelector('.cart__items').childNodes;
   let sum = 0;
-  document.querySelector('.cart__items').childNodes.forEach((li) => sum += Number(li.innerText.split('|')[2].split('PRICE: $')[1].trim()));
+  x.forEach((li) => sum += Number(li.innerText.split('|')[2].split('PRICE: $')[1].trim()));
   total.innerHTML = sum;
   localStorage.setItem('savedTotal', sum);
-}
+};
 
 const getIds = () => {
   const x = [];
   const cart = document.querySelector('.cart__items');
   cart.childNodes.forEach((li) => {
-    x.push(li.innerText.split('|')[0].split('SKU: ')[1].trim())
+    x.push(li.innerText.split('|')[0].split('SKU: ')[1].trim());
   });
   localStorage.setItem('savedState', x);
   TotalPrice();
@@ -130,8 +131,8 @@ const clearCart = () => {
   clear.addEventListener('click', () => {
     document.querySelector('.cart__items').innerHTML = '';
     TotalPrice();
-  })
-}
+  });
+};
 
 window.onload = () => {
   setItems();
