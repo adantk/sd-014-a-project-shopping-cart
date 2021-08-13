@@ -1,7 +1,3 @@
-const itens = document.querySelector('.items');
-const listaCarrinho = document.querySelector('.cart_items');
-const botaoAdiciona = document.querySelectorAll('.item__add');
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -33,10 +29,10 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  listaCarrinho.removeChild(event.target);
+  // event.target.remove();
 }
 
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -44,40 +40,42 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+// Cria os itens
 function achaProduto(params) {
+  const itens = document.querySelector('.items');
   params.forEach((item) => itens.appendChild(createProductItemElement(item)));
 }
 
-// consegue informação da API e cria os itens
-const criaProduto = async () => {
-  const endpoint = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+// consegue informação da API 
+const criaProduto = async (query) => {
+  const endpoint = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
   const requesicao = await fetch(endpoint);
   const resposta = await requesicao.json();
 
   achaProduto(resposta.results);
 };
-
-function addParaCarrinho(params) {
-  listaCarrinho.appendChild(createProductItemElement(params));
-}
-// consegue a informação do item clicado no site
-const pegaItem = async ({ target }) => {
-  const myItemID = getSkuFromProductItem(target.parentNode);
-  const endpoint = `https://api.mercadolibre.com/items/${myItemID}`;
-  const requesicao = await fetch(endpoint);
-  const resposta = await requesicao.json();
-
-  addParaCarrinho(resposta);
+// 2
+const cartItem = async () => {
+  const botao = document.querySelectorAll('.item__add');
+  const carrinho = document.querySelector('.cart__items');
+  // Adiciona um listener para cada botao da minha lista de itens
+  botao.forEach((botaoCli) => { 
+    botaoCli.addEventListener('click', async (event) => {
+      const itemId = getSkuFromProductItem(event.target.parentElement);
+      const endpoint = `https://api.mercadolibre.com/items/${itemId}`;
+      const requesicao = await fetch(endpoint);
+      const response = await requesicao.json();
+      // Adiciona informações do produto ao carrinho 
+      const itens = { 
+        sku: response.id,
+        name: response.title,
+        salePrice: response.salePrice };
+      carrinho.appendChild(createCartItemElement(itens));
+    });
+  });
 };
 
-// agora para adicionar ao carrinho com um click
-function adiCarriBotao() {
-  botaoAdiciona.forEach((addBt) => {
-    addBt.addEventListener('click', pegaItem);
-  });
-}
-
 window.onload = async () => { 
-  await criaProduto();
-  adiCarriBotao(); 
+  await criaProduto('computador');
+  cartItem();
 };
