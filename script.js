@@ -39,5 +39,20 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+const fetchApi = async (produto) => {
+  const endpoint = `https://api.mercadolibre.com/sites/MLB/search?q=${produto}`;
+  const mercadoLivre = await fetch(endpoint)
+  .then((response) => response.json().then((prod) => prod));
 
-window.onload = () => { };
+  // ja estavmos visualizando o array de objetos - console.log(mercadoLivre);
+};
+
+const getProduto = async () => {
+  const produtos = await fetchApi();
+};
+
+getProduto();
+
+window.onload = () => { 
+  fetchApi('computador');
+};
