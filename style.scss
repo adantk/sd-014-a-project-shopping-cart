@@ -1,57 +1,100 @@
-.container {
+@mixin flex($align, $justify) {
   display: flex;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+@mixin flex-center {
+  @include flex(center, center);
+}
+
+$primary-color: #3483fa;
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
+
+* {
+  font-family: Poppins, Lato, sans-serif;
+}
+
+.container {
+  @include flex(flex-start, space-around);
   justify-content: space-around;
   width: 100%;
 }
 
 .items {
-  display: flex;
+  @include flex-center;
   flex-basis: 70%;
   flex-wrap: wrap;
-  justify-content: center;
 }
 
 .item {
-  border: 2px solid blue;
-  border-radius: 5px;
+  @include flex-center;
   box-sizing: border-box;
-  display: flex;
   flex-direction: column;
   height: auto;
-  margin: 5px;
-  width: 200px;
-}
-
-.item .item__sku {
-  display: none;
-}
-
-.item .item__title {
-  flex-grow: 1;
-  padding: 10px;
-  text-align: center;
-}
-
-.item .item__image {
-  width: 100%;
-}
-
-.item .item__add {
-  background-color: green;
-  border: 0;
-  cursor: pointer;
-  margin: 0;
-  padding: 5px;
+  margin: 10px;
+  padding: 20px;
+  width: 220px;
+  transition: 0.2s ease-in-out;
+  &:hover {
+    box-shadow: 0 0 5px 2.5px rgba(0,0,0,0.15);
+  }
+  .item__sku {
+    display: none;
+  }
+  .item__title {
+    flex-grow: 1;
+    padding: 10px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .item__image {
+    width: 80%;
+  }
+  .item__add {
+    background-color: transparent;
+    border: 1.5px solid $primary-color;
+    border-top: 4px solid $primary-color;
+    box-shadow: 2px 6px 15px 5px rgba(0,0,0,0.1);
+    // color: white;
+    font-weight: 800;
+    font-size: 12px;
+    // text-transform: uppercase;
+    cursor: pointer;
+    margin: 0;
+    padding: 10px;
+    width: 100%;
+    transition: 0.2s ease-in-out;
+    &:hover {
+      // background-color: $primary-color;
+      background: linear-gradient(67deg, $primary-color 52%, #5c9dff 100%);
+      border: 1.5px solid $primary-color;
+      border-top: 4px solid $primary-color;
+      color: rgb(221, 221, 221);
+    }
+  }
 }
 
 .cart {
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
+  .cart__title {
+    flex-basis: 1;
+    font-size: 16pt;
+    text-align: center;
+  } 
 }
 
-.cart .cart__title {
-  flex-basis: 1;
-  font-size: 16pt;
-  text-align: center;
+.empty-cart {
+  background: linear-gradient(67deg, $primary-color 52%, #5c9dff 100%);
+  color: rgb(221, 221, 221);
+  border: 0;
+  padding: 10px;
+  &:hover {
+    opacity: 0.8;
+  }
 }
