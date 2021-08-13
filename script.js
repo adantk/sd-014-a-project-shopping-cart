@@ -30,6 +30,16 @@ function createProductItemElement({
   return section;
 }
 
+const removeCarItems = () => {
+  const btnRemoveAllItems = document.querySelector('.empty-cart');
+  btnRemoveAllItems.addEventListener('click', () => {
+    const li = document.querySelectorAll('.cart__item');
+    li.forEach((item) => {
+      item.remove();
+    });
+  });
+};
+
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
@@ -82,4 +92,5 @@ const createDinamicItems = () => {
 
 window.onload = () => {
   createDinamicItems().then(() => addItemCart());
+  removeCarItems();
 };
