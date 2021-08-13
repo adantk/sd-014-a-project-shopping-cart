@@ -1,14 +1,14 @@
 const getPriceForElement = (elementsCart) => { // essa função extra o price do item acessando por elementoHtml
   let priceTotalNumber = 0;
-  elementsCart.forEach(element => { 
+  elementsCart.forEach((element) => { 
     const elementValue = element.innerText;
     const elementsItensCart = elementValue.split(' ');// quebra a string removendo os espaços 
-    const priceElement = elementsItensCart[elementsItensCart.length-1].split('$')[1];// acessa ultima posição do array e remove o cifrao.
+    const priceElement = elementsItensCart[elementsItensCart.length - 1].split('$')[1];// acessa ultima posição do array e remove o cifrao.
     const priceNumber = parseFloat(priceElement);
     priceTotalNumber += priceNumber;
-  })
+  });
   return priceTotalNumber;
-}
+};
 
 const updateCartStorage = (elementForAddCart) => { 
   const elementoPriceTotal = document.querySelectorAll('.total-price');
@@ -19,14 +19,14 @@ const updateCartStorage = (elementForAddCart) => {
 const updatePriceTotalCart = (addOrClear) => { 
   const elementoPriceTotal = document.querySelector('.total-price');
   const elementsLiCart = document.querySelectorAll('.cart__item');
-  if (addOrClear === undefined){
-    elementoPriceTotal.innerText = `0`;
-  } else if (typeof addOrClear === 'number') { 
-    elementoPriceTotal.innerText `${addOrClear}`;
+  if (addOrClear === undefined) {
+    elementoPriceTotal.innerText = '0';
+  } if (typeof addOrClear === 'number') { 
+    elementoPriceTotal.innerText = `${addOrClear}`;
   } else {
     elementoPriceTotal.innerText = `${getPriceForElement(elementsLiCart)}`;
   }
-}
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -58,7 +58,7 @@ async function fetchItemBySku(sku) { //
   const responseJson = await response.json();
   const elementOlCart = document.querySelector('.cart__items');
   elementOlCart.appendChild(createCartItemElement(responseJson, elementOlCart));
-  updatePriceTotalCart ('add');
+  updatePriceTotalCart('add');
   updateCartStorage(elementOlCart);
 }
 
