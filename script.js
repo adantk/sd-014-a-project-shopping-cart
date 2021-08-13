@@ -126,11 +126,11 @@ function loadState() {
 }
 
 const clearCart = () => {
-const clear = document.querySelector('.empty-cart');
- clear.addEventListener('click', () => {
-  document.querySelector('.cart__items').innerHTML = ''
-  TotalPrice()
- })
+  const clear = document.querySelector('.empty-cart');
+  clear.addEventListener('click', () => {
+    document.querySelector('.cart__items').innerHTML = ''
+    TotalPrice()
+  })
 }
 
 window.onload = () => {
