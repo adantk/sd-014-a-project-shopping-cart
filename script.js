@@ -14,8 +14,19 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function cartItemClickListener(event) {  
-
+/**
+ * Função que é disparada quando há o clique em algum
+ * elementos do cart para removê-lo.
+ * @param {event} e Evento de clique 
+ */
+function cartItemClickListener(e) {  
+  const item = e.target;
+  const items = document.querySelectorAll('.cart__item');
+  items.forEach((curr) => {
+    if (curr === item) {
+      curr.parentNode.removeChild(curr);
+    }
+  });
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
