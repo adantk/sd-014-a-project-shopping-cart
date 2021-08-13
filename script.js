@@ -80,7 +80,7 @@ async function requestionApiMl(valorBusca) {
   });
 }
 
-function renderClearCartStorage(keyStorage) {// essa função se nao for passado um parametro limpa o carrinho
+function renderClearCartStorage(keyStorage) { // essa função se nao for passado um parametro limpa o carrinho
   const elementOlCart = document.querySelector('.cart__items');
   const itensCart = localStorage.getItem(keyStorage);
   elementOlCart.innerHTML = itensCart;
@@ -94,13 +94,12 @@ function renderClearCartStorage(keyStorage) {// essa função se nao for passado
   updateCartStorage(elementOlCart);
 }
 
-function buttonClearCart(){ 
+function buttonClearCart() { 
   const button = document.querySelector('.empty-cart');
   button.addEventListener('click', () => {
     renderClearCartStorage();
   });
 }
-
 
 window.onload = () => {
   renderClearCartStorage('olCart');
