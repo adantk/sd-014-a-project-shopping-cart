@@ -41,9 +41,12 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 async function callItemAPI() {
+  const itemConteiner = document.querySelector('.items');
   try {
+    itemConteiner.innerHTML = '<p class = "loading"> Loading...</p>';
     const requi = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const requiJson = await requi.json();
+  itemConteiner.innerHTML = null;
   const item = await requiJson.results;
   await item.forEach((iten) => document.querySelector('.items')
   .appendChild(createProductItemElement({ sku: iten.id,
