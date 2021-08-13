@@ -52,4 +52,19 @@ async function fetchProducts() {
   return json.results;
 }
 
-window.onload = () => { };
+/**
+ * Adiciona os produtos na seção principal
+ */
+function addProducts() {
+  const productsSection = document.querySelector('.items');
+  fetchProducts().then((products) => {
+    products.forEach(({ id: sku, title: name, thumbnail: image }) => {
+      const product = createProductItemElement({ sku, name, image });
+      productsSection.appendChild(product);
+    });
+  });
+}
+
+window.onload = () => { 
+  addProducts();
+};
