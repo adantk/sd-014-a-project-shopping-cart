@@ -1,3 +1,11 @@
+const clearBtn = document.getElementsByClassName('empty-cart')[0];
+clearBtn.addEventListener('click', () => {
+  const ol = document.getElementsByClassName('cart__items')[0];
+  const p = document.getElementsByClassName('total-price')[0];
+  ol.innerHTML = '';
+  p.innerHTML = '';
+});
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -48,6 +56,8 @@ function findID(id) {
       const makeCart = createCartItemElement(dataObj);
       const ol = document.querySelector('.cart__items');
       ol.appendChild(makeCart);
+      const p = document.getElementsByClassName('total-price')[0];
+      p.innerText = `Preço: ${dados.price}`;
     });
 }
 
