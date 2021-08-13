@@ -28,8 +28,11 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// req 3 deleta itens individuais no carrinho;
 function cartItemClickListener(event) {
 event.target.remove();
+
+// salva lista depois de remover itens desejados;
 const ol = document.querySelector('.cart__items');
 localStorage.setItem('cartItems', ol.innerHTML);
 }
@@ -42,6 +45,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// req 1 - cria fetch com produtos de computadores e adiciona estes produtos na tela pela função createProductItemElement;
 async function fetchComputer(query) {
   const json = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => response.json())
@@ -53,6 +57,7 @@ async function fetchComputer(query) {
       ));
 }
 
+// req 2 - adiciona itens ao carrinho;
 const itemAdd = () => {
   const button = document.querySelectorAll('.item__add');
 
@@ -73,10 +78,12 @@ const itemAdd = () => {
   }));
 };
 
+// req 4 - mantém itens do carrinho ao reiniciar a página;
 const saveCartItems = () => {
   const ol = document.getElementsByClassName('cart__items')[0];
   const savedItems = localStorage.getItem('cartItems');
   ol.innerHTML = savedItems;
+
   // necessário criar um li para que possa remover os itens salvos ao clicar na lista;
   const li = document.querySelectorAll('.cart__item');
   li.forEach((item) => {
@@ -84,8 +91,20 @@ const saveCartItems = () => {
   });
 };
 
+// req 6 - apagar carrinho;
+const emptyCart = () => {
+  // remove list salva no storage
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    localStorage.clear();
+    // remove lista impressa na tela;
+    document.querySelectorAll('.cart__item').forEach((item) => item.remove());
+  });
+};
+
 window.onload = async () => {
 await fetchComputer('computer');
 await itemAdd();
 await saveCartItems();
+await emptyCart();
 };
