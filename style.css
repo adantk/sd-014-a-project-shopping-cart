@@ -1,7 +1,15 @@
+header {
+  margin-left: 20px;
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
 .container {
   display: flex;
   justify-content: space-around;
   width: 100%;
+  margin-top: 20px;
 }
 
 .items {
@@ -11,6 +19,15 @@
   justify-content: center;
 }
 
+.loading {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  margin: 5px;
+  width: 400px;
+}
+
+
 .item {
   border: 2px solid blue;
   border-radius: 5px;
@@ -19,7 +36,7 @@
   flex-direction: column;
   height: auto;
   margin: 5px;
-  width: 200px;
+  width: 30%;
 }
 
 .item .item__sku {

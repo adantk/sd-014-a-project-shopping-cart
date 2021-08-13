@@ -2,6 +2,8 @@ let itemSection;
 let pricePlace;
 let cartItem;
 let clearCart;
+let searchWord;
+let btnSearch;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -53,13 +55,15 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 // Requisito 6 - Remove todos os itens do carrinho
-function clearClickListener(params) {
+function clearClassItems(params, test) {
   const elements = document.getElementsByClassName(params);
   while (elements.length > 0) {
     elements[0].parentNode.removeChild(elements[0]);
   }
-  totalPrice.zero();
-  localStorage.clear();
+  if (test === 'true') {
+    totalPrice.zero();
+    localStorage.clear();  
+  }
 }
 
 // Requisito 2 - Função do Event Listener dos botões dos produtos que adiciona o produto clicado ao carinho
@@ -74,7 +78,7 @@ async function productClickListener(event) {
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
-  section.className = 'item';
+  section.className = 'item col s3';
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -85,14 +89,25 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// Requisito 7 - Limpa a mensagem de load e os produtos caso haja na página, só é executado quando faz um busca ou ao carregar
+function clearPage() {
+  if (document.querySelector('.loading')) {
+    itemSection.removeChild(document.querySelector('.loading'));
+  }
+  if (document.querySelectorAll('.item')) {
+    clearClassItems('item', 'false');
+  }
+}
+
 // Requisito 1 - Realiza a pesquisa e coloca na área de itens
 async function search(ele) {
+  itemSection.appendChild(createCustomElement('h3', 'loading', 'Loading...'));
   const fetchRaw = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${ele}`);
   const dataJson = await fetchRaw.json();
   dataJson.results.forEach((product) => {
     itemSection.appendChild(createProductItemElement(product));
   });
-  itemSection.removeChild(document.querySelector('.loading'));
+  clearClassItems('loading');
 }
 
 // Requisito 4 - Carrega o local Storage
@@ -104,6 +119,7 @@ function loadStorage() {
       .then((e) => document.querySelector('.cart__items').appendChild(createCartItemElement(e)));
     localStorage.setItem(element, element);
   }
+  search('computador');
 }
 
 window.onload = () => {
@@ -111,7 +127,18 @@ window.onload = () => {
   pricePlace = document.querySelector('.total-price');
   cartItem = document.querySelector('.cart__items');
   clearCart = document.querySelector('.empty-cart');
-  clearCart.addEventListener('click', () => clearClickListener('cart__item'));
+  searchWord = document.querySelector('#input');
+  btnSearch = document.querySelector('#go');
+  clearCart.addEventListener('click', () => clearClassItems('cart__item', 'true'));
+  searchWord.addEventListener('keyup', (event) => {
+    if (event.keyCode === 13) {
+      clearPage();
+      search(searchWord.value);
+    }
+  });
+  btnSearch.addEventListener('click', () => {
+    clearPage();
+    search(searchWord.value);
+  });
   loadStorage();
-  search('computador');
 };
