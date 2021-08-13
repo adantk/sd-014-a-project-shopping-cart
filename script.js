@@ -1,6 +1,7 @@
 let itemSection;
 let pricePlace;
 let cartItem;
+let clearCart;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -28,6 +29,7 @@ const totalPrice = {
   sub: (price) => {
     pricePlace.innerText = Math.round((Number(pricePlace.innerText) - price) * 100) / 100;
   },
+  zero: () => { pricePlace.innerText = '00.00'; },
 };
 
 // Requisito 3 - Remove o item clicado no carrinho
@@ -41,12 +43,23 @@ function cartItemClickListener(event) {
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  // Adiciona o valor e o id direto no item pra facilitar o acesso a informação
   li.id = sku;
   li.price = salePrice;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   totalPrice.sum(salePrice);
   return li;
+}
+
+// Requisito 6 - Remove todos os itens do carrinho
+function clearClickListener(params) {
+  const elements = document.getElementsByClassName(params);
+  while (elements.length > 0) {
+    elements[0].parentNode.removeChild(elements[0]);
+  }
+  totalPrice.zero();
+  localStorage.clear();
 }
 
 // Requisito 2 - Função do Event Listener dos botões dos produtos que adiciona o produto clicado ao carinho
@@ -96,6 +109,8 @@ window.onload = () => {
   itemSection = document.querySelector('.items');
   pricePlace = document.querySelector('.total-price');
   cartItem = document.querySelector('.cart__items');
+  clearCart = document.querySelector('.empty-cart');
+  clearCart.addEventListener('click', () => clearClickListener('cart__item'));
   search('computador');
   loadStorage();
 };
