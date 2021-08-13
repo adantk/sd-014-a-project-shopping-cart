@@ -1,6 +1,7 @@
 const storageKey = 'ol-content';
 const cartItemsClass = '.cart__items';
 const emptyCartClass = '.empty-cart';
+const cartClass = '.cart';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -60,32 +61,41 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function createLoading() {
+  const loadingSpan = document.createElement('span');
+  loadingSpan.innerText = 'Loading ...';
+  loadingSpan.className = 'loading';
+  document.querySelector(cartClass).appendChild(loadingSpan);  
+}
+
+function deleteLoading() {
+  document.querySelector(cartClass).removeChild(document.querySelector('.loading'));
+}
+
 function getComputersFromMlApi() {
+  createLoading();
   return fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
     .then((response) => response.json())
     .then((json) => json.results);
 }
 
 function getComputerItemFromMlApi(sku) {
-  return fetch(`https://api.mercadolibre.com/items/${sku}`).then((response) =>
-    response.json());
+  createLoading();
+  return fetch(`https://api.mercadolibre.com/items/${sku}`)
+    .then((response) => response.json());    
 }
 
 function addItemToCart(event) {
   const cartItems = document.querySelector(cartItemsClass);
   const skuItem = event.target.parentElement.firstChild.innerText;
-  getComputerItemFromMlApi(skuItem).then(
-    ({ id: sku, title: name, price: salePrice }) => {
-      const li = createCartItemElement({
-        sku,
-        name,
-        salePrice,
-      });
+  getComputerItemFromMlApi(skuItem)
+    .then(({ id: sku, title: name, price: salePrice }) => {
+      const li = createCartItemElement({ sku, name, salePrice });
       cartItems.appendChild(li);
       localStorage.setItem(storageKey, cartItems.innerHTML);
       sum(cartItems);
-    },
-    );
+    })
+    .then(() => deleteLoading());
 }
 
 function getLocalStorage() {
@@ -108,14 +118,12 @@ window.onload = () => {
   const items = document.querySelector('.items');
   document.querySelector(emptyCartClass).addEventListener('click', clearAll);
   getLocalStorage();
-  getComputersFromMlApi().then((computers) =>
-    computers.forEach(({ id: sku, title: name, thumbnail: image }) => {
-      const section = createProductItemElement({
-        sku,
-        name,
-        image,
-      });
-      items.appendChild(section);
-      items.lastChild.lastChild.addEventListener('click', addItemToCart);
-    }));
+  getComputersFromMlApi()
+    .then((computers) =>
+      computers.forEach(({ id: sku, title: name, thumbnail: image }) => {
+        const section = createProductItemElement({ sku, name, image });
+        items.appendChild(section);
+        items.lastChild.lastChild.addEventListener('click', addItemToCart);      
+      }))
+    .then(() => deleteLoading());
 };
