@@ -1,5 +1,6 @@
 const storageKey = 'ol-content';
 const cartItemsClass = '.cart__items';
+const emptyCartClass = '.empty-cart';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -97,8 +98,15 @@ function getLocalStorage() {
   sum(cartItems);
 }
 
+function clearAll() {
+  const cartItems = document.querySelector(cartItemsClass);
+  cartItems.innerHTML = '';
+  sum(cartItems);  
+}
+
 window.onload = () => {
   const items = document.querySelector('.items');
+  document.querySelector(emptyCartClass).addEventListener('click', clearAll);
   getLocalStorage();
   getComputersFromMlApi().then((computers) =>
     computers.forEach(({ id: sku, title: name, thumbnail: image }) => {
