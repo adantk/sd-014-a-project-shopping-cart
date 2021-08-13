@@ -88,6 +88,16 @@ function cartItemClickListener(event) {
 }
 // ---------------------------
 
+// Requisito 4
+const storedItems = () => {
+  if (localStorage.getItem('stored')) {
+    document.querySelector('.cart__items').innerHTML
+      += localStorage.getItem('stored');
+    totalSum();
+  }
+};
+// ---------------------------
+
 window.onload = () => {
   getJson();
  };
