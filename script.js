@@ -1,4 +1,7 @@
-const ENDPOINT = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const ENDPOINTS = {
+  list: 'https://api.mercadolibre.com/sites/MLB/search?q=',
+  item: 'https://api.mercadolibre.com/items/',
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -43,28 +46,52 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 /**
- * Puxa os produtos do Mercado Livre
- * @returns lista dos produtos
+ * Busca dados da API do Mercado Livre
+ * @param {string} endpoint Endpoint da API
+ * @param {string=} query (opcional) Consulta
+ * @returns 
  */
-async function fetchProducts() {
-  const response = await fetch(ENDPOINT);
-  const json = await response.json();
-  return json.results;
+async function fetchMLData(endpoint, query) {
+  const path = `${endpoint}${query || ''}`;
+  const response = await fetch(path);
+  const data = await response.json();
+  return data;
 }
 
 /**
  * Adiciona os produtos na seção principal
  */
-function addProducts() {
-  const productsSection = document.querySelector('.items');
-  fetchProducts().then((products) => {
-    products.forEach(({ id: sku, title: name, thumbnail: image }) => {
-      const product = createProductItemElement({ sku, name, image });
-      productsSection.appendChild(product);
-    });
+async function addProducts(section) {
+  const products = await fetchMLData(ENDPOINTS.list, 'computador')
+    .then((data) => data.results);
+  products.forEach(({ id: sku, title: name, thumbnail: image }) => {
+    const product = createProductItemElement({ sku, name, image });
+    section.appendChild(product);
   });
 }
 
+/**
+ * Callback dos botões de Adicionar ao Carrinho
+ * @param {Event} event Evento
+ */
+function addToCart(event) {
+  if (event.target.classList.contains('item__add')) {
+    // pega SKU (ID) do primeiro span
+    const productId = event.target.parentElement.firstElementChild.innerText;
+    fetchMLData(ENDPOINTS.item, productId)
+      .then((response) => console.log(response));
+  }
+}
+
+/**
+ * Carregamento de dados e preparação de listeners
+ */
+async function preparePage() {
+  const productsSection = document.querySelector('.items');
+  await addProducts(productsSection);
+  productsSection.addEventListener('click', addToCart);
+}
+
 window.onload = () => { 
-  addProducts();
+  preparePage();
 };
