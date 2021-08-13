@@ -34,7 +34,7 @@ function createProductItemElement({ sku, name, image }) {
 // }
 
 function sum(ol) {
-  const totalPrice = document.querySelector('.total__price');
+  const totalPrice = document.querySelector('.total-price');
   const regex1 = /([$][1-9])\S+/i;
   const regex2 = /([1-9])\S+/;
   let total = 0;
@@ -43,7 +43,7 @@ function sum(ol) {
     total += Number(found[0].match(regex2)[0]);
   });
   total = Math.round(100 * total) / 100;
-  totalPrice.innerText = `Total: $${total}`;
+  totalPrice.innerText = total;
 }
 
 function cartItemClickListener(event) {
