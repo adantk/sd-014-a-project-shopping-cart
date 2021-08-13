@@ -1,4 +1,5 @@
 let subTotal = 0;
+
 function updateSubTotal(price) {
   subTotal += price;
   return subTotal;
@@ -39,14 +40,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  if (event.target.className === 'cart__item') {
-    // const id = getSkuFromProductItem(event.target.parentElement);
-    // fetch(`https://api.mercadolibre.com/items/${id}`)
-    //   .then((response) => response.json()).then((dados) => {
-    //     updateSubTotal(-dados.price);
-    //     console.log(subTotal);
-    //   });
-      event.target.parentElement.removeChild(event.target);
+  if (event.target.className === 'cart__item' && event.target.parentElement !== null) {
+    event.target.parentElement.removeChild(event.target);
   }
 }
 
