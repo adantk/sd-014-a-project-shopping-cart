@@ -29,8 +29,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
-
+  const cart = document.querySelector('.cart__items');
+    cart.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -74,5 +74,5 @@ function addCart() {
 
 window.onload = async () => {
   await callItemAPI();
-  addCart();
+  await addCart();
  };
