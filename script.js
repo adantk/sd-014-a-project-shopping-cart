@@ -28,26 +28,11 @@ function createProductItemElement({
   return section;
 }
 
-const jsonComputer = () => {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-    .then((response) => {
-      response.json().then((jsonDosProdutos) => {
-        jsonDosProdutos.results.forEach(((valu) => document.querySelector('.items')
-          .appendChild(createProductItemElement({
-            sku: valu.id,
-            name: valu.title,
-            image: valu.thumbnail,
-          }))));
-      });
-    });
-};
-
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener() {
-  // coloque seu código aqui
 }
 
 function createCartItemElement({
@@ -62,9 +47,37 @@ function createCartItemElement({
   return li;
 }
 
-window.onload = () => {
-  jsonComputer();
+async function jsonComputer() {
+  const js = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+    .then((response) => response.json());
+     js.results.forEach((element) => {
+       const elementos = document.querySelector('.items');
+      elementos.appendChild(createProductItemElement({ 
+         sku: element.id,
+         name: element.title,
+         image: element.thumbnail }));
+     });
+   }
+
+   function addventListeBotton() {
+    const botton = document.querySelectorAll('.item__add');
+    botton.forEach((valu) => {
+      valu.addEventListener('click', async (event) => {
+        const x = event.target.parentElement.firstChild.innerText;
+        const carrinho = document.querySelector('.cart__items');
+        const produt = await fetch(`https://api.mercadolibre.com/items/${x}`)
+        .then((y) => y.json());
+        carrinho.appendChild(createCartItemElement({
+          sku: produt.id,
+          name: produt.title,
+          salePrice: produt.price,
+        }));
+      });
+    });
+  }
+
+window.onload = async () => {
+  await jsonComputer();
+  await addventListeBotton();
   getSkuFromProductItem();
-  createCartItemElement();
-  cartItemClickListener();
 };
