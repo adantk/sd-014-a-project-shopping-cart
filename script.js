@@ -12,7 +12,6 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -47,12 +46,12 @@ const criaProdutos = () => {
   .then((result) => result.results)
   .then((dados) => {
     const items = document.querySelector('.items');
-    dados.map(({ id: sku, title: title, tumbnail: tumbnail }) => 
-    items.appendChild(createProductItemElement({ sku, title, tumbnail })))
+    dados.map(({ id: sku, title: name, tumbnail: image }) => 
+    items.appendChild(createProductItemElement({ sku, title, tumbnail })));
   })
-  .catch((error) => console.log('erro!', error))
+  .catch((error) => console.log('erro!', error));
 };
 
 window.onload = () => {
   criaProdutos();
-}
+};
