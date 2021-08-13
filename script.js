@@ -1,4 +1,5 @@
-let cartSection; // Declared in the upper scope because script.js is linked to header on HTML => later on it will be fulfilled
+let cartSection;
+// Declared in the upper scope because script.js is linked to header on HTML => later on it will be fulfilled
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -30,15 +31,16 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
+// function cartItemClickListener(event) {
+// }
+// New one created down below
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  // li.addEventListener('click', cartItemClickListener);
+  // New one created down below
   return li;
 }
 
@@ -91,14 +93,16 @@ async function fetchItemID(id) {
 }
 
 function saveToLocalStorage() {
-  localStorage.setItem('cartList', cartSection.innerHTML); // Sets cartSection as the value of the key 'cartList' in the local storage
+  localStorage.setItem('cartList', cartSection.innerHTML);
+  // Sets cartSection as the value of the key 'cartList' in the local storage
 }
 
 function loadLocalStorage() {
   const cartListStorage = localStorage.getItem('cartList');
   // Gets the value of the key 'cartList' from the local storage
 
-  if (cartListStorage) cartSection.innerHTML = cartListStorage; // If the key 'cartList' exists (local storage), sets the value of the key 'cartList' in cartSection HTML
+  if (cartListStorage) cartSection.innerHTML = cartListStorage;
+  // If the key 'cartList' exists (local storage), sets the value of the key 'cartList' in cartSection HTML
 }
 
 function addToCart() {
