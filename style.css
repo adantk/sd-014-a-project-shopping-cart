@@ -55,3 +55,15 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.cart__items li {
+  line-height: 20px;
+  padding: 12px 0;
+}
+
+.loading {
+  color: blue;
+  font-size: 20px;
+  font-family: monospace;
+  margin-left: 33%;
+}

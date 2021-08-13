@@ -35,6 +35,8 @@ const fetchItems = () => {
     data.results.forEach((product) => {
      createProductItemElement(product);
     });
+    const loading = document.querySelector('.loading');
+    loading.remove();
   });
 };
 
@@ -42,7 +44,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText; // retornando o id do produto com base na posição da section passado por parametro
 }
 
-// saving both cart items ante price on local storage
+// saving both cart items and price on local storage
 const saveInLocalStorage = () => {
   localStorage.setItem('saved', ol.innerHTML);
   localStorage.setItem('price', priceText.innerHTML);
@@ -56,7 +58,7 @@ const sumPrices = () => {
   olPrices.forEach((element) => {
     sum += parseFloat(element.innerHTML.split('$')[1]); // separando somente o preço do produto, que fica após o $ e somando a variavel sum
   });
-  priceText.innerHTML = Math.round(sum * 100) / 100; // deixando o número so com duas casas decimais
+  priceText.innerHTML = Math.round(sum * 100) / 100; // deixando o número so com no máximo duas casas decimais
   saveInLocalStorage();
 };
 
