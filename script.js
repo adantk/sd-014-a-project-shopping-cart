@@ -19,6 +19,29 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+function guardaPreco2(price, op) {
+  let total = parseFloat(localStorage.getItem('total'));
+  if (op === 'soma') total += price;
+  if (op === 'sub') total -= price;
+  localStorage.setItem('total', total);
+  //  console.log(lista);
+}
+
+function guardaPreco({ price }, op) {
+  console.log(op);
+  if (localStorage.getItem('total') === null) {
+    localStorage.setItem('total', price);
+  } else {
+    guardaPreco2(price, op);
+  }
+}
+
+function inserePrecoNoDom() {
+  const valor = localStorage.getItem('total');
+  //  console.log(valor);
+  localValor.innerText = valor;
+}
+
 //  https://www.w3schools.com/jsref/jsref_splice.asp
 async function cartItemClickListener(event) {
   // coloque seu código aqui
@@ -53,25 +76,6 @@ function guardaCarrinho({ id }) {
     listaVelha.forEach((item) => lista.push(item));
     lista.push(id);
     localStorage.setItem('carrinho', lista);
-    //  console.log(lista);
-  }
-}
-
-function inserePrecoNoDom() {
-  const valor = localStorage.getItem('total');
-  //  console.log(valor);
-  document.querySelector('#valor').innerText = valor;
-}
-
-function guardaPreco({ price }, op) {
-  //  console.log(price);
-  if (localStorage.getItem('total') === null) {
-    localStorage.setItem('total', price);
-  } else {
-    let total = parseFloat(localStorage.getItem('total'));
-    if (op === 'soma') total += price;
-    if (op === 'sub') total -= price;
-    localStorage.setItem('total', total);
     //  console.log(lista);
   }
 }
