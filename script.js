@@ -29,19 +29,26 @@ function getSkuFromProductItem(item) {
 }
 
 function saveState(id) {
-  localStorage.setItem('savedState', id);
-  console.log(localStorage.getItem('savedState'));
+  ;
 }
 
-const cart = document.querySelector('.cart__items');
 const getIds = () => {
   const x = [];
-  cart.childNodes.forEach((li) => x.push(li.innerText.split('|')[0].split('SKU: ')[1].trim()));
-  saveState(x);
+  document.querySelector('.cart__items').childNodes.forEach((li) => x.push(li.innerText.split('|')[0].split('SKU: ')[1].trim()));
+  localStorage.setItem('savedState', x);
+  TotalPrice();
 };
 
+const TotalPrice = () => {
+  const total = document.querySelector('.total-price');
+  let sum = 0;
+  document.querySelector('.cart__items').childNodes.forEach((li) => sum += Number(li.innerText.split('|')[2].split('PRICE: $')[1].trim()));
+  total.innerHTML = sum;
+  localStorage.setItem('savedTotal', sum);
+}
+
 function cartItemClickListener(event) {
-  cart.removeChild(event.target);
+  document.querySelector('.cart__items').removeChild(event.target);
   getIds();
 }
 
@@ -77,7 +84,7 @@ const setBtn = () => {
           name: result.title,
           salePrice: result.price,
         });
-        cart.appendChild(ret);
+        document.querySelector('.cart__items').appendChild(ret);
         getIds();
       });
     }
@@ -97,6 +104,11 @@ const setItems = () => {
     });
     setBtn();
   });
+  const sec = document.querySelector('.cart');
+  const span = document.createElement('span')
+  sec.appendChild(span)
+  span.className = 'total-price'
+  span.innerHTML = '0'
 };
 
 function loadState() {
@@ -105,14 +117,24 @@ function loadState() {
     const arrayIds = loadItens.split(',');
     arrayIds.forEach((id) => {
       promise(id).then((obj) => {
-        const li = createCartItemElement({ sku: obj.id, name: obj.title, salePrice: obj.price, });
-        cart.appendChild(li);
+        const li = createCartItemElement({ sku: obj.id, name: obj.title, salePrice: obj.price });
+        document.querySelector('.cart__items').appendChild(li);
       });
     });
+    document.querySelector('.total-price').innerHTML = localStorage.getItem('savedTotal');
   }
+}
+
+const clearCart = () => {
+const clear = document.querySelector('.empty-cart');
+ clear.addEventListener('click', () => {
+  document.querySelector('.cart__items').innerHTML = ''
+  TotalPrice()
+ })
 }
 
 window.onload = () => {
   setItems();
+  clearCart()
   loadState();
 };
