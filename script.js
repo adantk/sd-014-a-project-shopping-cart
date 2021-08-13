@@ -98,6 +98,24 @@ const storedItems = () => {
 };
 // ---------------------------
 
+// Requisito 5
+const totalSum = () => {
+  const totalPrices = document.createElement('span');
+  const cartItems = document.querySelectorAll('.cart__item');
+  let sum = 0;
+  if (document.querySelector('.total-price')) {
+    document.querySelector('.total-price').remove();
+  }
+  cartItems.forEach((item) => {
+    const itemPrice = item.innerText.split('$')[1];
+    sum += parseFloat(itemPrice);
+  });
+  totalPrices.className = 'total-price';
+  totalPrices.innerText = `${sum}`;
+  document.querySelector('.cart').appendChild(totalPrices);
+};
+// ---------------------------
+
 window.onload = () => {
   getJson();
  };
