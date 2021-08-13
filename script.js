@@ -116,6 +116,17 @@ const totalSum = () => {
 };
 // ---------------------------
 
+// Requisito 6
+const emptyCart = () => {
+  const cartItems = document.querySelectorAll('.cart__item');
+  cartItems.forEach((item) => item.remove());
+  localStorage.clear();
+  totalSum();
+};
+// ---------------------------
+
 window.onload = () => {
   getJson();
+  document.querySelector('.empty-cart').addEventListener('click', emptyCart);
+  storedItems();
  };
