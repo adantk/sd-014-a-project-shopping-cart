@@ -28,19 +28,6 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// Requisito 3
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
-
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
 // Requisito 1
 const getItems = async () => {
   const query = 'computador';
@@ -61,6 +48,20 @@ const getItems = async () => {
   });
 };
 // Agradeço ao Matheus Martino pela monitoria de revisão do Bloco 9!
+
+// Requisito 3
+function cartItemClickListener(event) {
+  const cartItem = document.querySelector('.cart__item');
+  cartItem.remove(event.target);
+}
+
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
 // Requisito 2
 const addToCart = async () => {
@@ -84,9 +85,7 @@ const addToCart = async () => {
   });
 };
 
-// addToCart();
-
-window.onload = async () => { // async para organizar o tempo entre criar a lista de produtos, adicionar botões e adicionar produtos ao carrinho 
+window.onload = async () => { // async/await para organizar o tempo entre criar a lista de produtos, adicionar botões e adicionar produtos ao carrinho 
   await getItems(); 
   addToCart();
 };
