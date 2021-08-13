@@ -43,10 +43,9 @@ function createCartItemElement({ sku, name, salePrice }) {
 const fetchApi = async () => {
   const produto = 'computador';
   const endpoint = `https://api.mercadolibre.com/sites/MLB/search?q=${produto}`;
-  const mercadoLivre = await fetch(endpoint)
-  .then((response) => response.json().then((prod) => prod));
-
-  return mercadoLivre;
+  const response = await fetch(endpoint);
+  const responseJson = await response.json();
+  return responseJson;
   /* Estudo realizado junto com o Gustavo Dias - forma de explicar direfente de como verificar se a Promise esta tendo o retorno desejado. */
   // if (response.ok) { 
   //   const jsonResponse = await response.json();
@@ -67,15 +66,10 @@ const getProduto = async () => {
       },
       ));
   });
-  console.log(produtos.results);
-
-  // const item = document.querySelector('.items');
-  // console.log(item);
-  //item.appendChild(createProductItemElement({ sku, name, image }));
+  // console.log(produtos.results);
 };
-
-getProduto();
 
 window.onload = () => { 
   fetchApi();
+  getProduto();
 };
