@@ -47,7 +47,7 @@ const criaProdutos = () => {
   .then((dados) => {
     const items = document.querySelector('.items');
     dados.map(({ id: sku, title: name, tumbnail: image }) => 
-    items.appendChild(createProductItemElement({ sku, title, tumbnail })));
+    items.appendChild(createProductItemElement({ sku, name, image })));
   })
   .catch((error) => console.log('erro!', error));
 };
