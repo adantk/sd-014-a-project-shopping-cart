@@ -51,14 +51,21 @@ const fetchtList = async (search) => {
 
 const splashList = async (anItem) => {
   const toElement = createProductItemElement({ sku: anItem[0].id, name: anItem[0].title, image: anItem[0].thumbnail });
-  // itemsClass.appendChild({sku: listing.id, name: listing.title, image: listing.thumbnail})
-  // window.alert(anItem[0].title);
-  itemsClass.appendChild(toElement);
+  itemsClass.appendChild(toElement);  
+  // I can get the first object fine,but when I pass that through the forEach... it just fucking dies
   anItem.forEach((listing) => {
     // window.alert(listing.title)
+    // i can even see that the parameters and all are correct with that ^^^
     const newitem = createProductImageElement({ sku: listing.id, name: listing.title, image: listing.thumbnail })
     itemsClass.appendChild(newitem)
   });
+
+  // for (key of anItem) {
+  //   const newitem = createProductImageElement({ sku: key.id, name: key.title, image: key.thumbnail })
+  //   itemsClass.appendChild(newitem)
+  // }
+  // not even this works ^
+  
 }
 
 window.onload = async () => {
