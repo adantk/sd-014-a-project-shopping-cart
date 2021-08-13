@@ -81,6 +81,12 @@ const addToCartButton = () => {
     }));
 };
 // ---------------------------
+// Requisito 3
+function cartItemClickListener(event) {
+  event.target.remove();
+  totalSum();
+}
+// ---------------------------
 
 window.onload = () => {
   getJson();
