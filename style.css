@@ -86,18 +86,18 @@
   border-top: 4px solid #3483fa;
   -webkit-box-shadow: 2px 6px 15px 5px rgba(0, 0, 0, 0.1);
           box-shadow: 2px 6px 15px 5px rgba(0, 0, 0, 0.1);
-  font-weight: 800;
-  font-size: 12px;
   cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
   margin: 0;
   padding: 10px;
-  width: 100%;
   -webkit-transition: 0.2s ease-in-out;
   transition: 0.2s ease-in-out;
+  width: 100%;
 }
 
 .item .item__add:hover {
-  background: linear-gradient(67deg, #3483fa 52%, #5c9dff 100%);
+  background: linear-gradient(136deg, #3483fa 52%, #9b5cff 100%);
   border: 1.5px solid #3483fa;
   border-top: 4px solid #3483fa;
   color: #dddddd;
