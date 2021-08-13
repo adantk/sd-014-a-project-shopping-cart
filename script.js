@@ -1,3 +1,9 @@
+let subTotal = 0;
+function updateSubTotal(price) {
+  subTotal += price;
+  return subTotal;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -32,14 +38,23 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {}
+function cartItemClickListener(event) {
+  if (event.target.className === 'cart__item') {
+    // const id = getSkuFromProductItem(event.target.parentElement);
+    // fetch(`https://api.mercadolibre.com/items/${id}`)
+    //   .then((response) => response.json()).then((dados) => {
+    //     updateSubTotal(-dados.price);
+    //     console.log(subTotal);
+    //   });
+      event.target.parentElement.removeChild(event.target);
+  }
+}
 
 function createCartItemElement({
   sku,
   name,
   salePrice,
 }) {
-  console.log('botao ok');
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -59,12 +74,6 @@ function pageLoad() { // Carrega a página inicial com a pesquisa por computador
         document.querySelector('.items').appendChild(createProductItemElement(produto));
       });
     }));
-}
-let subTotal = 0;
-
-function updateSubTotal(price) {
-  subTotal += price;
-  return subTotal;
 }
 
 function addToCart(event) {
@@ -87,4 +96,5 @@ function addToCart(event) {
 window.onload = () => {
   pageLoad();
   document.body.addEventListener('click', addToCart);
+  document.body.addEventListener('click', cartItemClickListener);
 };
