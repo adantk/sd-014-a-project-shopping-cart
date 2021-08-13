@@ -61,35 +61,30 @@ function pageLoad() { // Carrega a página inicial com a pesquisa por computador
     }));
 }
 let subTotal = 0;
+
 function updateSubTotal(price) {
   subTotal += price;
-  return subTotal;  
+  return subTotal;
 }
 
-function createCart(id) {
-  fetch(`https://api.mercadolibre.com/items/${id}`)
-    .then((response) => response.json()).then((dados) => {
-      const produto = {
-        sku: id,
-        name: dados.title,
-        salePrice: dados.price,
-      };
-      document.querySelector('.cart__items').appendChild(createCartItemElement(produto));
-      updateSubTotal(produto.salePrice);
-      console.log(subTotal);
-    });
+function addToCart(event) {
+  if (event.target.className === 'item__add') {
+    const id = getSkuFromProductItem(event.target.parentElement);
+    fetch(`https://api.mercadolibre.com/items/${id}`)
+      .then((response) => response.json()).then((dados) => {
+        const produto = {
+          sku: id,
+          name: dados.title,
+          salePrice: dados.price,
+        };
+        document.querySelector('.cart__items').appendChild(createCartItemElement(produto));
+        updateSubTotal(produto.salePrice);
+        console.log(subTotal);
+      });
+  }
 }
-
-const btnAddCart = document.querySelectorAll('.item__add');
-// console.log(btnAddCart);
-btnAddCart.forEach((btn) => btn.addEventListener('click', () => {
-  const id = getSkuFromProductItem(Event.target);
-  console.log(id);
-  // fetch(`https://api.mercadolibre.com/items/${id}`);
-}));
 
 window.onload = () => {
   pageLoad();
-  createCart('MLB1341706310');
-  createCart('MLB1341706310');
+  document.body.addEventListener('click', addToCart);
 };
