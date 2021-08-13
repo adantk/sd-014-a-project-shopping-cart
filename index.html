@@ -1,27 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Document</title>
+  <title>Anna Hamann's $hopping Cart</title>
+  <link rel="stylesheet" href="libs/bs.css" />
+  <script src="https://kit.fontawesome.com/235e48eb65.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
+  <header class="ah-header-ml">
+    <div class="ah-center goflex" style="margin-top: 10px;">
+      <div class="ah-logo-ml go25"><img src="libs/img/ml-logo.png" alt="" class="ah-ml-img-logo"></div>
+      <div class="gocol go70">
+        <div class="ah-input-cont"><input class="go70w go100" style="width: 60%;" type="text"
+            placeholder="Buscar produtos, marcas e muito mais."><span class="ah-display-none"><input class="mx-1"
+              type="checkbox" name="check-computer" checked><label for="check-computer" class="go15">Somente em
+              Computador</label><i class="fas fa-search mx-2"></i></span>
+        </div>
+      </div>
+      <div class="ah-lat-ml ms-3 go35 ah-display-none"><img style="width: 100%; max-width: 340px;"
+          src="https://http2.mlstatic.com/D_NQ_762047-MLA47065674453_082021-OO.webp" alt="">
+      </div>
+    </div>
+    <div class="ah-center goflex gorow ah-display-none">
+      <div><i class="fas fa-map-marker-alt me-2" style="font-size: 2em;"></i></div>
+      <div class="go15 me-3 ah-loc-ml">Enviar para Anna
+        <p style="color: rgb(32, 32, 32);">Taubaté-SP</p>
+      </div>
+      <nav class="ah-header-ml-ul ms-3 justify-content-start ah-display-none">
+        <ul class=" justify-content-start">
+          <li><a href="https://www.mercadolivre.com.br/categorias#nav-header">Categorias</a></li>
+          <li><a href="https://www.mercadolivre.com.br/ofertas#nav-header">Ofertas do dia</a></li>
+          <li><a href="https://www.mercadolivre.com.br/gz/home/navigation#nav-header">Histórico</a></li>
+          <li><a href="https://www.mercadolivre.com.br/ofertas/supermercado#nav-header">Supermercado</a></li>
+          <li><a href="https://www.mercadolivre.com.br/c/calcados-roupas-e-bolsas#nav-header">Moda</a></li>
+          <li><a href="https://www.mercadolivre.com.br/anuncie#nav-header">Vender</a></li>
+          <li><a href="https://www.mercadolivre.com.br/ajuda#nav-header">Contato</a></li>
+          <li style='width: 200px;'> </li>
+          <li><a href="https://myaccount.mercadolivre.com.br/summary"><i class="far fa-user-circle me-2"></i></a></li>
+          <li><a href="https://myaccount.mercadolivre.com.br/purchases/list#nav-header">Compras</a></li>
+          <li><a href="https://myaccount.mercadolivre.com.br/bookmarks/list#nav-header">Favoritos</a></li>
+          <li><a href="https://www.mercadolivre.com.br/gz/notifications/center#nav-header"><i
+                class="far fa-bell"></i></a></li>
+          <li><a href="https://www.mercadolivre.com.br/gz/cart"><i class="fas fa-shopping-cart"></i></a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="ah-center goflex gorow justify-content-start mt-2 ah-vertical ah-display-start-none">
+      <div><i class="fas fa-map-marker-alt me-2" style="font-size: 2em;"></i></div>Enviar para Taubaté-SP
+    </div>
+  </header>
   <section class="container">
     <p class="loading" id="loading"></p>
     <section class="items"></section>
     <section class="cart">
       <span class="cart__title">Carrinho de compras</span>
-      <button class="empty-cart" id="empty-cart">Esvaziar carrinho</button>
+      <p style="text-align: center;"><button class="empty-cart" id="empty-cart"><i
+            class="fas fa-trash me-3"></i>Esvaziar carrinho</button></p>
       <ol class="cart__items"></ol>
-      <p>Total da sua compra: R$ <span class="total-price" id="total-price"></span></p>
+      <p style="text-align: center;">Total da sua compra: <strong>R$ <span class="total-price"
+            id="total-price"></span></strong></p>
     </section>
   </section>
+  <footer class="ah-footer-ml">
+    <div class="ah-footer-dropup"><button>Mais Informações <i class="fas fa-chevron-up"></i></button></div>
+    <div class="ah-footer-w-bottom">
+      <div class="ah-center">
+        <nav class="ah-footer-ml-w">
+          <ul>
+            <li><a
+                href="https://careers-meli.mercadolibre.com/pt?utm_campaign=site-mlb&utm_source=mercadolibre&utm_medium=mercadolibre">Trabalhe
+                conosco</a>
+            </li>
+            <li><a href="https://www.mercadolivre.com.br/ajuda/Termos-e-condicoes-gerais-de-uso_1409">Termos e
+                condições</a>
+            </li>
+            <li><a href="https://www.mercadolivre.com.br/privacidade">Como cuidamos da sua privacidade</a></li>
+            <li><a href="https://www.mercadolivre.com.br/ajuda">Contato</a></li>
+          </ul>
+          <div class="ah-footer-ml-sub">
+            <p>Copyright © 1999-2021 FakeML.com.br LTDA.<br>
+              CNPJ n.º 00.000.000/0000-00 / Av. das Nações Unidas, nº 3.003, Bonfim, Osasco/SP - CEP 06233-903 -empresa do grupo Fake Livre.</p>
+            <p class="mt-3 important-note"><strong>ESSE É UM PROJETO FICTÍCIO DESENVOLVIDO PARA FINS DE ESTUDO E NÃO TEM NENHUMA RELAÇÃO COM O SITE
+                OFICIAL</strong></p>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </footer>
   <script src="script.js"></script>
-
 </body>
 
 </html>

@@ -101,6 +101,7 @@ const addToCartButtons = () => {
 
 document.getElementById('empty-cart').addEventListener('click', () => {
   myCart.innerText = '';
+  document.getElementById('total-price').innerText = 0;
   localStorage.clear();
 });
 
