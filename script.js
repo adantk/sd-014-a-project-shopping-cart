@@ -29,7 +29,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // event.target.remove();
+  event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -69,7 +69,7 @@ const cartItem = async () => {
       const itens = { 
         sku: response.id,
         name: response.title,
-        salePrice: response.salePrice };
+        salePrice: response.price };
       carrinho.appendChild(createCartItemElement(itens));
     });
   });
