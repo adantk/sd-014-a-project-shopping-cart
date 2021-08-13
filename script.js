@@ -10,6 +10,18 @@ const getPriceForElement = (elementsCart) => { // essa função extra o price do
   return priceTotalNumber;
 };
 
+const renderLoanding = (startOrStop, elementAppend) => {
+  if (startOrStop === 'start') {
+  const newElemento = document.createElement('h2');
+  newElemento.innerText = 'Carregando...';
+  newElemento.classList.add('loading');
+  elementAppend.appendChild(newElemento);
+  } else { 
+    const elementLoading = document.querySelector('.loading');
+    elementAppend.removeChild(elementLoading);
+  }
+};
+
 const updateCartStorage = (elementForAddCart) => { 
   const elementoPriceTotal = document.querySelectorAll('.total-price');
   localStorage.setItem('olCart', elementForAddCart.innerHTML);
@@ -95,10 +107,12 @@ async function FilterFetch(url, chave) { // filtra saida do fetch em json por ch
 }
 
 async function requestionApiMl(valorBusca) {
+  const elementItems = document.querySelector('.items');
+  renderLoanding('start', elementItems);
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=$${valorBusca}`;
   const ItensResults = await FilterFetch(url, 'results'); // array com todos resultados de acordo com valorBusca 
+  renderLoanding('stop', elementItems);
   ItensResults.forEach((item) => {
-    const elementItems = document.querySelector('.items');
     const {
       id,
       title: nameItem,
