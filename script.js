@@ -30,8 +30,11 @@ function createProductItemElement({ sku, name, image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+// Requisito 3
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  const cart = document.querySelector('.cart__items');
+  cart.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
