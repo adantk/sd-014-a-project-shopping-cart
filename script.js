@@ -12,15 +12,22 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function elementLi() {
+  return document.querySelectorAll('.cart__item');
+}
+
+function elementOl() {
+  return document.querySelector('.cart__items');
+}
+
 // req 5
 function totalPrice() { 
   if (document.querySelector('.total-price')) {
     document.querySelector('.total-price').remove();
   }
-  const prices = createCustomElement('div', 'total-price', 'Preço Total:');
-  const li = document.querySelectorAll('.cart__item');
-  let sum = 0;
-  li.forEach((item) => {
+  const prices = createCustomElement('div', 'total-price', ' ');
+    let sum = 0;
+    elementLi().forEach((item) => {
     sum += parseFloat(item.id);
     prices.innerHTML = sum;
   });
@@ -39,17 +46,16 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
+/* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
+} */
 
 // req 3 deleta itens individuais no carrinho;
 function cartItemClickListener(event) {
 event.target.remove();
 
 // salva lista depois de remover itens desejados;
-const ol = document.querySelector('.cart__items');
-localStorage.setItem('cartItems', ol.innerHTML);
+localStorage.setItem('cartItems', elementOl().innerHTML);
 
 totalPrice();
 }
@@ -92,13 +98,12 @@ const itemAdd = () => {
     const resp = await fetch(`https://api.mercadolibre.com/items/${id}`)
     .then((response) => response.json());
 
-    const ol = document.querySelector('.cart__items');
-    ol.appendChild(
+    elementOl().appendChild(
       createCartItemElement({ sku: resp.id, name: resp.title, salePrice: resp.price }),
       );
 
       // salva lista de itens no localStorage (req 4);
-      localStorage.setItem('cartItems', ol.innerHTML);
+      localStorage.setItem('cartItems', elementOl().innerHTML);
       totalPrice();
   }));
 };
@@ -110,8 +115,7 @@ const saveCartItems = () => {
   ol.innerHTML = savedItems;
 
   // necessário criar um li para que possa remover os itens salvos ao clicar na lista;
-  const li = document.querySelectorAll('.cart__item');
-  li.forEach((item) => {
+  elementLi().forEach((item) => {
     item.addEventListener('click', cartItemClickListener);
   });
 };
@@ -123,7 +127,7 @@ const emptyCart = () => {
   button.addEventListener('click', () => {
     localStorage.clear();
     // remove lista impressa na tela;
-    document.querySelectorAll('.cart__item').forEach((item) => item.remove());
+    elementLi().forEach((item) => item.remove());
     totalPrice();
   });
 };
@@ -131,6 +135,8 @@ const emptyCart = () => {
 window.onload = async () => {
 await fetchComputer('computer');
 await itemAdd();
+await elementLi();
+await elementOl();
 await saveCartItems();
 await totalPrice();
 await emptyCart();
