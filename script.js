@@ -2,6 +2,30 @@ const updateCartStorage = (elementForAdd) => {
   localStorage.setItem('olCart', elementForAdd.innerHTML);
 };
 
+
+const getPriceForElement = (elementsCart) => { // essa função extra o price do item acessando por elementoHtml
+  let priceTotalNumber = 0;
+  elementsCart.forEach(element => { 
+    const elementValue = element.innerText;
+    const elementsItensCart = elementValue.split(' ');// quebra a string removendo os espaços 
+    const priceElement = elementsItensCart[elementsItensCart.length-1].split('$')[1];// acessa ultima posição do array e remove o cifrao.
+    const priceNumber = parseFloat(priceElement);
+    priceTotalNumber += priceNumber;
+  })
+  return priceTotalNumber.toFixed(2);
+}
+
+const updatePriceTotal = (addOrClear) => { 
+  const elementoPriceTotal = document.querySelector('.total-price');
+  const elementsLiCart = document.querySelectorAll('.cart__item');
+  if (addOrClear === undefined){
+    elementoPriceTotal.innerText = `preço total: R$0`
+  } else {
+   console.log(getPriceForElement(elementsLiCart));
+    elementoPriceTotal.innerText = `preço total: R$${getPriceForElement(elementsLiCart)}`;
+  }
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -31,6 +55,7 @@ async function fetchItemBySku(sku) { //
   const responseJson = await response.json();
   const elementOlCart = document.querySelector('.cart__items');
   elementOlCart.appendChild(createCartItemElement(responseJson, elementOlCart));
+  updatePriceTotal ('add');
   updateCartStorage(elementOlCart);
 }
 
@@ -91,6 +116,7 @@ function renderClearCartStorage(keyStorage) { // essa função se nao for passad
       updateCartStorage(elementOlCart);
       });
   });
+  updatePriceTotal();
   updateCartStorage(elementOlCart);
 }
 
