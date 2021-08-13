@@ -1,5 +1,3 @@
-const cart = document.getElementsByClassName('cart__items');
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,12 +27,13 @@ function createProductItemElement({ sku, name, image }) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
+const cart = document.getElementsByClassName('cart__items');
 
 const TotalPrice = () => {
   const total = document.querySelector('.total-price');
   let sum = 0;
   cart[0].childNodes.forEach((li) => {
-    sum += Number(li.innerText.split('|')[2].split('PRICE: $')[1].trim())
+    sum += Number(li.innerText.split('|')[2].split('PRICE: $')[1].trim());
   });
   total.innerHTML = sum;
   localStorage.setItem('savedTotal', sum);
