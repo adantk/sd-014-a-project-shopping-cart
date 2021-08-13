@@ -7,7 +7,7 @@ const getPriceForElement = (elementsCart) => { // essa função extra o price do
     const priceNumber = parseFloat(priceElement);
     priceTotalNumber += priceNumber;
   })
-  return priceTotalNumber.toFixed(2);
+  return priceTotalNumber;
 }
 
 const updateCartStorage = (elementForAddCart) => { 
@@ -20,12 +20,11 @@ const updatePriceTotalCart = (addOrClear) => {
   const elementoPriceTotal = document.querySelector('.total-price');
   const elementsLiCart = document.querySelectorAll('.cart__item');
   if (addOrClear === undefined){
-    elementoPriceTotal.innerText = `preço total: R$0`;
+    elementoPriceTotal.innerText = `0`;
   } else if (typeof addOrClear === 'number') { 
-    elementoPriceTotal.innerText `preço total: R${addOrClear}`;
+    elementoPriceTotal.innerText `${addOrClear}`;
   } else {
-   console.log(getPriceForElement(elementsLiCart));
-    elementoPriceTotal.innerText = `preço total: R$${getPriceForElement(elementsLiCart)}`;
+    elementoPriceTotal.innerText = `${getPriceForElement(elementsLiCart)}`;
   }
 }
 
