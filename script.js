@@ -14,26 +14,8 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
+function cartItemClickListener(event) {  
 
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(
-    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'),
-  );
-
-  return section;
-}
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  // coloque seu código aqui
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -44,15 +26,44 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// Função assíncrona para trazer o array de produtos.
-// Primeiramente faço um fetch usando um endpoint,
-// depois faço o tratamento da promise, transformando-a
-// em um JSON. Por fim, retorno o array de produtos.
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+const action = async (e) => {
+  const id = getSkuFromProductItem(e.target.parentNode);
+  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const request = await response.json();
+  const { id: sku, title: name, price: salePrice } = request;
+  document.querySelector('.cart__items')
+    .appendChild(createCartItemElement({ sku, name, salePrice }));
+};
+
+function createProductItemElement({ sku, name, image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  const addBtn = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  addBtn.addEventListener('click', action);
+  section.appendChild(addBtn);
+
+  return section;
+}
+
+/**
+ * Função assíncrona para trazer o array de produtos.
+ * Primeiramente faço um fetch usando um endpoint,
+ * depois faço o tratamento da promise, transformando-a
+ * em um JSON.
+ * @returns array
+ */
 const fetchProducts = async () => {
   const request = await fetch(endpoint);
   const response = await request.json();
   const arrOfProducts = response.results;
-
   return arrOfProducts;
 };
 
@@ -67,12 +78,13 @@ const createProducts = (product) => {
   document.querySelector('.items').appendChild(createProductItemElement({ sku, name, image }));
 };
 
-const addProducts = async () => {
-  const arrOfProducts = await fetchProducts();
-  arrOfProducts.forEach(createProducts);
-};
-
 window.onload = () => {
-  fetchProducts();
+  /**
+ * Promise que adiciona os produtos na tela.
+ */
+  const addProducts = async () => {
+    const arrOfProducts = await fetchProducts();
+    arrOfProducts.forEach(createProducts);
+  };
   addProducts();
 };
