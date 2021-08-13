@@ -12,6 +12,21 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// req 5
+function totalPrice() { 
+  if (document.querySelector('.total-price')) {
+    document.querySelector('.total-price').remove();
+  }
+  const prices = createCustomElement('div', 'total-price', 'Preço Total:');
+  const li = document.querySelectorAll('.cart__item');
+  let sum = 0;
+  li.forEach((item) => {
+    sum += parseFloat(item.id);
+    prices.innerHTML = sum;
+  });
+  document.querySelector('.cart').appendChild(prices);
+}
+
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -35,10 +50,13 @@ event.target.remove();
 // salva lista depois de remover itens desejados;
 const ol = document.querySelector('.cart__items');
 localStorage.setItem('cartItems', ol.innerHTML);
+
+totalPrice();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
+  li.id = salePrice;
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
@@ -46,6 +64,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 // req 1 - cria fetch com produtos de computadores e adiciona estes produtos na tela pela função createProductItemElement;
+// requisito 7 - mensagem de loading antes da api aparecer e é removida depois que a API aparece;
 async function fetchComputer(query) {
   const loading = createCustomElement('h1', 'loading', 'loading...');
   document.body.appendChild(loading);
@@ -74,12 +93,13 @@ const itemAdd = () => {
     .then((response) => response.json());
 
     const ol = document.querySelector('.cart__items');
-
     ol.appendChild(
       createCartItemElement({ sku: resp.id, name: resp.title, salePrice: resp.price }),
       );
 
+      // salva lista de itens no localStorage (req 4);
       localStorage.setItem('cartItems', ol.innerHTML);
+      totalPrice();
   }));
 };
 
@@ -104,6 +124,7 @@ const emptyCart = () => {
     localStorage.clear();
     // remove lista impressa na tela;
     document.querySelectorAll('.cart__item').forEach((item) => item.remove());
+    totalPrice();
   });
 };
 
@@ -111,5 +132,6 @@ window.onload = async () => {
 await fetchComputer('computer');
 await itemAdd();
 await saveCartItems();
+await totalPrice();
 await emptyCart();
 };
