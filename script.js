@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -42,14 +40,18 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { 
-  const getProduct = (product) => {
-    fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`)
-    .then((response) => response.json())
-    .then((result) => console.log(result))
-    .then((result) => createProductItemElement(result))
-    .then((child) => document.querySelector('.items').appendChild(child));
-  };
+const getProduct = () => {
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computer')
+  .then((response) => response.json())
+  .then((result) => result.results)
+  .then((data) => {
+    const items = document.querySelector('.items');
+    data.map(({ id: sku, title: name, thumbnail: image }) => 
+    items.appendChild(createProductItemElement({ sku, name, image })));
+  })
+  .catch((error) => console.log('erro!', error));
+};
 
-  getProduct('computer');
+window.onload = () => { 
+  getProduct();
 };
