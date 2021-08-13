@@ -99,6 +99,14 @@ function pullFromLocalStorage() {
   priceWrap.innerText = localStorage.getItem('price') || '';
 }
 
+function emptyCartButtonListener() {
+  const emptyButton = document.querySelector('.empty-cart');
+  emptyButton.addEventListener('click', () => {
+    cart.innerHTML = '';
+    priceWrap.innerHTML = '';
+  });
+}
+
 window.onload = async () => {
   const { results } = await fetchData(baseUrl);
   
@@ -114,4 +122,5 @@ window.onload = async () => {
   });
 
   addCartButtonListener();
+  emptyCartButtonListener();
 };
