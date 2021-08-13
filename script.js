@@ -1,18 +1,5 @@
 const myCart = document.querySelector('.cart__items');
 
-const saveMyCart = () => {
-  localStorage.clear();
-  localStorage.setItem('myCartListStorage', myCart.innerHTML);
-};
-
-const loadMyCart = () => {
-  myCart.innerHTML = localStorage.getItem('myCartListStorage');
-  const cartContent = document.querySelectorAll('.cart__item');
-  cartContent.forEach((item) => {
-    item.addEventListener('click', cartItemClickListener);
-  });
-};
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -37,8 +24,23 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+const saveMyCart = () => {
+  localStorage.clear();
+  localStorage.setItem('myCartListStorage', myCart.innerHTML);
+};
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
+}
+
+function sumPrices() {
+  const cartItem = document.querySelectorAll('.list-ml');
+  let totalSum = 0;
+  cartItem.forEach((item) => {
+    const myPrice = (item.innerText).split('$')[1];
+    totalSum += parseFloat(myPrice);
+  });
+  document.getElementById('total-price').innerText = totalSum;
 }
 
 function cartItemClickListener(event) {
@@ -47,10 +49,18 @@ function cartItemClickListener(event) {
   sumPrices();
 }
 
+const loadMyCart = () => {
+  myCart.innerHTML = localStorage.getItem('myCartListStorage');
+  const cartContent = document.querySelectorAll('.cart__item');
+  cartContent.forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
+};
+
 const addMySearch = (resultados) => {
   const myContainer = document.querySelector('.items');
   resultados.forEach((item) => myContainer.appendChild(createProductItemElement(item)));
-}
+};
 
 const getMercadoList = async (query) => {
   const myLoadingEvent = document.getElementById('loading');
@@ -59,27 +69,7 @@ const getMercadoList = async (query) => {
   const myInfo = await myEndPoint.json();
   myLoadingEvent.remove();
   addMySearch(myInfo.results);
-}
-
-const addToMyCart = (product) => {
-  document.querySelector('.cart__items').appendChild(createCartItemElement(product));
-  saveMyCart();
-  sumPrices();
-}
-
-const getMercadoItem = async ({ target }) => {
-  const myItemID = getSkuFromProductItem(target.parentNode);
-  const myResponse = await fetch(`https://api.mercadolibre.com/items/${myItemID}`);
-  const myInfo = await myResponse.json();
-  addToMyCart(myInfo);
-}
-
-const addToCartButtons = () => {
-  const myButtons = document.querySelectorAll('.item__add');
-  myButtons.forEach((btAdd) => {
-    btAdd.addEventListener('click', getMercadoItem);
-  });
-}
+};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -89,15 +79,25 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-function sumPrices () {
-  const cartItem = document.querySelectorAll('.list-ml');
-  let totalSum = 0;
-  cartItem.forEach((item) => {
-    const myPrice = (item.innerText).split('$')[1];
-    totalSum += parseFloat(myPrice);
-    })
-  document.getElementById('total-price').innerText = totalSum;
-}
+const addToMyCart = (product) => {
+  document.querySelector('.cart__items').appendChild(createCartItemElement(product));
+  saveMyCart();
+  sumPrices();
+};
+
+const getMercadoItem = async ({ target }) => {
+  const myItemID = getSkuFromProductItem(target.parentNode);
+  const myResponse = await fetch(`https://api.mercadolibre.com/items/${myItemID}`);
+  const myInfo = await myResponse.json();
+  addToMyCart(myInfo);
+};
+
+const addToCartButtons = () => {
+  const myButtons = document.querySelectorAll('.item__add');
+  myButtons.forEach((btAdd) => {
+    btAdd.addEventListener('click', getMercadoItem);
+  });
+};
 
 document.getElementById('empty-cart').addEventListener('click', () => {
   myCart.innerText = '';
@@ -105,11 +105,8 @@ document.getElementById('empty-cart').addEventListener('click', () => {
 });
 
 window.onload = async () => {
-
-  await getMercadoList('computador')
-  .then(loadMyCart())
-  .then(sumPrices());
+  await getMercadoList('computador');
+  loadMyCart();
+  sumPrices();
   addToCartButtons();
-
 };
-
