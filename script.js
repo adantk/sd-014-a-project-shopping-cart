@@ -1,4 +1,4 @@
-const itemsClass = document.querySelector('.items')
+const itemsClass = document.querySelector('.items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -42,33 +42,29 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const fetchtList = async (search) => {
-  await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
-    .then((response) => response.json())
-    .then((rlist) => splashList(rlist.results))
-   .catch((oops) => window.alert(`oops: ${oops}`));
-}
-
 const splashList = async (anItem) => {
-  const toElement = createProductItemElement({ sku: anItem[0].id, name: anItem[0].title, image: anItem[0].thumbnail });
-  itemsClass.appendChild(toElement);  
-  // I can get the first object fine,but when I pass that through the forEach... it just fucking dies
-  anItem.forEach((listing) => {
+  // const toElement = createProductItemElement({ sku: anItem[0].id, name: anItem[0].title, image: anItem[0].thumbnail });
+  // itemsClass.appendChild(toElement);
+
+  anItem.forEach((it) => {
     // window.alert(listing.title)
-    // i can even see that the parameters and all are correct with that ^^^
-    const newitem = createProductImageElement({ sku: listing.id, name: listing.title, image: listing.thumbnail })
-    itemsClass.appendChild(newitem)
+    const newitem = createProductItemElement({ sku: it.id, name: it.title, image: it.thumbnail });
+    itemsClass.appendChild(newitem);
   });
 
   // for (key of anItem) {
   //   const newitem = createProductImageElement({ sku: key.id, name: key.title, image: key.thumbnail })
   //   itemsClass.appendChild(newitem)
   // }
-  // not even this works ^
-  
-}
+};
 
-window.onload = async () => {
-  await fetchtList('computador');
+const fetchtList = async (search) => {
+  await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
+    .then((response) => response.json())
+    .then((rlist) => splashList(rlist.results))
+    .catch((oops) => window.alert(`oops: ${oops}`));
+};
 
+window.onload = () => {
+  fetchtList('computador');
 };
