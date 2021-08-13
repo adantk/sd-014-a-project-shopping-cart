@@ -40,10 +40,6 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 function cartItemClickListener(event) {
   const negativePrice = event.target.innerText.split(' $')[1] * -1;
   event.target.remove();
@@ -57,6 +53,14 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+}
+
+function changeDisplay() {
+  const loading = document.querySelector('.loading');
+  const content = document.querySelector('.container');
+
+  loading.remove();
+  content.style.display = 'flex';
 }
 
 async function fetchData(url) {
@@ -109,7 +113,7 @@ function emptyCartButtonListener() {
 
 window.onload = async () => {
   const { results } = await fetchData(baseUrl);
-  
+
   pullFromLocalStorage();
 
   await results.forEach((element) => {
@@ -121,6 +125,7 @@ window.onload = async () => {
     appendItem(createProductItemElement(infos), '.items');
   });
 
+  changeDisplay();
   addCartButtonListener();
   emptyCartButtonListener();
 };
