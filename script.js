@@ -33,7 +33,9 @@ function getSkuFromProductItem(item) {
 const TotalPrice = () => {
   const total = document.querySelector('.total-price');
   let sum = 0;
-  cart[0].childNodes.forEach((li) => {sum += Number(li.innerText.split('|')[2].split('PRICE: $')[1].trim())});
+  cart[0].childNodes.forEach((li) => {
+    sum += Number(li.innerText.split('|')[2].split('PRICE: $')[1].trim())
+  });
   total.innerHTML = sum;
   localStorage.setItem('savedTotal', sum);
 };
