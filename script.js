@@ -1,3 +1,7 @@
+let itemSection;
+let pricePlace;
+let cartItem;
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -16,9 +20,20 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito 5 - Calcula o preço
+const totalPrice = {
+  sum: (price) => {
+    pricePlace.innerText = Math.round((Number(pricePlace.innerText) + price) * 100) / 100;
+  },
+  sub: (price) => {
+    pricePlace.innerText = Math.round((Number(pricePlace.innerText) - price) * 100) / 100;
+  },
+};
+
 // Requisito 3 - Remove o item clicado no carrinho
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  totalPrice.sub(Number(event.target.price));
   localStorage.removeItem(event.target.id);
   event.target.remove();
 }
@@ -27,8 +42,10 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.id = sku;
+  li.price = salePrice;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  totalPrice.sum(salePrice);
   return li;
 }
 
@@ -38,7 +55,7 @@ async function productClickListener(event) {
   const id = getSkuFromProductItem(event.target.parentElement);
   const resRaw = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const resJson = await resRaw.json();
-  document.querySelector('.cart__items').appendChild(createCartItemElement(resJson));
+  cartItem.appendChild(createCartItemElement(resJson));
   localStorage.setItem(id, id);
 }
 
@@ -60,7 +77,7 @@ async function search(ele) {
   const fetchRaw = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${ele}`);
   const dataJson = await fetchRaw.json();
   dataJson.results.forEach((product) => {
-    document.querySelector('.items').appendChild(createProductItemElement(product));
+    itemSection.appendChild(createProductItemElement(product));
   });
 }
 
@@ -76,6 +93,9 @@ function loadStorage() {
 }
 
 window.onload = () => {
+  itemSection = document.querySelector('.items');
+  pricePlace = document.querySelector('.total-price');
+  cartItem = document.querySelector('.cart__items');
   search('computador');
   loadStorage();
 };
