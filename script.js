@@ -60,16 +60,16 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 const getApi = () => new Promise((resolve, reject) => {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-    .then((obj) => obj.json()).then((res) => {
-      items[0].removeChild(span)
-      resolve(res.results)
-    })
-    .catch((error) => reject(error));
-  const span = document.createElement('span')
+  const span = document.createElement('span');
   span.innerHTML = 'loading...';
   span.className = 'loading';
   items[0].appendChild(span);
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+    .then((obj) => obj.json()).then((res) => {
+      items[0].removeChild(span);
+      resolve(res.results);
+    })
+    .catch((error) => reject(error));
 });
 
 const promise = (id) => new Promise((resolve) => {
@@ -109,7 +109,7 @@ const setItems = () => {
     setBtn();
   });
   const span = document.createElement('span');
-  cart[0].appendChild(span);
+  document.querySelector('.cart').appendChild(span);
   span.className = 'total-price';
   span.innerHTML = '0';
 };
