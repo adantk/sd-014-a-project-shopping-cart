@@ -1,17 +1,18 @@
 const QUERY = 'computador';
 const cart = document.querySelector('.cart__items');
-
+const emptyCart = document.querySelector('.empty-cart');
 const saveCart = () => {
   localStorage.setItem('cartContentList', (cart.innerHTML));
 };
 
-// function cartItemClickListener(event) {
-//  ('selected').includes(event.target.className) ? event.target.addClass('selected') : event.target.removeClass('selected');
-// }
+function cartItemClickListener(event) {
+  event.target.remove();
+}
+
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -41,6 +42,11 @@ function createProductItemElement({ id: sku, title: name, thumb: image }) {
 
   return section;
 }
+
+emptyCart.addEventListener('click', () => {  
+  cart.innerHTML = null;
+  saveCart();
+});
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
@@ -76,5 +82,7 @@ async function getApi() {
 window.onload = () => {
   getApi();
   const cartSaver = (localStorage.getItem('cartContentList'));
-  cart.innerHTML = cartSaver;
+  (cart.innerHTML = cartSaver);
+  const cartItem = cart.querySelectorAll('.cart__item');
+  cartItem.forEach((item) => item.addEventListener('click', cartItemClickListener));
 };
