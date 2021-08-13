@@ -1,3 +1,5 @@
+const url = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -32,25 +34,23 @@ function createProductItemElement({
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+function cartItemClickListener() {
+  // coloque seu código aqui event
+}
 
-// function createCartItemElement({
-//   sku,
-//   name,
-//   salePrice,
-// }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement({
+  sku,
+  name,
+  salePrice,
+}) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
-const url = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
-
-const createDinamic = () => {
+const createDinamicItems = () => {
   const fetchComputer = fetch(url)
   .then((response) => response.json())
   .then((computer) => computer.results);
@@ -60,6 +60,26 @@ const createDinamic = () => {
   }));
 };
 
+ const addItemCart = () => {
+  const btnAddCart = document.querySelectorAll('.item__add');
+  btnAddCart.forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+        const item = document.querySelectorAll('.item__sku')[index].textContent;
+     const fetchCart = fetch(`https://api.mercadolibre.com/items/${item}`)
+      .then((response) => response.json())
+      .then((dados) => dados);
+      return fetchCart.then((comput) => {
+       const addCart = createCartItemElement({
+         sku: comput.id,
+         name: comput.title,
+         salePrice: comput.price,
+        });
+        document.querySelector('.cart__items').appendChild(addCart);
+      });
+    });
+  });
+};
+
 window.onload = () => {
-  createDinamic();
+  createDinamicItems().then(() => addItemCart());
 };
