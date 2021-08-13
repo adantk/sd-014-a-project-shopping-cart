@@ -55,8 +55,7 @@ image: iten.thumbnail })));
   }
 }
 
-async function addCart() {
-  await callItemAPI();
+function addCart() {
   const itens = document.querySelectorAll('.item__add');
   const carrinho = document.querySelector('.cart__items');
   itens.forEach((itenButto) => itenButto.addEventListener('click', async (e) => {
@@ -73,7 +72,7 @@ async function addCart() {
   }));
 }
 
-window.onload = () => {
-  callItemAPI();
+window.onload = async () => {
+  await callItemAPI();
   addCart();
  };
