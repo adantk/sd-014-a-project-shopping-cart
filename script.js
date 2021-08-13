@@ -18,10 +18,10 @@ function createCartItemElement(ObjetoParametro, elementoPaiLi) { // segundo para
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', (event => { 
+  li.addEventListener('click', ((event) => { 
     elementoPaiLi.removeChild(event.target);
     updateCartStorage(elementoPaiLi);   
-  }) );
+  }));
   return li;
 }
 
@@ -80,20 +80,30 @@ async function requestionApiMl(valorBusca) {
   });
 }
 
-function renderCartStorage() {
+function renderClearCartStorage(keyStorage) {// essa função se nao for passado um parametro limpa o carrinho
   const elementOlCart = document.querySelector('.cart__items');
-  const itensCart = localStorage.getItem('olCart');
+  const itensCart = localStorage.getItem(keyStorage);
   elementOlCart.innerHTML = itensCart;
   const elementsLiCart = document.querySelectorAll('.cart__item');
   elementsLiCart.forEach((element) => {
-    element.addEventListener('click', event => {
+    element.addEventListener('click', (event) => {
       elementOlCart.removeChild(event.target);
-      updateCartStorage(elementOlCart);   
+      updateCartStorage(elementOlCart);
       });
   });
-};
+  updateCartStorage(elementOlCart);
+}
+
+function buttonClearCart(){ 
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    renderClearCartStorage();
+  });
+}
+
 
 window.onload = () => {
-  renderCartStorage();
+  renderClearCartStorage('olCart');
+  buttonClearCart();
   requestionApiMl('computador');
 };
