@@ -51,7 +51,7 @@ function buttonToAdd() {
       fetch(`https://api.mercadolibre.com/items/${id}`)
         .then((response) => response.json())
         .then((response) => {
-          const item = { sku: response.id, name: response.title, salePrice: response.salePrice };
+          const item = { sku: response.id, name: response.title, salePrice: response.price };
           cartItems.appendChild(createCartItemElement(item));
         });
     });
