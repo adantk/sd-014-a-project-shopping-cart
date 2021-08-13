@@ -30,12 +30,13 @@ function createProductItemElement({
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
-function cartItemClickListener() {
-  // coloque seu código aqui event
+function cartItemClickListener(event) {
+  const cartItem = document.querySelectorAll('.cart__item');
+  event.target.remove()
 }
 
 function createCartItemElement({
