@@ -75,10 +75,23 @@ const item = { // destructuring - pega no json os dados q precisamos nome, id, v
 };
 cartItems.appendChild(createCartItemElement(item));
 });
+localStorage.setItem('items', cartItems.innerHTML);
  }); 
 }; 
 
+// req 4
+function addCartToLocalStorage() {
+  const items = localStorage.getItem('items');
+  const cart = document.querySelector('.cart__items');
+  cart.innerHTML = items;
+  const cartItem = document.querySelectorAll('.cart__item');
+  cartItem.forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
+}
+
 window.onload = async () => {
  await criaLista(); 
- addCart();
+ await addCart();
+ await addCartToLocalStorage;
 };
