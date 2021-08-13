@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ sku, name, image }) { // SKU: código identificador do produto, utilizado para controle do estoque
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -28,6 +28,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito 3
 function cartItemClickListener(event) {
   // coloque seu código aqui
 }
@@ -40,6 +41,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// Requisito 1
 const getItems = async () => {
   const query = 'computador';
   // const endpoint = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
@@ -60,4 +62,31 @@ const getItems = async () => {
 };
 // Agradeço ao Matheus Martino pela monitoria de revisão do Bloco 9!
 
-window.onload = () => { getItems(); };
+// Requisito 2
+const addToCart = async () => {
+  const cartItems = document.querySelector('.cart__items');
+  const itemList = document.querySelectorAll('.item__add');
+  console.log(itemList);
+  itemList.forEach((buttonItem) => { // Adicionando um escutador de eventos para cada elemento (botão) da minha lista de itens
+    buttonItem.addEventListener('click', async (event) => {
+    const itemID = getSkuFromProductItem(event.target.parentElement);
+    const endpoint = `https://api.mercadolibre.com/items/${itemID}`;
+    
+    const request = await fetch(endpoint);
+    const response = await request.json();
+    const item = { // Adicionando as informações do produto ao carrinho 
+      sku: response.id,
+      name: response.title,
+      salePrice: response.price,
+    };
+    cartItems.appendChild(createCartItemElement(item));
+    });
+  });
+};
+
+// addToCart();
+
+window.onload = async () => { // async para organizar o tempo entre criar a lista de produtos, adicionar botões e adicionar produtos ao carrinho 
+  await getItems(); 
+  addToCart();
+};
