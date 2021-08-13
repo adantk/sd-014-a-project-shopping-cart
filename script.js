@@ -1,8 +1,8 @@
 // Parte do código inspirada pelo PR do Victor Diniz da T13A: https://github.com/tryber/sd-013-a-project-shopping-cart/pull/8
 
-const productsSection = document.querySelector('.items');
-const cartList = document.querySelector('.cart__items');
-const totalPrice = document.querySelector('.total-price');
+let productsSection;
+let cartList;
+let totalPrice;
 
 function saveCart() {
   localStorage.setItem('savedCart', cartList.innerHTML);
@@ -108,6 +108,9 @@ function clearCart(e) {
 }
 
 window.onload = () => {
+  productsSection = document.querySelector('.items');
+  cartList = document.querySelector('.cart__items');
+  totalPrice = document.querySelector('.total-price');
   displayProducts('computador');
   document.body.addEventListener('click', addToCart);
   document.body.addEventListener('click', cartItemClickListener);
