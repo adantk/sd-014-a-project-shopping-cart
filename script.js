@@ -55,8 +55,11 @@ const addMySearch = (resultados) => {
 }
 
 const getMercadoList = async (query) => {
+  const myLoadingEvent = document.getElementById('loading');
+  myLoadingEvent.innerText = 'loading...';
   const myEndPoint = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`);
   const myInfo = await myEndPoint.json();
+  myLoadingEvent.remove();
 
   addMySearch(myInfo.results);
 }
@@ -68,7 +71,6 @@ const addToMyCart = (product) => {
 
 const getMercadoItem = async ({ target }) => {
   const myItemID = getSkuFromProductItem(target.parentNode);
-  // alert(myItemID);
   const myResponse = await fetch(`https://api.mercadolibre.com/items/${myItemID}`);
   const myInfo = await myResponse.json();
   addToMyCart(myInfo);
