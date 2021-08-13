@@ -26,44 +26,9 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-// Requisito #1
-const addItems = async () => {
-  const response = await (await fetch(API_URL)).json();
-  const results = response.results;
-  
-  results.forEach((result) => {
-    const info = { sku: result.id, name: result.title, image: result.thumbnail };
-    const product = createProductItemElement(info);
-    document.querySelector('.items').appendChild(product);
-  });
-};
-
-// Requisito #2
-
-// const verifiedFetch = async (url) => {
-//   if (url === API_URL) {
-//     return fetch(API_URL)
-//       .then((response) => response.json())
-//       .then((response) => response.results);
-//   }
-//   throw new Error('Endpoint não existe');
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
 // }
-
-// const addItem = async () => {
-//   try {
-//     const results = await verifiedFetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-//     results.forEach(({ id: sku, title: name, thumbnail: image }) => {
-//       const product = createProductItemElement({ sku, name, image });
-//       document.querySelector('.items').appendChild(product);
-//     });
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
@@ -76,6 +41,34 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+const addItemToCart = async (event) => {
+  const id = event.target.parentElement.firstElementChild.innerText;
+  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const item = await response.json();
+  const info = { sku: item.id, name: item.title, salePrice: item.price };
+  const newLi = createCartItemElement(info);
+  const cart = document.querySelector('.cart__items');
+  cart.appendChild(newLi);
+};
+
+// Requisito #1
+const addItems = async () => {
+  const response = await (await fetch(API_URL)).json();
+  const { results } = response;
+  
+  results.forEach((result) => {
+    const info = { sku: result.id, name: result.title, image: result.thumbnail };
+    const product = createProductItemElement(info);
+    document.querySelector('.items').appendChild(product);
+  });
+
+  // Requisito #2
+  const btns = Object.values(document.querySelectorAll('.item__add'));
+  btns.forEach((btn) => {
+    btn.addEventListener('click', addItemToCart);
+  });
+};
 
 window.onload = () => {
   addItems();
