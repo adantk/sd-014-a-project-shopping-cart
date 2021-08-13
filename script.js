@@ -1,3 +1,5 @@
+const cartItems = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -65,7 +67,6 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 // Requisito 2
 const addToCart = async () => {
-  const cartItems = document.querySelector('.cart__items');
   const itemList = document.querySelectorAll('.item__add');
   console.log(itemList);
   itemList.forEach((buttonItem) => { // Adicionando um escutador de eventos para cada elemento (botão) da minha lista de itens
@@ -84,6 +85,18 @@ const addToCart = async () => {
     });
   });
 };
+
+// Requisito 4
+// const saveCart = () => {
+//   localStorage.setItem('cartItems', cartItems.innerHTML); // setItem armazena um valor no local storage
+// };
+// Source: https://www.devmedia.com.br/trabalhando-com-html5-local-storage-e-json/29045
+
+// Requisito 6
+const emptyCart = document.querySelector('.empty-cart');
+emptyCart.addEventListener('click', () => {
+  cartItems.innerHTML = '';
+});
 
 window.onload = async () => { // async/await para organizar o tempo entre criar a lista de produtos, adicionar botões e adicionar produtos ao carrinho 
   await getItems(); 
