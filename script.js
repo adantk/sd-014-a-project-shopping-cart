@@ -24,10 +24,8 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
 const cart = document.getElementsByClassName('cart__items');
+const items = document.getElementsByClassName('items');
 
 const TotalPrice = () => {
   const total = document.querySelector('.total-price');
@@ -63,8 +61,15 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 const getApi = () => new Promise((resolve, reject) => {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-    .then((obj) => obj.json()).then((res) => resolve(res.results))
+    .then((obj) => obj.json()).then((res) => {
+      items[0].removeChild(span)
+      resolve(res.results)
+    })
     .catch((error) => reject(error));
+  const span = document.createElement('span')
+  span.innerHTML = 'loading...';
+  span.className = 'loading';
+  items[0].appendChild(span);
 });
 
 const promise = (id) => new Promise((resolve) => {
@@ -75,8 +80,7 @@ const promise = (id) => new Promise((resolve) => {
 });
 
 const setBtn = () => {
-  const items = document.querySelector('.items');
-  items.addEventListener('click', (event) => {
+  items[0].addEventListener('click', (event) => {
     if (event.target.classList.contains('item__add')) {
       const id = event.target.parentNode.firstElementChild.innerText;
       promise(id).then((result) => {
@@ -93,7 +97,6 @@ const setBtn = () => {
 };
 
 const setItems = () => {
-  const items = document.getElementsByClassName('items');
   getApi().then((result) => {
     result.forEach((pc) => {
       const retorno = createProductItemElement({
@@ -105,9 +108,8 @@ const setItems = () => {
     });
     setBtn();
   });
-  const sec = document.querySelector('.cart');
   const span = document.createElement('span');
-  sec.appendChild(span);
+  cart[0].appendChild(span);
   span.className = 'total-price';
   span.innerHTML = '0';
 };
