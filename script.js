@@ -76,7 +76,7 @@ const setBtn = () => {
         });
         document.querySelector('.cart__items').appendChild(ret);
       });
-    };
+    }
   });
 };
 
