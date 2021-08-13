@@ -15,10 +15,13 @@ function loadCart() {
   if (getCart) cartList.innerHTML = getCart;
   if (getPrice) totalPrice.innerText = getPrice;
 }
-async function getProducts(search) {
-  return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
-    .then((res) => res.json())
-    .then((res) => res.results);
+
+function addTotal(price) {
+  totalPrice.innerText = Math.round((Number(totalPrice.innerText) + price) * 100) / 100;
+}
+
+function subTotal(price) {
+  totalPrice.innerText = Math.round((Number(totalPrice.innerText) - price) * 100) / 100;
 }
 
 function createProductImageElement(imageSource) {
@@ -33,14 +36,6 @@ function createCustomElement(element, className, innerText) {
   e.className = className;
   e.innerText = innerText;
   return e;
-}
-
-function addTotal(price) {
-  totalPrice.innerText = Math.round((Number(totalPrice.innerText) + price) * 100) / 100;
-}
-
-function subTotal(price) {
-  totalPrice.innerText = Math.round((Number(totalPrice.innerText) - price) * 100) / 100;
 }
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -73,6 +68,12 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   return li;
+}
+
+async function getProducts(search) {
+  return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
+    .then((res) => res.json())
+    .then((res) => res.results);
 }
 
 async function displayProducts(search) {
