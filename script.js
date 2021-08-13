@@ -1,5 +1,4 @@
 const myCart = document.querySelector('.cart__items');
-const myCartLi = document.querySelector('.cart__items').childNodes;
 
 const saveMyCart = () => {
   localStorage.clear();
@@ -31,12 +30,10 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
 
@@ -44,9 +41,10 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event, itemPrice) {
+function cartItemClickListener(event) {
   event.target.remove();
   saveMyCart();
+  sumPrices();
 }
 
 const addMySearch = (resultados) => {
@@ -60,13 +58,13 @@ const getMercadoList = async (query) => {
   const myEndPoint = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`);
   const myInfo = await myEndPoint.json();
   myLoadingEvent.remove();
-
   addMySearch(myInfo.results);
 }
 
 const addToMyCart = (product) => {
   document.querySelector('.cart__items').appendChild(createCartItemElement(product));
   saveMyCart();
+  sumPrices();
 }
 
 const getMercadoItem = async ({ target }) => {
@@ -85,12 +83,21 @@ const addToCartButtons = () => {
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
-  li.className = 'cart__item';
+  li.className = 'cart__item list-ml';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
+function sumPrices () {
+  const cartItem = document.querySelectorAll('.list-ml');
+  let totalSum = 0;
+  cartItem.forEach((item) => {
+    const myPrice = (item.innerText).split('$')[1];
+    totalSum += parseFloat(myPrice);
+    })
+  document.getElementById('total-price').innerText = totalSum;
+}
 
 document.getElementById('empty-cart').addEventListener('click', () => {
   myCart.innerText = '';
@@ -98,8 +105,11 @@ document.getElementById('empty-cart').addEventListener('click', () => {
 });
 
 window.onload = async () => {
-  await getMercadoList('computador');
-  loadMyCart();
+
+  await getMercadoList('computador')
+  .then(loadMyCart())
+  .then(sumPrices());
   addToCartButtons();
+
 };
 
