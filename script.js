@@ -20,13 +20,7 @@ function createCustomElement(element, className, innerText) {
  * @param {event} e Evento de clique 
  */
 function cartItemClickListener(e) {  
-  const item = e.target;
-  const items = document.querySelectorAll('.cart__item');
-  items.forEach((curr) => {
-    if (curr === item) {
-      curr.parentNode.removeChild(curr);
-    }
-  });
+  e.target.parentNode.removeChild(e.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
