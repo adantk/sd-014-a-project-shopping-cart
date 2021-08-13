@@ -74,12 +74,16 @@ async function addProducts(section) {
  * Callback dos botões de Adicionar ao Carrinho
  * @param {Event} event Evento
  */
-function addToCart(event) {
+async function addToCart(event) {
   if (event.target.classList.contains('item__add')) {
     // pega SKU (ID) do primeiro span
     const productId = event.target.parentElement.firstElementChild.innerText;
-    fetchMLData(ENDPOINTS.item, productId)
-      .then((response) => console.log(response));
+    const productInfo = await fetchMLData(ENDPOINTS.item, productId)
+      .then(({ title: name, price: salePrice }) => (
+        { sku: productId, name, salePrice }
+      ));
+    document.querySelector('.cart__items')
+      .appendChild(createCartItemElement(productInfo));
   }
 }
 
