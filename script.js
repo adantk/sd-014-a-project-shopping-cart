@@ -47,14 +47,19 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 // req 1 - cria fetch com produtos de computadores e adiciona estes produtos na tela pela função createProductItemElement;
 async function fetchComputer(query) {
+  const loading = createCustomElement('h1', 'loading', 'loading...');
+  document.body.appendChild(loading);
+
   const json = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => response.json())
     .then((data) => data.results);
-    
+
     json.forEach((item) => document.querySelector('.items')
     .appendChild(
       createProductItemElement({ sku: item.id, name: item.title, image: item.thumbnail }),
       ));
+
+      loading.remove();
 }
 
 // req 2 - adiciona itens ao carrinho;
