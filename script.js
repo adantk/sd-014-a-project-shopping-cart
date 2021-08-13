@@ -1,4 +1,4 @@
-let cartSection;
+let cartItems;
 // Declared in the upper scope because script.js is linked to header on HTML => later on it will be fulfilled
 
 function createProductImageElement(imageSource) {
@@ -93,16 +93,45 @@ async function fetchItemID(id) {
 }
 
 function saveToLocalStorage() {
-  localStorage.setItem('cartList', cartSection.innerHTML);
-  // Sets cartSection as the value of the key 'cartList' in the local storage
+  localStorage.setItem('cartList', cartItems.innerHTML);
+  // Sets cartItems as the value of the key 'cartList' in the local storage
 }
 
 function loadLocalStorage() {
   const cartListStorage = localStorage.getItem('cartList');
   // Gets the value of the key 'cartList' from the local storage
 
-  if (cartListStorage) cartSection.innerHTML = cartListStorage;
-  // If the key 'cartList' exists (local storage), sets the value of the key 'cartList' in cartSection HTML
+  if (cartListStorage) cartItems.innerHTML = cartListStorage;
+  // If the key 'cartList' exists (local storage), sets the value of the key 'cartList' in cartItems HTML
+}
+
+function createTotalPriceElement() {
+  const cartSection = document.querySelector('.cart');
+
+  const totalPrice = document.createElement('span');
+  totalPrice.className = 'total-price';
+
+  totalPrice.innerText = 'Total: $0';
+
+  cartSection.appendChild(totalPrice);
+}
+
+function getTotalPrice() {
+  let totalPrice = 0;
+  const items = document.querySelectorAll('.cart__item');
+  
+  items.forEach((item) => {
+    const itemText = item.innerText;
+    const itemPrice = Number(itemText.substring(itemText.indexOf('$') + 1));
+    // Gets only the price of the item and converts it to a number
+    // Example: 'SKU: 12345 | NAME: Computer | PRICE: $1000'
+    // Number(item.substring(item.indexOf('$') + 1)) => Number(item.substring(39 + 1)) => Number(1000) => 1000
+
+    totalPrice += itemPrice;
+  });
+
+  return totalPrice;
+  // return items.reduce((total, item) => total + Number(item.innerText.substring(item.innerText.indexOf('$') + 1)), 0);
 }
 
 function addToCart() {
@@ -112,7 +141,7 @@ function addToCart() {
       const { id, title, price } = await fetchItemID(itemID);
       const cartItemElement = createCartItemElement({ id, title, price });
 
-      cartSection.appendChild(cartItemElement);
+      cartItems.appendChild(cartItemElement);
 
       saveToLocalStorage();
     }
@@ -122,7 +151,7 @@ function addToCart() {
 function removeFromCart() {
   document.addEventListener('click', async (event) => {
     if (event.target.classList.contains('cart__item')) {
-      cartSection.removeChild(event.target);
+      cartItems.removeChild(event.target);
 
       saveToLocalStorage();
     }
@@ -130,10 +159,11 @@ function removeFromCart() {
 }
 
 window.onload = () => {
-  cartSection = document.querySelector('.cart__items');
+  cartItems = document.querySelector('.cart__items');
 
   appendItems('computador');
   addToCart();
   removeFromCart();
   loadLocalStorage();
+  createTotalPriceElement();
 };
