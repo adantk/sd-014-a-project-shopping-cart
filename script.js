@@ -2,6 +2,7 @@ const itemSection = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
 const clearBtn = document.querySelector('.empty-cart');
 
+// Requisito 1
 // O próprio VS Code sugeriu e transformou as funções em async
 const fetchProducts = async (query) => {
   const resp = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${query}`);
@@ -39,6 +40,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+// Requisito 3
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
@@ -52,6 +54,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+// Requisito 2
 // const fetchProduct = async (idSku) => {
 //   const resp = await fetch(`https://api.mercadolibre.com/items/${idSku}`);
 //   const data = await resp.json();
@@ -70,23 +73,29 @@ const addToCart = () => {
   });
 };
 
+// Requisito 6
 const emptyCart = () => {
   clearBtn.addEventListener('click', () => {
     cartItems.innerHTML = '';
-});
+  });
 };
 
+// Requisito 4
 const storedCart = () => {
   if (localStorage) cartItems.innerHTML = localStorage.getItem('list');
   cartItems.childNodes.forEach((li) => li.addEventListener('click', cartItemClickListener));
 };
 
 window.onload = () => {
+  // Requisito 1
   fetchProducts('computador')
   .then((results) => results.forEach((result) => {
     itemSection.appendChild(createProductItemElement(result));
   }));
+  // Requisito 2
   addToCart();
+  // Requisito 4
   storedCart();
+  // Requisito 6
   emptyCart();
 };
