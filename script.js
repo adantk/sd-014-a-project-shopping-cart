@@ -92,6 +92,7 @@ async function search(ele) {
   dataJson.results.forEach((product) => {
     itemSection.appendChild(createProductItemElement(product));
   });
+  itemSection.removeChild(document.querySelector('.loading'));
 }
 
 // Requisito 4 - Carrega o local Storage
@@ -111,6 +112,6 @@ window.onload = () => {
   cartItem = document.querySelector('.cart__items');
   clearCart = document.querySelector('.empty-cart');
   clearCart.addEventListener('click', () => clearClickListener('cart__item'));
-  search('computador');
   loadStorage();
+  search('computador');
 };
