@@ -46,6 +46,21 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// Requisito #2
+const fetchChosenItem = async (id) => {
+  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const item = await response.json();
+  const obj = { sku: item.id, name: item.title, salePrice: item.price };
+  return obj;
+};
+
+const addItemToCart = async (event) => {
+  const id = getSkuFromProductItem(event.target.parentElement);
+  const info = await fetchChosenItem(id);
+  const newLi = createCartItemElement(info);
+  lista.appendChild(newLi);
+};
+
 // Requisito #1
 const fetchProducts = async () => {
   const response = await fetch(API_URL);
@@ -70,32 +85,23 @@ const addItems = async () => {
   createItemListener();
 };
 
-// Requisito #2
-const fetchChosenItem = async (id) => {
-  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
-  const item = await response.json();
-  const obj = { sku: item.id, name: item.title, salePrice: item.price};
-  return obj;
+const getSavedItems = () => {
+  lista.innerHTML = localStorage.getItem('lista');
 }
 
-const addItemToCart = async (event) => {
-  const id = getSkuFromProductItem(event.target.parentElement);
-  const info = await fetchChosenItem(id);
-  const newLi = createCartItemElement(info);
-  lista.appendChild(newLi);
-  localStorage.setItem('lista', lista.innerHTML);
+const addCarItemListener = () => {
+  getSavedItems();
+  const items = document.querySelectorAll('.cart__item');
+  items.forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
 };
-
-// const getItems = () => {
-//   const info = localStorage.getItem('lista');
-//   document.querySelector(lista).innerHTML = info;
-//   const items = document.querySelectorAll('.cart__item');
-//   items.forEach((item) => {
-//     item.addEventListener('click', cartItemClickListener);
-//   });
-// };
 
 window.onload = () => {
   addItems();
-  lista = localStorage.getItem('lista');
+  addCarItemListener();
 };
+
+window.onbeforeunload = () => {
+  localStorage.setItem('lista', lista.innerHTML);
+}
