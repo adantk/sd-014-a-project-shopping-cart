@@ -70,7 +70,9 @@ const addToCart = () => {
 };
 
 const storedCart = () => {
-  !localStorage ? null : cartItems.innerHTML = localStorage.getItem('list');
+  if (localStorage) {
+     cartItems.innerHTML = localStorage.getItem('list');
+   }
   cartItems.childNodes.forEach((li) => li.addEventListener('click', cartItemClickListener));
 };
 
