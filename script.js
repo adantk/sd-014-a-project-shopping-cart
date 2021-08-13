@@ -55,6 +55,25 @@ image: iten.thumbnail })));
   }
 }
 
+async function addCart() {
+  await callItemAPI();
+  const itens = document.querySelectorAll('.item__add');
+  const carrinho = document.querySelector('.cart__items');
+  itens.forEach((itenButto) => itenButto.addEventListener('click', async (e) => {
+    try {
+      const item = getSkuFromProductItem(e.target.parentElement);
+      const requItem = await fetch(`https://api.mercadolibre.com/items/${item}`);
+      const jsonItem = await requItem.json();
+      carrinho.appendChild(createCartItemElement({ sku: jsonItem.id,
+      name: jsonItem.title,
+      salePrice: jsonItem.price }));
+    } catch (error) {
+      alert(`Erro${error}`);
+    }
+  }));
+}
+
 window.onload = () => {
   callItemAPI();
+  addCart();
  };
