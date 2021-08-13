@@ -15,7 +15,11 @@ const fetchRequestEndpoint = async (idProduct) => {
    .then((response) => response.json());
 };
 
-function createCartItemElement({sku, name, salePrice }) {
+async function cartItemClickListener(event) {
+  event.target.remove();
+}
+
+function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -23,13 +27,13 @@ function createCartItemElement({sku, name, salePrice }) {
   return li;
 }
 
-const addItemToCart = async (event)=> {
+const addItemToCart = async (event) => {
   const idProductAdd = await getSkuFromProductItem(event);
   const returnEndPoint = await fetchRequestEndpoint(idProductAdd);
   const { id, title, price } = await returnEndPoint;
   const cart = document.querySelector('.cart__items');
   cart.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
-}
+};
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -38,7 +42,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
- function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
   
@@ -50,16 +54,7 @@ function createCustomElement(element, className, innerText) {
   return section;
 }
 
-const requestProduct = () => {
 
-}
-
-async function cartItemClickListener(event) {
-  // const skuSelected = await getSkuFromProductItem();
-  // console.log()
-  // await requestEndpoint()
-  
-}
 
 const fetchProduct = async (search) => {
  return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
@@ -72,6 +67,4 @@ const loadElements = async (search) => {
     .appendChild(createProductItemElement({ sku: id, name: title, image: thumbnail })));
 };
   
-window.onload = () => {
-    loadElements('computador');
-};
+window.onload = () => loadElements('computador');
