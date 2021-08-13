@@ -90,8 +90,17 @@ function addventListeBotton() {
   });
 }
 
+function removeCarrinho() {
+  const items = document.querySelectorAll('.cart__item');
+  
+    items.forEach((elementos) => {
+      elementos.remove();
+    });
+}
+
 window.onload = async () => {
   await jsonComputer();
   await addventListeBotton();
   await carrinhoStorage();
+  document.querySelector('.empty-cart').addEventListener('click', removeCarrinho);
 };
