@@ -2,8 +2,22 @@ const secaoItens = document.querySelector('.items');
 const listaCompras = document.querySelector('.cart__items');
 const localValor = document.querySelector('.total-price');
 const btnLimpar = document.querySelector('.empty-cart');
+const carrinho = document.querySelector('.cart');
+
+function carregando(codigo) {
+  if (codigo === 1) {
+    const texto = document.createElement('p');
+    texto.innerText = 'Loading data';
+    texto.className = 'loading';
+    carrinho.appendChild(texto);
+  }
+  if (codigo === 2) {
+    carrinho.removeChild(carrinho.lastChild);
+  }
+}
 
 function retornoAPI(url) {
+  carregando(1);
   if (url === 'https://api.mercadolibre.com/sites/MLB/search?q=computador') {
     return fetch(url)
     .then((r) => r.json())
@@ -54,6 +68,7 @@ async function cartItemClickListener(event) {
   localStorage.setItem('carrinho', lista);
   listaCompras.removeChild(event.target);
   const objeto = await retornoAPI(`https://api.mercadolibre.com/items/${sku}`);
+  carregando(2);
   guardaPreco(objeto, 'sub');
   inserePrecoNoDom();
   //  guardaPreco(objeto, 'sub');
@@ -85,6 +100,7 @@ async function pegaItem(evento) {
   //  console.log(evento.target.parentNode.firstChild);
   const id = evento.target.parentNode.firstChild.innerText;
   const objeto = await retornoAPI(`https://api.mercadolibre.com/items/${id}`);
+  carregando(2);
   guardaCarrinho(objeto);
   listaCompras.appendChild(createCartItemElement(objeto));
   guardaPreco(objeto, 'soma');
@@ -115,6 +131,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 async function inserePCNoDOM() {
   const itens = await retornoAPI('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  carregando(2);
   itens.forEach((item) => {
     const produto = createProductItemElement(item);
     secaoItens.appendChild(produto);
@@ -132,6 +149,7 @@ function verificacaoInicial() {
     retornoAPI(`https://api.mercadolibre.com/items/${item}`)
     .then((r) => listaCompras.appendChild(createCartItemElement(r)));
   });
+  carregando(2);
   //  console.log(lista);
 }
 
