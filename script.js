@@ -31,8 +31,11 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// função implementada para remover o item da lista clicando encima dele.
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  const ol = document.querySelector('.cart__items');
+  ol.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
