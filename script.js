@@ -8,6 +8,14 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+//* Requisito 7
+const createLoading = () => {
+  document.body.appendChild(createCustomElement('h1', 'loading', 'loading...'));
+};
+const deleteLoading = () => {
+  document.querySelector('.loading').remove();
+};
+
 //* Requisito 5
 // Calculadora
 const calculadora = {
@@ -60,13 +68,14 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 // Acessa a API pelo Id
 const urlApiId = 'https://api.mercadolibre.com/items/';
 async function fetchApiId(id) {
+  createLoading();
   return fetch(`${urlApiId}${id}`)
   .then((response) => response.json())
   .then((dados) => {
     ol.appendChild(createCartItemElement(dados)); // Adiciona no ol
     localStorage.setItem('carrinho', ol.innerHTML); // Salva no localStorage
     atualizaPrice(calculadora.add, 0);
-  });
+  }).then(() => deleteLoading());
 }
 // Obtem o Id | Adiciona evento no botao, e retorna o id depois de clicado.
 const eventoBotaoReturnId = () => document.querySelectorAll('.item__add').forEach((button) => button
@@ -93,11 +102,14 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 // Acessa a API de busca.
 const urlApiBusca = 'https://api.mercadolibre.com/sites/MLB/search?q=';
-const fecthPromiseBusca = async (query) => fetch(`${urlApiBusca}${query}`)
-  .then((response) => response.json()
-  .then((dados) => dados.results.forEach((ele) =>
-    document.querySelector('.items').appendChild(createProductItemElement(ele)))))
-  .then(() => eventoBotaoReturnId());
+const fecthPromiseBusca = async (query) => {
+  createLoading();
+  return fetch(`${urlApiBusca}${query}`)
+    .then((response) => response.json()
+    .then((dados) => dados.results.forEach((ele) =>
+      document.querySelector('.items').appendChild(createProductItemElement(ele)))))
+    .then(() => eventoBotaoReturnId()).then(() => deleteLoading());
+};
 
 // Ao iniciar
 window.onload = () => {
