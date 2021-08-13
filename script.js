@@ -37,10 +37,10 @@ const searchApi = async (url) => {
   cart.append(loading);
   try {
     const result = await (await fetch(url)).json();
-    cart.removeChild(loading)
+    cart.removeChild(loading);
     return result;
   } catch (error) {
-    cart.removeChild(loading)
+    cart.removeChild(loading);
     return error; // fix this display error
   }
 };
