@@ -59,24 +59,44 @@ const addItemToCart = async (event) => {
 };
 
 // Requisito #1
-const addItems = async () => {
-  const response = await (await fetch(API_URL)).json();
-  const { results } = response;
-  
-  results.forEach((result) => {
-    const info = { sku: result.id, name: result.title, image: result.thumbnail };
-    const product = createProductItemElement(info);
-    document.querySelector('.items').appendChild(product);
-  });
+const fetchItems = async () => {
+  const response = await fetch(API_URL);
+  const jsonResponse = await response.json();
+  return jsonResponse.results;
+};
 
-  // Requisito #2
-  const btns = Object.values(document.querySelectorAll('.item__add'));
+// Requisito #2
+const createItemListener = () => {
+  const btns = document.querySelectorAll('.item__add');
   btns.forEach((btn) => {
     btn.addEventListener('click', addItemToCart);
   });
 };
 
+const addItems = async () => {
+  const results = await fetchItems();
+  results.forEach((result) => {
+    const info = { sku: result.id, name: result.title, image: result.thumbnail};
+    const product = createProductItemElement(info);
+    document.querySelector('.items').appendChild(product);
+  })
+  createItemListener();
+}
+
+const getItems = () => {
+  const info = localStorage.getItem('lista');
+
+  if (info) {
+    document.querySelector(lista).innerHTML = info;
+    const items = document.querySelectorAll('.cart__item');
+    items.forEach((item) => {
+      item.addEventListener('click', cartItemClickListener);
+    });
+  }
+
+};
+
 window.onload = () => {
-  addItems();
-  lista.innerHTML = localStorage.getItem('lista');
+  addItems()
+  getItems();
 };
