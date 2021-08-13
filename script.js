@@ -33,7 +33,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  event.target.parentElement.removeChild(event.target);
+  event.target.remove();
 }
 
 function createCartItemElement({
