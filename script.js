@@ -31,10 +31,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
@@ -56,7 +52,10 @@ async function searchItem(item) {
 }
 
 async function searchProduct() {
+  const loading = createCustomElement('h1', 'loading', 'loading...');
+  document.body.appendChild(loading);
   const response = await fetch(`${url}search?q=computer`).then((r) => r.json());
+  loading.remove();
   return response;
 }
 
@@ -79,8 +78,13 @@ async function adcEventsInButtons() {
   }));
 }
 
-function adcRemoveEvent() {
-  ol.addEventListener('click', cartItemClickListener);
+function emptyCart() {
+  document.querySelectorAll('.cart__item').forEach((elem) => elem.remove());
+  localStorage.clear();
+}
+
+function sumPrice() {
+  
 }
 
 window.onload = async () => {
@@ -92,4 +96,5 @@ window.onload = async () => {
   await adcEventsInButtons();
   await ol();
   await saveCart();
+  await document.querySelector('.empty-cart').addEventListener('click', emptyCart);
  };
