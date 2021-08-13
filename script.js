@@ -99,3 +99,10 @@ fetchMercadoLivre();
 // 3 - Se a URL passada é válida, então transformamos o resultado da busca da URL em json;
 // 4 - Se o json é gerado, então pegamos o atributo 'results' dentro do json e, para cada objeto contido dentro da array, teremos um elemento novo, resultado da função createProductItemElement(), dentro da section com classe 'items' com os atributos e valores id, título e imagem;
 // 5 - Por final, fazemos a chamada da função que adiciona os itens da lista de computadores para a carrinho.
+
+  const esvaziaCarrinho = document.querySelector('.empty-cart');
+
+  esvaziaCarrinho.addEventListener('click', () => {
+    cartItems.innerHTML = '';
+    localStorage.clear();
+  });
