@@ -49,8 +49,13 @@ function createCartItemElement({
 }
 
 async function jsonComputer() {
+  const load = document.createElement('h1');
+  load.className = 'loading';
+  load.innerText = 'loading';
+  document.querySelector('.items').appendChild(load);
   const js = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json());
+    load.remove();
   js.results.forEach((element) => {
     const elementos = document.querySelector('.items');
     elementos.appendChild(createProductItemElement({
