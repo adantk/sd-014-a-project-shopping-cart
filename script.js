@@ -33,13 +33,13 @@ function saveState(id) {
   console.log(localStorage.getItem('savedState'));
 }
 
+const cart = document.querySelector('.cart__items');
 const getIds = () => {
   const x = [];
   cart.childNodes.forEach((li) => x.push(li.innerText.split('|')[0].split('SKU: ')[1].trim()));
   saveState(x);
 };
 
-const cart = document.querySelector('.cart__items');
 function cartItemClickListener(event) {
   cart.removeChild(event.target);
   getIds();
@@ -105,14 +105,12 @@ function loadState() {
     const arrayIds = loadItens.split(',');
     arrayIds.forEach((id) => {
       promise(id).then((obj) => {
-        const li = createCartItemElement({ sku: obj.id, name: obj.title, salePrice: obj.price,})
+        const li = createCartItemElement({ sku: obj.id, name: obj.title, salePrice: obj.price, });
         cart.appendChild(li);
       });
     });
   }
 }
-
-
 
 window.onload = () => {
   setItems();
