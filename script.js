@@ -60,9 +60,8 @@ function pegandoIdProduto() {
   const buttom = document.querySelectorAll('.item__add');
   buttom.forEach((botaoAdd) => {
     botaoAdd.addEventListener('click', (event) => {
-      const produto = event.path[1];
-      const filho = produto.firstChild.innerText;
-      adiconandoALista(filho);
+      const evento = event.target;
+      adiconandoALista(getSkuFromProductItem(evento.parentNode));
     });
   });
 }
@@ -78,6 +77,7 @@ const mercadoLivre = () => {
       }).then(() => pegandoIdProduto());
     });
 };
+
 window.onload = () => {
   mercadoLivre();
 };
