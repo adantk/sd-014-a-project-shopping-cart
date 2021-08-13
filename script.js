@@ -1,5 +1,6 @@
 const itemSection = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
+const clearBtn = document.querySelector('.empty-cart')
 
 // O próprio VS Code sugeriu e transformou as funções em async
 const fetchProducts = async (query) => {
@@ -69,6 +70,10 @@ const addToCart = () => {
   });
 };
 
+const emptyCart = () => {
+  clearBtn.addEventListener('click', () => cartItems.innerHTML = '');
+}
+
 const storedCart = () => {
   if (localStorage) cartItems.innerHTML = localStorage.getItem('list');
   cartItems.childNodes.forEach((li) => li.addEventListener('click', cartItemClickListener));
@@ -81,4 +86,5 @@ window.onload = () => {
   }));
   addToCart();
   storedCart();
+  emptyCart();
 };
