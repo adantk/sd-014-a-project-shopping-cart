@@ -12,9 +12,12 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function cartItemClickListener() {
+// req 3
+function cartItemClickListener(clickDelete) {
   // coloque seu código aqui
+  document.querySelector('.cart__items').removeChild(clickDelete.target);
 }
+// end req 3
 
 function createCartItemElement({
   sku,
