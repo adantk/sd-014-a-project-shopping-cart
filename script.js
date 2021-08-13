@@ -56,7 +56,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 //   const data = await resp.json();
 //    createCartItemElement(data);
 // };
-// Havia feito o fetch separado, mas não consegui trabalhar com ele direito
+// Havia feito o fetch separado, mas não consegui trabalhar com ele direito dessa forma
 const addToCart = () => {
   itemSection.addEventListener('click', async (event) => {
     if (event.target.classList.contains('item__add')) {
@@ -73,6 +73,5 @@ window.onload = () => {
   .then((results) => results.forEach((result) => {
     itemSection.appendChild(createProductItemElement(result));
   }));
-  // fetchProduct();
   addToCart();
 };
