@@ -1,4 +1,6 @@
 const sectionItens = document.querySelector('.items');
+const cartItens = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -41,16 +43,38 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const mercadoLivre = () => fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-  .then((itensMercadoLivre) => {
-    itensMercadoLivre.json().then((produtos) => {
-      produtos.results.forEach((pc) => {
-        const quebrar = { sku: pc.id, name: pc.title, image: pc.thumbnail };
-        sectionItens.appendChild(createProductItemElement(quebrar));
-      });
+// função para adicionar os produtos no carrinho de compras!
+function adiconandoALista(idSKU) {
+  fetch(`https://api.mercadolibre.com/items/${idSKU}`)
+    .then((itemSelecionado) => itemSelecionado.json().then((pc) => {
+      const objetoPc = { sku: pc.id, name: pc.title, salePrice: pc.price };
+      cartItens.appendChild(createCartItemElement(objetoPc));
+    }));
+}
+
+// função de click para pegar o id do produto e adicionar ele na lista de compras.
+function pegandoIdProduto() {
+  const buttom = document.querySelectorAll('.item__add');
+  buttom.forEach((botaoAdd) => {
+    botaoAdd.addEventListener('click', (event) => {
+      const produto = event.path[1];
+      const filho = produto.firstChild.innerText;
+      adiconandoALista(filho);
     });
   });
-  
-window.onload = () => { 
+}
+// função para pegar a API e adicionar os produtos na pagina.
+const mercadoLivre = () => {
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+    .then((itensMercadoLivre) => {
+      itensMercadoLivre.json().then((produtos) => {
+        produtos.results.forEach((pc) => {
+          const objetoPc = { sku: pc.id, name: pc.title, image: pc.thumbnail };
+          sectionItens.appendChild(createProductItemElement(objetoPc));
+        });
+      }).then(() => pegandoIdProduto());
+    });
+};
+window.onload = () => {
   mercadoLivre();
 };
