@@ -23,16 +23,24 @@ function createProductItemElement({
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+
+  const addBotao = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  addBotao.addEventListener('click', (event) => getAddItemCarrinho(event))
+
+  section.appendChild(addBotao)
 
   return section;
 }
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-  item__add
-  // coloque seu código aqui
 }
+
+// const cartItemClickListener = (event) => {
+//   const itemsCarrinho = document.querySelector('cart__item');
+//   itemsCarrinho.removeChild(event.target)
+//   console.log('cartItemClickListener')
+// }
 
 function createCartItemElement({
   sku,
@@ -42,7 +50,7 @@ function createCartItemElement({
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  // li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -65,16 +73,32 @@ const fetchML = () => {
     })
 }
 
-const criarBotao = () => {
-  const clickBotao = document.querySelectorAll('.item__add')
-  clickBotao.forEach((botao) => {
-    botao.addEventListener('click' , console.log('Click'))
-  })
+const createObjForCart = (dados) => {
+  const objToCart = {
+    sku: dados.id,
+    name: dados.title,
+    salePrice: dados.price
+  }
+  return addItemCarrinho(objToCart)
+};
+
+const getAddItemCarrinho = (event) => {
+  const objClickSKU = getSkuFromProductItem(event.target.parentElement);
+  fetch(`https://api.mercadolibre.com/items/${objClickSKU}`)
+    .then((resposta) => {
+      resposta.json().then((dados) => {
+        return createObjForCart(dados);
+      })
+    })
 }
 
-window.onload = () => {
-  fetchML();
-  criarBotao();
+const addItemCarrinho = (objToCart) => {
+  let teste = document.getElementsByClassName('cart__items')
+  teste[0].appendChild(createCartItemElement(objToCart))
+}
+
+window.onload = async () => {
+  await fetchML();
 }
 
 
@@ -83,5 +107,3 @@ window.onload = () => {
 // botaoAddCarrinho.addEventListener('click' , function(event) {
 //   console.log('teste')
 // })
-
-
