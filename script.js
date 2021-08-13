@@ -8,7 +8,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-// * Requisito 5
+//* Requisito 5
 // Calculadora
 const calculadora = {
   add: (valor, total) => Math.round((valor + total) * 100) / 100,
@@ -24,6 +24,13 @@ const atualizaPrice = (callback, price) => {
   });
   totalText.innerHTML = callback(price, valorInit);
 };
+
+//* Requisito 6
+document.querySelector('.empty-cart').addEventListener('click', () => {
+  ol.innerHTML = '';
+  atualizaPrice(calculadora.add, 0);
+  localStorage.removeItem('carrinho');
+});
 
 //* Requisito 3
 function cartItemClickListener(e) {
