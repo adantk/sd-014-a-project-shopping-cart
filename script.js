@@ -56,6 +56,11 @@ function cartItemClickListener(event) { // item 3
   atuSto();
   soma();
 }
+function apagaTudo() { // item 6
+  document.getElementById('listCart').innerHTML = '';
+  atuSto();
+  soma();
+}
 
 function createCartItemElement({ // usado no item 2
   id: sku,
