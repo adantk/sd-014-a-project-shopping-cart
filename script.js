@@ -10,7 +10,6 @@ function updatePrice() {
     const preco = Number(cartItems[i].innerText.split('$')[1]);
     precoTotal += preco;
   }
-  console.log(precoTotal);
   totalPrice.innerText = precoTotal;
 }
 
@@ -69,9 +68,9 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -86,28 +85,49 @@ function fetchInfos(id) {
     .then((resp) => resp.json());
 }
 
+function itemEventListener(item, productId) {
+  item.addEventListener('click', async () => {
+    const itemInfo = await fetchInfos(productId);
+    const itemForCart = createCartItemElement({ sku: itemInfo.id,
+      name: itemInfo.title,
+      salePrice: itemInfo.price,
+    });
+    cart.append(itemForCart);
+    autoSaveCart();
+    updatePrice();
+  });
+}
+
+function addLoading() {
+  const loadingState = document.createElement('p');
+  loadingState.innerText = 'Loading...';
+  loadingState.classList.add('loading');
+  document.body.append(loadingState);
+}
+
+function removeLoading() {
+  const loadingState = document.querySelector('.loading');
+  loadingState.remove();
+}
+
 function getItemsFromAPI() {
-  return fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-    .then((resp) => resp.json()).then((resp) => resp.results.forEach((product) => {
-      const item = createProductItemElement({ sku: product.id,
-        name: product.title,
-        image: product.thumbnail,
-      });
-      item.addEventListener('click', async () => {
-        const itemInfo = await fetchInfos(product.id);
-        const itemForCart = createCartItemElement({ sku: itemInfo.id,
-          name: itemInfo.title,
-          salePrice: itemInfo.price,
+  const fetching = fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const fetchResponse = fetching.then((resp) => resp.json());
+  fetchResponse.then((respJSON) => respJSON.results.forEach((product) => {
+        const item = createProductItemElement({ sku: product.id,
+          name: product.title,
+          image: product.thumbnail,
         });
-        cart.append(itemForCart);
-        autoSaveCart();
-        updatePrice();
-      });
-      itemContainer.append(item);
-    }));
+        itemEventListener(item, product.id);
+        itemContainer.append(item);
+      }));
+    setTimeout(() => {
+      removeLoading();
+    }, 3000);
 }
 
 window.onload = () => {
+  addLoading();
   getItemsFromAPI();
   autoLoadCart();
   removeButton();
