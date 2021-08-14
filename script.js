@@ -32,37 +32,47 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement(item) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = `SKU: ${item.id} | NAME: ${item.title} | PRICE: $${item.price}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
 const getListPromisse = async (computador) => {
   const url = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${computador}`);
-  const urlJson = await url.json()
+  const urlJson = await url.json();
   const arrArray = urlJson.results.map((element) => ({
     sku: element.id,
     name: element.title,
     image: element.thumbnail,
-    }));
-    console.log(arrArray);
-    const items = document.querySelector('.items');
-    arrArray.forEach((element) => items.appendChild(createProductItemElement(element)));
-}
+  }));
+  const items = document.querySelector('.items');
+  arrArray.forEach((element) => items.appendChild(createProductItemElement(element)));
+};
 
 const getButton = () => {
   const buttons = document.querySelectorAll('.item__add');
-  console.log(buttons)
   buttons.forEach((button) => button.addEventListener('click', functionTest));
+};
+
+const carrinho = (item) => {
+  const itemCar = document.querySelector('.cart__items');
+  itemCar.appendChild(createCartItemElement(item));
 }
 
-const functionTest = () => {
-  console.log('Botão apertado');
+const functionTest = async ({ target }) => {
+  const itemId = getSkuFromProductItem(target.parentNode);
+  console.log(itemId);
+  const idURL = await fetch(`https://api.mercadolibre.com/items/${itemId}`)
+  const idURLJson = await idURL.json();
+  console.log(idURLJson)
+  const itemCar = document.querySelector('.cart__items');
+  itemCar.appendChild(createCartItemElement(idURLJson));
 }
 
 window.onload = async () => { 
   await getListPromisse('computador');
-  getButton(); };
+  getButton(); 
+};
