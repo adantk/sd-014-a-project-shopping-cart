@@ -32,16 +32,10 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// function cartItemClickListener(event) {
-// }
-// New one created down below
-
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
-  // New one created down below
   return li;
 }
 
@@ -51,58 +45,6 @@ function loadingText() {
   loadingElement.innerText = 'Carregando...';
 
   itemsSection.appendChild(loadingElement);
-}
-
-async function getItems(query) {
-  if (!query) alert('Nenhum termo informado');
-
-  const url = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
-
-  try {
-    loadingText();
-    // Adds the loading element to the items section
-
-    const response = await fetch(url);
-    const json = await response.json();
-
-    if (json.results) return json.results;
-
-    throw new Error('Endpoint não existe');
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function appendItems(query) {
-  const itemsList = await getItems(query);
-
-  if (itemsList) {
-    itemsSection.removeChild(itemsSection.querySelector('.loading'));
-    // Removes the loading element from the items section
-
-    itemsList.forEach(({ id, title, thumbnail }) => {
-      const itemElement = createProductItemElement({ id, title, thumbnail });
-
-      itemsSection.appendChild(itemElement);
-    });
-  }
-}
-
-async function fetchItemID(id) {
-  if (!id) alert('ID não informado');
-
-  const url = `https://api.mercadolibre.com/items/${id}`;
-
-  try {
-    const response = await fetch(url);
-    const json = await response.json();
-
-    if (json) return json;
-
-    throw new Error('Endpoint não existe');
-  } catch (error) {
-    console.log(error);
-  }
 }
 
 function saveToLocalStorage() {
@@ -151,6 +93,23 @@ function updateTotalPrice() {
   totalPriceElement.innerText = totalPrice;
 }
 
+async function fetchItemID(id) {
+  if (!id) alert('ID não informado');
+
+  const url = `https://api.mercadolibre.com/items/${id}`;
+
+  try {
+    const response = await fetch(url);
+    const json = await response.json();
+
+    if (json) return json;
+
+    throw new Error('Endpoint não existe');
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function addToCart() {
   document.addEventListener('click', async (event) => {
     if (event.target.classList.contains('item__add')) {
@@ -188,15 +147,51 @@ function clearCart() {
   });
 }
 
+async function getItems(query) {
+  if (!query) alert('Nenhum termo informado');
+
+  const url = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
+
+  try {
+    loadingText();
+    // Adds the loading element to the items section
+
+    const response = await fetch(url);
+    const json = await response.json();
+
+    if (json.results) return json.results;
+
+    throw new Error('Endpoint não existe');
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function appendItems(query) {
+  const itemsList = await getItems(query);
+
+  if (itemsList) {
+    itemsSection.removeChild(itemsSection.querySelector('.loading'));
+    // Removes the loading element from the items section
+
+    itemsList.forEach(({ id, title, thumbnail }) => {
+      const itemElement = createProductItemElement({ id, title, thumbnail });
+
+      itemsSection.appendChild(itemElement);
+    });
+  }
+
+  addToCart();
+  removeFromCart();
+  clearCart();
+}
+
 window.onload = () => {
   cartItems = document.querySelector('.cart__items');
   itemsSection = document.querySelector('.items');
 
   appendItems('computador');
-  addToCart();
-  removeFromCart();
   loadLocalStorage();
   createTotalPriceElement();
   updateTotalPrice();
-  clearCart();
 };
