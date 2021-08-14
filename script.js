@@ -1,3 +1,5 @@
+const totalPrice = document.querySelector('.total-price');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,7 +30,18 @@ function createProductItemElement({
   return section;
 }
 
+function sub(number) {
+  const total = totalPrice;
+  const totalNumber = total.innerText;
+  console.log(totalNumber);
+  const subtrai = Math.abs(totalNumber) - Math.abs(number);
+  console.log(subtrai);
+  total.innerText = subtrai;
+}
+
 function cartItemClickListener(event) {
+  const numero = event.target.innerText.split('$');
+  sub(numero[1]);
   event.target.remove();
 }
 
@@ -59,13 +72,26 @@ async function jsonComputer() {
   });
 }
 
+async function acumuladorCarrinho(id) {
+  const total = totalPrice;
+  const totalNumber = total.innerText;
+ 
+  const apiPrice = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const json = await apiPrice.json();
+  const soma = await Math.abs(totalNumber) + Math.abs(json.price);
+
+  console.log(Math.abs(totalNumber));
+  console.log(Math.abs(json.price));
+
+  total.innerText = soma;
+}
+
 function addventListeBotton() {
   const botton = document.querySelectorAll('.item__add');
   botton.forEach((valu) => {
     valu.addEventListener('click', async (event) => {
       const x = event.target.parentElement.firstChild.innerText;
       const carrinho = document.querySelector('.cart__items');
-
       const produt = await fetch(`https://api.mercadolibre.com/items/${x}`);
       const objetoJson = await produt.json();
 
@@ -75,6 +101,7 @@ function addventListeBotton() {
         salePrice: objetoJson.price,
       }));
       localStorage.setItem('items', carrinho.innerHTML);
+      acumuladorCarrinho(objetoJson.id);
     });
   });
 }
@@ -89,10 +116,12 @@ function carrinhoStorage() {
 }
 
 function removeCarrinho() {
+  const valorReset = totalPrice;
   const items = document.querySelectorAll('.cart__item');
 
   items.forEach((elementos) => elementos.remove());
   localStorage.clear();
+  valorReset.innerText = '0';
 }
 
 window.onload = async () => {
