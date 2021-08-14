@@ -72,8 +72,11 @@ function createCartItemElement(item) {
 }
 
 const getItemList = async (computador) => {
+  const carrPag = document.querySelector('.loading');
+  carrPag.innerText = 'loading...';
   const url = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${computador}`);
   const urlJson = await url.json();
+  carrPag.remove();
   const arrArray = urlJson.results.map((element) => ({
     sku: element.id,
     name: element.title,
