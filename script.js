@@ -1,8 +1,8 @@
 const itemsClass = document.querySelector('.items');
-// const addCartBtn = document.querySelectorAll('.item__add');
 const cartItems = document.querySelector('.cart__items');
 const checkoutCost = document.querySelectorAll('.total-price');
 const deletThis = document.querySelectorAll('.empty-cart');
+const loading = document.querySelectorAll('.loading');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -43,7 +43,6 @@ const updatePrice = async () => {
   checkoutCost[0].innerHTML = parseFloat(calcAll, 10);
   console.log(calcAll);
 };
-
 // I'd prefer to not have that nightmare inside the reduce, but lint doesn't like it when I do 'acc += Number' so yeah fuck me I guess
 
 const saveCart = () => {
@@ -99,28 +98,29 @@ const add2Cart = async (product) => {
 // I do NOT understand why when I try to fetch it from outside this function it simply does not work. I do NOT get it.
 // btw I got the idea of that split.string[1] from here: https://stackoverflow.com/questions/9766492/get-particular-string-part-in-javascript
 
+const havePatience = (state) => {
+  // state ? loading.innerHTML = 'loading...' : itemsClass.innerHTML = '';
+  if (state) {
+    loading.innerHTML = 'loading...';
+  } else itemsClass.innerHTML = '';
+};
+
 const splashList = async (anItem) => {
-  anItem.forEach((it) => {
+  havePatience(false);
+  await anItem.forEach((it) => {
     const newitem = createProductItemElement({ sku: it.id, name: it.title, image: it.thumbnail });
-    // console.log(newitem.price);
     newitem.addEventListener('click', add2Cart);
     itemsClass.appendChild(newitem);
   });
 };
 
 const fetchQuery = async (search) => {
+  havePatience(true);
   await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
     .then((response) => response.json())
     .then((rlist) => splashList(rlist.results))
     .catch((oops) => window.alert(`oops: ${oops}`));
 };
-
-// const fetchID = async (item) => {
-//   await fetch(`https://api.mercadolibre.com/items/${item}`)
-//     .then((response) => response.json())
-//     .catch((oops) => alert(`cant get that ID: ${oops}`));
-// };
-// this is a ghost function for now. For some reason, when used, the return is completely unusable. Might fix it later. Probably. Maybe. Eventually. No.
 
 window.onload = () => {
   fetchQuery('computador');
