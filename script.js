@@ -106,6 +106,14 @@ async function addToCart(event) {
   }
 }
 
+function clearCart(event) {
+  if (event.target.className === 'empty-cart') {
+    cartListItems.innerHTML = '';
+    total.innerHTML = '';
+    cartStorage();
+  }
+}
+
 window.onload = () => {
   pageLoad();
   totalStoraged = localStorage.getItem('totalStoraged');
@@ -114,5 +122,6 @@ window.onload = () => {
   cartListItems = document.querySelector('.cart__items');
   document.body.addEventListener('click', addToCart);
   document.body.addEventListener('click', cartItemClickListener);
+  document.body.addEventListener('click', clearCart);
   cartLoadStorage();
 };
