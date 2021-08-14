@@ -2,13 +2,24 @@ const sectionItens = document.querySelector('.items');
 const cartItens = document.querySelector('.cart__items');
 const valorfinal = document.querySelector('.total-price');
 const botaoEsvaziar = document.querySelector('.empty-cart');
+const h1 = document.createElement('h1');
+const body = document.querySelector('body');
 let soma = 0;
+valorfinal.innerHTML = 0;
 
+// função de click para esvaziar o carrinho e resetar o preço.
 botaoEsvaziar.addEventListener('click', () => {
   cartItens.innerHTML = '';
   valorfinal.innerHTML = 0;
   soma = 0;
 });
+
+// função de loanding, ele roda enqunato os produtos da API não carregam e é apagado apos os produtos aparecer.
+function loadingApi() {
+  h1.classList.add('loading');
+  h1.innerHTML = 'LOADING...';
+  body.appendChild(h1);
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -42,7 +53,6 @@ function getSkuFromProductItem(item) {
 
 // função implementada para remover o item da lista clicando encima dele.
 function cartItemClickListener(event) {
-  // coloque seu código aqui
   const evento = event.target;
   cartItens.removeChild(evento);
   const valorString = evento.innerHTML.split('$');
@@ -59,13 +69,11 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// função para fazer a soma dos produtos que são adiconados ao carrinho
-valorfinal.innerHTML = 0;
+// função para fazer a soma dos produtos que são adiconados ao carrinho.
 function somandoValorCarrinho(valor) {
   soma += valor;
   valorfinal.innerText = Math.round(soma * 100) / 100;
 }
-// }
 
 // função para adicionar os produtos no carrinho de compras!
 function adiconandoALista(idSKU) {
@@ -77,7 +85,6 @@ function adiconandoALista(idSKU) {
     }));
 }
 
-// criar um span para manipular o valor!
 // função de click para pegar o id do produto e adicionar ele na lista de compras.
 function pegandoIdProduto() {
   const buttom = document.querySelectorAll('.item__add');
@@ -98,10 +105,12 @@ const mercadoLivre = () => {
           const objetoPc = { sku: pc.id, name: pc.title, image: pc.thumbnail };
           sectionItens.appendChild(createProductItemElement(objetoPc));
         });
-      }).then(() => pegandoIdProduto());
+      }).then(() => pegandoIdProduto())
+        .then(() => body.removeChild(h1));
     });
 };
 
 window.onload = () => {
+  loadingApi();
   mercadoLivre();
 };
