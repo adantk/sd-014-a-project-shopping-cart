@@ -62,3 +62,8 @@ body {
   font-size: 16pt;
   text-align: center;
 }
+
+.total-price {
+  background-color: black;
+  color: blanchedalmond;
+}

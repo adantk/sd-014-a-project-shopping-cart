@@ -1,6 +1,7 @@
 const itemsClass = document.querySelector('.items');
 const addCartBtn = document.querySelectorAll('.item__add');
 const cartItems = document.querySelector('.cart__items');
+const checkoutCost = document.querySelectorAll('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -34,6 +35,15 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const updatePrice = async () => {
+  // Array.from(cartItems.getElementsByTagName('li')).forEach((x) => console.log(x.innerHTML.split('PRICE: $')[1]))
+  const calcAll = Array.from(cartItems.getElementsByTagName('li'))
+    .reduce((acc, rec) => parseFloat(rec.innerHTML.split('PRICE: $')[1], 10) + acc, 0);
+  checkoutCost[0].innerHTML = parseFloat(calcAll, 10);
+  console.log(calcAll);
+};
+// I'd prefer to not have that nightmare inside the reduce, but lint doesn't like it when I do 'acc += Number' so yeah fuck me I guess
+
 const saveCart = () => {
   localStorage.clear();
   localStorage.setItem('MyCart', cartItems.innerHTML);
@@ -42,20 +52,19 @@ const saveCart = () => {
 function cartItemClickListener(event) {
   event.target.parentElement.removeChild(event.target);
   localStorage.clear(event.target);
+  updatePrice();
   saveCart();
 }
+// forgot to mention, but the saveCart() up there fixes an unintended behaviour in which if I load the page, add any number of items and delete any number of them again, upon reloading the cart would be emptied.
 
 const loadCart = () => {
   cartItems.innerHTML = localStorage.getItem('MyCart');
-
   Array.from(cartItems.getElementsByTagName('li'))
     .forEach((item) => { item.addEventListener('click', cartItemClickListener); });
-  // Array.from(cartItems.getElementsByTagName('li')).forEach((item) => { alert('got') });
 };
 // https://stackoverflow.com/questions/4019894/get-all-li-elements-in-array   << this saved me
 
 function createCartItemElement({ sku, name, salePrice }) {
-  // alert(sku);
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -71,9 +80,11 @@ const add2Cart = async (product) => {
   const convert4me = createCartItemElement({ sku: pls.id, name: pls.title, salePrice: pls.price });
   convert4me.addEventListener('click', cartItemClickListener);
   cartItems.appendChild(convert4me);
+  updatePrice();
   saveCart();
 };
 // I do NOT understand why when I try to fetch it from outside this function it simply does not work. I do NOT get it.
+// btw I got the idea of that split.string[1] from here: https://stackoverflow.com/questions/9766492/get-particular-string-part-in-javascript
 
 const splashList = async (anItem) => {
   anItem.forEach((it) => {
@@ -96,10 +107,9 @@ const fetchQuery = async (search) => {
 //     .then((response) => response.json())
 //     .catch((oops) => alert(`cant get that ID: ${oops}`));
 // };
+// this is a ghost function for now. For some reason, when used, the return is completely unusable. Might fix it later. Probably. Maybe. Eventually. No.
 
 window.onload = () => {
   fetchQuery('computador');
   loadCart();
-  saveCart();
-  // alert(fetchQuery('computador'));
 };
