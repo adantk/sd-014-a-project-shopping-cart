@@ -28,13 +28,9 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function remove({ target }) {
-
-}
-
 function cartItemClickListener(event) {
   event.target.remove();
-  //https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
+  // https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
 }
 
 function createCartItemElement(item) {
