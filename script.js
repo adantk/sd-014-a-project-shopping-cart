@@ -34,21 +34,22 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const saveCart = () => {
+  localStorage.clear();
+  localStorage.setItem('MyCart', cartItems.innerHTML);
+};
+
 function cartItemClickListener(event) {
   event.target.parentElement.removeChild(event.target);
   localStorage.clear(event.target);
   saveCart();
 }
 
-const saveCart = () => {
-  localStorage.clear();
-  localStorage.setItem('MyCart', cartItems.innerHTML);
-};
-
 const loadCart = () => {
   cartItems.innerHTML = localStorage.getItem('MyCart');
 
-  Array.from(cartItems.getElementsByTagName('li')).forEach((item) => { item.addEventListener('click', cartItemClickListener) });
+  Array.from(cartItems.getElementsByTagName('li'))
+    .forEach((item) => { item.addEventListener('click', cartItemClickListener); });
   // Array.from(cartItems.getElementsByTagName('li')).forEach((item) => { alert('got') });
 };
 // https://stackoverflow.com/questions/4019894/get-all-li-elements-in-array   << this saved me
