@@ -24,10 +24,20 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   // section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  const mkBtn = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');  
+  const mkBtn = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
   section.appendChild(mkBtn);
 
   return section;
+}
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+function cartItemClickListener(event) {
+  event.target.parentElement.removeChild(event.target);
+  localStorage.clear(event.target);
+  saveCart();
 }
 
 const saveCart = () => {
@@ -37,16 +47,11 @@ const saveCart = () => {
 
 const loadCart = () => {
   cartItems.innerHTML = localStorage.getItem('MyCart');
+
+  Array.from(cartItems.getElementsByTagName('li')).forEach((item) => { item.addEventListener('click', cartItemClickListener) });
+  // Array.from(cartItems.getElementsByTagName('li')).forEach((item) => { alert('got') });
 };
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  event.target.parentElement.removeChild(event.target);
-  localStorage.clear(event.target);
-}
+// https://stackoverflow.com/questions/4019894/get-all-li-elements-in-array   << this saved me
 
 function createCartItemElement({ sku, name, salePrice }) {
   // alert(sku);
@@ -94,5 +99,6 @@ const fetchQuery = async (search) => {
 window.onload = () => {
   fetchQuery('computador');
   loadCart();
+  saveCart();
   // alert(fetchQuery('computador'));
 };
