@@ -46,7 +46,7 @@ const totalPrice = async () => {
     pricetext.innerHTML = `${precoTotal.toFixed(1)}`;
     price.appendChild(pricetext);
   } else price.appendChild(pricetext);
-};
+}; // https://www.devmedia.com.br/javascript-substring-selecionando-parte-de-uma-string/39232#:~:text=O%20m%C3%A9todo%20substring()%20retorna,%22%3B%20var%20resultado%20%3D%20stringExemplo. // https://www.horadecodar.com.br/2021/06/27/remover-todos-os-elementos-filhos-com-javascript/ // https://pt.stackoverflow.com/questions/433174/como-pegar-parte-de-uma-string-at%C3%A9-um-caractere-especificado
 
 function cartItemClickListener(event) {
   event.target.remove();
