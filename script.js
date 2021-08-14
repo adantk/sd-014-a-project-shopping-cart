@@ -1,3 +1,5 @@
+const cartItemsOl = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -16,10 +18,13 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function storageCartItem() {
+  localStorage.setItem('cartItems', cartItemsOl.innerHTML);
+}
+
 function cartItemClickListener(event) {
-  // coloque seu código aqui:
-  const cartItemsOl = document.querySelector('.cart__items');
   cartItemsOl.removeChild(event.target);
+  storageCartItem();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -29,9 +34,10 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   const cartItems = document.body.querySelector('.cart').lastElementChild;
   cartItems.appendChild(li);
+  storageCartItem();
 }
 
-function addEventFunction(event) {
+function addToCartEvent(event) {
   const itemId = getSkuFromProductItem(event.target.parentElement);
   fetch(`https://api.mercadolibre.com/items/${itemId}`)
     .then((response) => response.json())
@@ -47,7 +53,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  section.lastElementChild.addEventListener('click', (event) => addEventFunction(event));
+  section.lastElementChild.addEventListener('click', (event) => addToCartEvent(event));
 
   const itemsSection = document.querySelector('.items');
   itemsSection.appendChild(section);
@@ -62,6 +68,12 @@ const productSearch = (query) => {
 )); 
 };
 
+function restoreLocalStorage() {
+  cartItemsOl.innerHTML = localStorage.getItem('cartItems');
+  [...cartItemsOl.children].forEach((li) => li.addEventListener('click', cartItemClickListener));
+}
+
 window.onload = () => {
   productSearch('computador');
+  restoreLocalStorage();
 };
