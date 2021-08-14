@@ -24,33 +24,46 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+function cartItemClickListener() {
+  // coloque seu código aqui
+}
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}  
+
+const addToCart = async (event) => {
+  const itemId = getSkuFromProductItem(event.target.parentNode);
+  const url = `https://api.mercadolibre.com/items/${itemId}`;
+  try {
+    const response = await fetch(url);
+    const { id, title, price } = await response.json();
+    const li = createCartItemElement({ sku: id, name: title, salePrice: price });
+    document.getElementsByClassName('cart__items')[0].appendChild(li);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 const fetchApi = () => {
   const loading = document.querySelector('.loading');
-  const urlAPI = 'https://api.mercadolibre.com/sites/MLB/search?q=';
   const items = document.getElementsByClassName('items')[0];
-  fetch(`${urlAPI}computador`)
-    .then((resp) => resp.json())
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+    .then((response) => response.json())
     .then(({ results }) => results)
     .then((respArr) =>
       respArr.forEach(({ id, title, thumbnail }) => {
         const item = createProductItemElement({ sku: id, name: title, image: thumbnail });
         items.appendChild(item);
+        item.addEventListener('click', addToCart);
         loading.remove();
       }))
     .catch((err) => console.log(err));
