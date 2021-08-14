@@ -30,12 +30,22 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+const saveCart = () => {
+  localStorage.clear();
+  localStorage.setItem('MyCart', cartItems.innerHTML);
+};
+
+const loadCart = () => {
+  cartItems.innerHTML = localStorage.getItem('MyCart');
+};
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
   event.target.parentElement.removeChild(event.target);
+  localStorage.clear(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -55,6 +65,7 @@ const add2Cart = async (product) => {
   const convert4me = createCartItemElement({ sku: pls.id, name: pls.title, salePrice: pls.price });
   convert4me.addEventListener('click', cartItemClickListener);
   cartItems.appendChild(convert4me);
+  saveCart();
 };
 // I do NOT understand why when I try to fetch it from outside this function it simply does not work. I do NOT get it.
 
@@ -82,5 +93,6 @@ const fetchQuery = async (search) => {
 
 window.onload = () => {
   fetchQuery('computador');
+  loadCart();
   // alert(fetchQuery('computador'));
 };
