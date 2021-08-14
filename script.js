@@ -48,16 +48,14 @@ async function jsonComputer() {
   const load = createCustomElement('h1', 'loading', 'loading');
   document.querySelector('.items').appendChild(load);
 
-  const js = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-    .then((response) => response.json());
+  const js = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const jsResov = await js.json();
+
   load.remove();
-  js.results.forEach((element) => {
-    const elementos = document.querySelector('.items');
-    elementos.appendChild(createProductItemElement({
-      sku: element.id,
-      name: element.title,
-      image: element.thumbnail,
-    }));
+
+  jsResov.results.forEach((e) => {
+    const section = document.querySelector('.items');
+    section.appendChild(createProductItemElement({ sku: e.id, name: e.title, image: e.thumbnail }));
   });
 }
 
