@@ -61,21 +61,26 @@ function loadLocalStorage() {
 }
 
 function createTotalPriceElement() {
-  const cartSection = document.querySelector('.cart');
+  const totalPriceSection = document.querySelector('.total-price-section');
 
   const totalPrice = document.createElement('span');
   totalPrice.className = 'total-price';
 
-  cartSection.appendChild(totalPrice);
+  totalPriceSection.appendChild(totalPrice);
 }
 
 function createTotalPriceSection() {
   const cartSection = document.querySelector('.cart');
 
+  const totalPriceSection = document.createElement('div');
+  totalPriceSection.className = 'total-price-section';
+
+  cartSection.appendChild(totalPriceSection);
+
   const totalPriceText = document.createElement('span');
   totalPriceText.innerText = 'Total: ';
 
-  cartSection.appendChild(totalPriceText);
+  totalPriceSection.appendChild(totalPriceText);
 
   createTotalPriceElement();
 }
