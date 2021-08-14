@@ -65,6 +65,7 @@ function addventListeBotton() {
     valu.addEventListener('click', async (event) => {
       const x = event.target.parentElement.firstChild.innerText;
       const carrinho = document.querySelector('.cart__items');
+
       const produt = await fetch(`https://api.mercadolibre.com/items/${x}`);
       const objetoJson = await produt.json();
 
@@ -82,19 +83,16 @@ function carrinhoStorage() {
   const items = localStorage.getItem('items');
   const carrinho = document.querySelector('.cart__items');
   carrinho.innerHTML = items;
-  console.log(items);
+
   const li = document.querySelectorAll('.cart__item');
-  li.forEach((item) => {
-    item.addEventListener('click', cartItemClickListener);
-  });
+  li.forEach((item) => { item.addEventListener('click', cartItemClickListener); });
 }
 
 function removeCarrinho() {
   const items = document.querySelectorAll('.cart__item');
 
-  items.forEach((elementos) => {
-    elementos.remove();
-  });
+  items.forEach((elementos) => elementos.remove());
+  localStorage.clear();
 }
 
 window.onload = async () => {
