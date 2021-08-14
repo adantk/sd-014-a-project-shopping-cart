@@ -9,7 +9,8 @@ const CART = [];
 // https://dev.to/rahmanfadhil/how-to-generate-unique-id-in-javascript-1b13
 function getRandomID() { return (Math.random() * Date.now()).toString(); }
 
-function updateCartTotal() {
+function updateCart() {
+  localStorage.setItem('CART', JSON.stringify(CART));
   const total = CART.reduce((sum, item) => sum + item.salePrice, 0);
   const priceElement = document.querySelector('.total-price');
   priceElement.innerText = total;
@@ -49,9 +50,8 @@ function cartItemClickListener(event) {
   const cartItemId = event.target.dataset.id;
   const productInfo = CART.find((product) => product.id === cartItemId);
   CART.splice(CART.indexOf(productInfo), 1);
-  localStorage.setItem('CART', JSON.stringify(CART));
   event.target.remove();
-  updateCartTotal();
+  updateCart();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -107,10 +107,8 @@ function loadCart() {
     CART.forEach((cartProductInfo) => {
       addProductToCart(cartProductInfo);
     });
-    updateCartTotal();
-  } else {
-    localStorage.setItem('CART', JSON.stringify(CART));
-  }
+  } 
+  updateCart();
 }
 
 async function clickAddProductToCartListener(event) {
@@ -120,17 +118,24 @@ async function clickAddProductToCartListener(event) {
     productInfo.id = getRandomID(); 
     addProductToCart(productInfo);
     CART.push(productInfo);
-    localStorage.setItem('CART', JSON.stringify(CART));
-    updateCartTotal();
+    updateCart();
   }
+}
+
+function clickClearCartListener() {
+  document.querySelector('.cart__items').innerHTML = '';
+  CART.length = 0;
+  updateCart();
 }
 
 /** Carregamento de dados e preparação de listeners */
 async function preparePage() {
   const productsSection = document.querySelector('.items');
+  const clearCartButton = document.querySelector('.empty-cart');
   await addProducts(productsSection);
   loadCart();
   productsSection.addEventListener('click', clickAddProductToCartListener);
+  clearCartButton.addEventListener('click', clickClearCartListener);
 }
 
 window.onload = () => { 
