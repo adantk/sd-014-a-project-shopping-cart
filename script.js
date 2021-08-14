@@ -36,7 +36,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.parentElement.removeChild(event.target);
+
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -54,6 +55,7 @@ const add2Cart = async (product) => {
   const myResponse = await fetch(`https://api.mercadolibre.com/items/${prdSKU}`);
   const pls = await myResponse.json();
   const convert4me = createCartItemElement({sku: pls.id, name: pls.title, salePrice: pls.price })
+  convert4me.addEventListener('click', cartItemClickListener);
   cartItems.appendChild(convert4me);
 }
 // I do NOT understand why when I try to fetch it from outside this function it simply does not work. I do NOT get it.
