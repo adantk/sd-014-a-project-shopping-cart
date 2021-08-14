@@ -52,25 +52,18 @@ const getListPromisse = async (computador) => {
   arrArray.forEach((element) => items.appendChild(createProductItemElement(element)));
 };
 
-const getButton = () => {
-  const buttons = document.querySelectorAll('.item__add');
-  buttons.forEach((button) => button.addEventListener('click', functionTest));
-};
-
-const carrinho = (item) => {
-  const itemCar = document.querySelector('.cart__items');
-  itemCar.appendChild(createCartItemElement(item));
-}
-
-const functionTest = async ({ target }) => {
+const addItemCar = async ({ target }) => {
   const itemId = getSkuFromProductItem(target.parentNode);
-  console.log(itemId);
-  const idURL = await fetch(`https://api.mercadolibre.com/items/${itemId}`)
+  const idURL = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
   const idURLJson = await idURL.json();
-  console.log(idURLJson)
   const itemCar = document.querySelector('.cart__items');
   itemCar.appendChild(createCartItemElement(idURLJson));
-}
+};
+
+const getButton = () => {
+  const buttons = document.querySelectorAll('.item__add');
+  buttons.forEach((button) => button.addEventListener('click', addItemCar));
+};
 
 window.onload = async () => { 
   await getListPromisse('computador');
