@@ -81,6 +81,10 @@ function createTotalPriceSection() {
   totalPriceText.innerText = 'Total: ';
 
   totalPriceSection.appendChild(totalPriceText);
+  // Output from above:
+  // <div class="total-price-section">
+  //   <span>Total: </span>
+  // </div>
 
   createTotalPriceElement();
 }
@@ -129,6 +133,7 @@ async function fetchItemID(id) {
 function addToCart() {
   document.addEventListener('click', async (event) => {
     if (event.target.classList.contains('item__add')) {
+      // Event bubbling
       const itemID = getSkuFromProductItem(event.target.parentNode);
       const { id, title, price } = await fetchItemID(itemID);
       const cartItemElement = createCartItemElement({ id, title, price });
@@ -144,6 +149,7 @@ function addToCart() {
 function removeFromCart() {
   document.addEventListener('click', async (event) => {
     if (event.target.classList.contains('cart__item')) {
+      // Event bubbling
       cartItems.removeChild(event.target);
 
       saveToLocalStorage();
