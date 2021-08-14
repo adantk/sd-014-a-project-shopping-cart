@@ -164,6 +164,17 @@ function removeFromCart() {
   });
 }
 
+function clearCart() {
+  const emptyButton = document.querySelector('.empty-cart');
+
+  emptyButton.addEventListener('click', () => {
+    cartItems.innerHTML = '';
+    
+    saveToLocalStorage();
+    updateTotalPrice();
+  });
+}
+
 window.onload = () => {
   cartItems = document.querySelector('.cart__items');
 
@@ -173,4 +184,5 @@ window.onload = () => {
   loadLocalStorage();
   createTotalPriceElement();
   updateTotalPrice();
+  clearCart();
 };
