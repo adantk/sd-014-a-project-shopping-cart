@@ -23,33 +23,59 @@ function createProductItemElement({ sku, name, image }) {
 
   return section;
 }
+
 const createProduct = (sku, name, image) =>
  document.querySelector('.items').appendChild(createProductItemElement({ sku, name, image }));
 
-const fetchProducts = async () => {
-  await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-      .then((response) => {
-        response.json().then((dados) => dados.results.map(({ id, title, thumbnail }) =>
-        createProduct(id, title, thumbnail)));
- });
- };
- 
-function getSkuFromProductItem(item) {
+ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+const makeAppend = (li) => {
+  const getOl = document.querySelector('.cart__items');
+  getOl.appendChild(li);
+};
+
+ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  makeAppend(li);
   return li;
 }
 
+const fetchItem = async (itemId) => {
+  const responseRaw = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
+  const responseJson = await responseRaw.json();
+    const { id, title, price } = responseJson;
+    createCartItemElement({ sku: id, name: title, salePrice: price });
+};
+
+const buttonListener = () => {
+  const getButton = document.querySelector('.items');
+
+   getButton.addEventListener('click', (event) => {
+    if (event.target.className === 'item__add') {
+    const getId = getSkuFromProductItem(event.target.parentNode);
+    fetchItem(getId);
+    }
+  });
+};
+
+const fetchProducts = async () => {
+  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const responseJson = await responseRaw.json();
+        responseJson.results.map(({ id, title, thumbnail }) =>
+        createProduct(id, title, thumbnail));
+        buttonListener(); 
+ };
+
 window.onload = () => {
  fetchProducts();
-};
+}; 
