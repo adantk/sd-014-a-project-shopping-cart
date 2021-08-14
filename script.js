@@ -1,3 +1,7 @@
+const itensCarrinho = document.getElementsByClassName('cart__item');
+const carrinho = document.getElementsByClassName('cart__items');
+const listagemProdutos = document.getElementsByClassName('items'); 
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -40,13 +44,14 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 function deselectButton(button) {
+  const cart = document.querySelector('.cart__items');
   const verify = button.previousSibling.previousSibling.previousSibling.innerText;
-  const itensCarrinho = document.getElementsByClassName('cart__item');
-  const divsTeste = Array.prototype.find.call(itensCarrinho, function (elementoTeste) {
+  localStorage.setItem('Storage', cart.innerHTML);
+  const teste = Array.prototype.find.call(itensCarrinho, function (elementoTeste) {
     return elementoTeste.innerText.includes(verify);
   });
-  divsTeste.addEventListener('click', (event) => { 
-    document.getElementsByClassName('cart__items')[0].removeChild(event.target);
+  teste.addEventListener('click', (event) => {
+    carrinho[0].removeChild(event.target);
   });
 }
 
@@ -58,13 +63,12 @@ const cartButton = () => {
     fetch(`https://api.mercadolibre.com/items/${alvo}`)
       .then((data) => data.json()) // Transforma a info recebida em JSON
       .then((json) => {
-        const local = document.getElementsByClassName('cart__items');
         const infos = {
           sku: json.id,
           name: json.title,
           salePrice: json.price,
         };
-        local[0].appendChild(createCartItemElement(infos));
+        carrinho[0].appendChild(createCartItemElement(infos));
       })
       .then(() => deselectButton(button));
     });
@@ -75,17 +79,27 @@ const requisito1 = () => {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador') // Acessa a API do Mercado Livre
     .then((data) => data.json()) // Transforma a info recebida em JSON
     .then((json) => {
-      const local = document.getElementsByClassName('items'); 
       json.results.forEach((product) => {
         const infos = { // Cons Infos vai ser o objeto parametro a ser enviado para a função createProductItemElement
           sku: product.id,
           name: product.title,
           image: product.thumbnail,
         };
-        local[0].appendChild(createProductItemElement(infos)); // Chama a função createProduct... e a section criada nela (com as informações do produto) são adicionadas (appendChild) na section #items
+        listagemProdutos[0].appendChild(createProductItemElement(infos)); // Chama a função createProduct... e a section criada nela (com as informações do produto) são adicionadas (appendChild) na section #items
       });
     })
     .then(() => cartButton.call());
 };
 
-window.onload = () => requisito1();
+window.onload = () => {
+  requisito1();
+  if (localStorage.length > 0) {
+    const localCart = document.querySelector('.cart__items');
+    localCart.innerHTML = localStorage.getItem('Storage');
+    Array.prototype.forEach.call(itensCarrinho, (item) => {
+        item.addEventListener('click', (event) => {
+          carrinho[0].removeChild(event.target);
+      });
+    });
+  }
+};
