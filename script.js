@@ -1,7 +1,8 @@
 const itemsClass = document.querySelector('.items');
-const addCartBtn = document.querySelectorAll('.item__add');
+// const addCartBtn = document.querySelectorAll('.item__add');
 const cartItems = document.querySelector('.cart__items');
 const checkoutCost = document.querySelectorAll('.total-price');
+const deletThis = document.querySelectorAll('.empty-cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -42,11 +43,22 @@ const updatePrice = async () => {
   checkoutCost[0].innerHTML = parseFloat(calcAll, 10);
   console.log(calcAll);
 };
+
 // I'd prefer to not have that nightmare inside the reduce, but lint doesn't like it when I do 'acc += Number' so yeah fuck me I guess
 
 const saveCart = () => {
   localStorage.clear();
   localStorage.setItem('MyCart', cartItems.innerHTML);
+};
+
+const nukeCart = () => {
+  cartItems.innerHTML = '';
+  updatePrice();
+  saveCart();
+};
+
+const readyNuke = () => {
+  deletThis[0].addEventListener('click', nukeCart);
 };
 
 function cartItemClickListener(event) {
@@ -61,6 +73,7 @@ const loadCart = () => {
   cartItems.innerHTML = localStorage.getItem('MyCart');
   Array.from(cartItems.getElementsByTagName('li'))
     .forEach((item) => { item.addEventListener('click', cartItemClickListener); });
+  updatePrice();
 };
 // https://stackoverflow.com/questions/4019894/get-all-li-elements-in-array   << this saved me
 
@@ -112,4 +125,5 @@ const fetchQuery = async (search) => {
 window.onload = () => {
   fetchQuery('computador');
   loadCart();
+  readyNuke();
 };
