@@ -1,4 +1,6 @@
 const itemsClass = document.querySelector('.items');
+const addCartBtn = document.querySelectorAll('.item__add');
+const cartItems = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -6,7 +8,7 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
-// a
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -21,7 +23,10 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  // section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  const mkBtn = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  mkBtn.addEventListener('click', add2Cart)
+  section.appendChild(mkBtn);
 
   return section;
 }
@@ -35,6 +40,7 @@ function cartItemClickListener(event) {
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
+  // alert(sku);
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -42,29 +48,40 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+const add2Cart = async (product) => {
+  // window.alert('BUY');  
+  const prdSKU = getSkuFromProductItem(product.target.parentElement);
+  const myResponse = await fetch(`https://api.mercadolibre.com/items/${prdSKU}`);
+  const pls = await myResponse.json();
+  const convert4me = createCartItemElement({sku: pls.id, name: pls.title, salePrice: pls.price })
+  cartItems.appendChild(convert4me);
+}
+// I do NOT understand why when I try to fetch it from outside this function it simply does not work. I do NOT get it.
+
 const splashList = async (anItem) => {
-  // const toElement = createProductItemElement({ sku: anItem[0].id, name: anItem[0].title, image: anItem[0].thumbnail });
-  // itemsClass.appendChild(toElement);
-
   anItem.forEach((it) => {
-    // window.alert(listing.title)
     const newitem = createProductItemElement({ sku: it.id, name: it.title, image: it.thumbnail });
+    // console.log(newitem.price);
     itemsClass.appendChild(newitem);
-  });
 
-  // for (key of anItem) {
-  //   const newitem = createProductImageElement({ sku: key.id, name: key.title, image: key.thumbnail })
-  //   itemsClass.appendChild(newitem)
-  // }
+  });
 };
 
-const fetchtList = async (search) => {
+const fetchQuery = async (search) => {
   await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
     .then((response) => response.json())
     .then((rlist) => splashList(rlist.results))
     .catch((oops) => window.alert(`oops: ${oops}`));
 };
 
+// const fetchID = async (item) => {
+//   await fetch(`https://api.mercadolibre.com/items/${item}`)
+//     .then((response) => response.json())
+//     .catch((oops) => alert(`cant get that ID: ${oops}`));
+// };
+
 window.onload = () => {
-  fetchtList('computador');
+  fetchQuery('computador')
+  // alert(fetchQuery('computador'));
+
 };

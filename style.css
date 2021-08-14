@@ -17,7 +17,7 @@ body {
 }
 
 .item {
-  border: 2px solid blue;
+  border: 2px solid rgb(179, 255, 0);
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
@@ -25,6 +25,7 @@ body {
   height: auto;
   margin: 5px;
   width: 200px;
+  background-color: rgb(3, 3, 3);
 }
 
 .item .item__sku {
@@ -47,6 +48,7 @@ body {
   cursor: pointer;
   margin: 0;
   padding: 5px;
+  color: aliceblue;
 }
 
 .cart {
