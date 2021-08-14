@@ -1,4 +1,6 @@
 const classList = document.querySelector('.items');
+const getSection = document.querySelectorAll('.item');
+const cartList = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -42,20 +44,44 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// FUNÇÕES MINHA DAQUI PRA BRAIXO 
-const listJsonMercadoLivre = async () => {
-  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-  const response = await fetch(url);
-  const request = await response.json();
-  const resultList = await request.results;
-  return resultList.map((list) => {
-    const store = createProductItemElement({ sku: list.id,
-       name: list.title, 
-       image: list.thumbnail });
-    return classList.appendChild(store);
+// FUNÇÕES MINHA DAQUI PRA BRAIXO (REQUISITO 1)
+const fecthID = async (endpoint) => {
+ const responseRaw = await fetch(`https://api.mercadolibre.com/items/${endpoint}`);
+ const responseJson = await responseRaw.json();
+ return responseJson;
+};
+
+const cartClick = () => {
+  const buyButton = document.querySelectorAll('.item__add');
+  buyButton.forEach((btn) => {
+    btn.addEventListener('click', (event) => {
+      const sku = event.target.previousSibling.previousSibling.previousSibling.innerText;
+      fecthID(sku).then((response) => {
+        const appendCart = createCartItemElement({ 
+          sku: response.id,
+          name: response.title, 
+          salePrice: response.price });
+         cartList.appendChild(appendCart); 
+      });
+    });
   });
 };
 
-listJsonMercadoLivre();
+const listJsonMercadoLivre = async (endpoint) => {
+  const url = `https://api.mercadolibre.com/sites/MLB/search?q=${endpoint}`;
+  const response = await fetch(url);
+  const request = await response.json();
+  const resultList = await request.results;
+  resultList.map((list) => {
+    const store = createProductItemElement({
+      sku: list.id,
+      name: list.title,
+      image: list.thumbnail });
+    return classList.appendChild(store);
+  });
+  cartClick();
+};
 
-window.onload = () => { };
+window.onload = () => {
+  listJsonMercadoLivre('computador');
+};
