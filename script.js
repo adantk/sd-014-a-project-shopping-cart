@@ -33,9 +33,7 @@ function createProductItemElement({
 function sub(number) {
   const total = totalPrice;
   const totalNumber = total.innerText;
-  console.log(totalNumber);
   const subtrai = Math.abs(totalNumber) - Math.abs(number);
-  console.log(subtrai);
   total.innerText = subtrai;
 }
 
@@ -79,9 +77,6 @@ async function acumuladorCarrinho(id) {
   const apiPrice = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const json = await apiPrice.json();
   const soma = await Math.abs(totalNumber) + Math.abs(json.price);
-
-  console.log(Math.abs(totalNumber));
-  console.log(Math.abs(json.price));
 
   total.innerText = soma;
 }
