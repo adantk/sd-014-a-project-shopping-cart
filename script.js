@@ -1,7 +1,14 @@
 const sectionItens = document.querySelector('.items');
 const cartItens = document.querySelector('.cart__items');
-const ol = document.querySelector('.cart__items');
 const valorfinal = document.querySelector('.total-price');
+const botaoEsvaziar = document.querySelector('.empty-cart');
+let soma = 0;
+
+botaoEsvaziar.addEventListener('click', () => {
+  cartItens.innerHTML = '';
+  valorfinal.innerHTML = 0;
+  soma = 0;
+});
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -34,11 +41,10 @@ function getSkuFromProductItem(item) {
 }
 
 // função implementada para remover o item da lista clicando encima dele.
-let soma = 0;
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const evento = event.target;
-  ol.removeChild(evento);
+  cartItens.removeChild(evento);
   const valorString = evento.innerHTML.split('$');
   const valorNumber = parseFloat(valorString[1]);
   soma -= valorNumber;
