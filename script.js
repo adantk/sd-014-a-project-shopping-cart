@@ -3,17 +3,17 @@ let subTotal = 0;
 let cartListItems;
 let total;
 
-function updateSubTotal(price) {
+function updateSubTotal(price) { // Calcula o total do carrinho
   subTotal += price;
   total.innerHTML = subTotal;
 }
 
-function cartStorage() {
+function cartStorage() { // Salva no storage o carrinho
   localStorage.setItem('cartStoraged', cartListItems.innerHTML);
   localStorage.setItem('totalStoraged', total.innerHTML);
 }
 
-function cartLoadStorage() {
+function cartLoadStorage() { // Carrega do storage o carrinho
   const cartStoraged = localStorage.getItem('cartStoraged');
   if (cartStoraged) cartListItems.innerHTML = cartStoraged;
   if (totalStoraged) total.innerHTML = totalStoraged;
@@ -53,10 +53,10 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-async function cartItemClickListener(event) {
+async function cartItemClickListener(event) { // Retira do carrinho o item clicado
   if (event.target.className === 'cart__item' && event.target.parentElement !== null) {
     // source: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/String/split
-    const priceExit = event.target.innerHTML.split('PRICE: $')[1];
+    const priceExit = event.target.innerHTML.split('PRICE: $')[1]; // Aproveita a string do item clicado para encontrar o preço do produto com a função split
     event.target.parentElement.removeChild(event.target);
     updateSubTotal(-priceExit);
     cartStorage();
@@ -89,7 +89,7 @@ function pageLoad() { // Carrega a página inicial com a pesquisa por computador
     }));
 }
 
-async function addToCart(event) {
+async function addToCart(event) { // Add item ao carrinho
   if (event.target.className === 'item__add') {
     const id = getSkuFromProductItem(event.target.parentElement);
     fetch(`https://api.mercadolibre.com/items/${id}`)
@@ -106,7 +106,7 @@ async function addToCart(event) {
   }
 }
 
-function clearCart(event) {
+function clearCart(event) { // Limpa carrinho ao apertar no botão "esvaziar carrinho"
   if (event.target.className === 'empty-cart') {
     cartListItems.innerHTML = '';
     total.innerHTML = '';
@@ -117,11 +117,11 @@ function clearCart(event) {
 window.onload = () => {
   pageLoad();
   totalStoraged = localStorage.getItem('totalStoraged');
-  if (totalStoraged) subTotal = parseFloat(totalStoraged);
+  if (totalStoraged) subTotal = parseFloat(totalStoraged); // No caso de já existir um valor no localStorage, o pega e coloca em subTotal
   total = document.querySelector('.total-price');
   cartListItems = document.querySelector('.cart__items');
-  document.body.addEventListener('click', addToCart);
-  document.body.addEventListener('click', cartItemClickListener);
-  document.body.addEventListener('click', clearCart);
+  document.body.addEventListener('click', addToCart); // Evento para add item ao carrinho
+  document.body.addEventListener('click', cartItemClickListener); // Evento para tirar item do carrinho
+  document.body.addEventListener('click', clearCart); // Limpa "tuto"
   cartLoadStorage();
 };
