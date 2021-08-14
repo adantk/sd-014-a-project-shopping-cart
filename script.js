@@ -128,8 +128,7 @@ function getTotalPrice() {
     totalPrice += itemPrice;
   });
 
-  return totalPrice;
-  // return items.reduce((total, item) => total + Number(item.innerText.substring(item.innerText.indexOf('$') + 1)), 0);
+  return Math.round(totalPrice * 100) / 100;
 }
 
 function updateTotalPrice() {
