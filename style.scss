@@ -15,17 +15,17 @@ $primary-color: #3483fa;
 
 * {
   font-family: Poppins, Lato, sans-serif;
+  box-sizing: border-box;
 }
 
 .container {
   @include flex(flex-start, space-around);
-  justify-content: space-around;
   width: 100%;
 }
 
 .items {
   @include flex-center;
-  flex-basis: 70%;
+  flex-basis: 80%;
   flex-wrap: wrap;
 }
 
@@ -34,7 +34,6 @@ $primary-color: #3483fa;
   box-sizing: border-box;
   flex-direction: column;
   height: auto;
-  margin: 10px;
   padding: 20px;
   width: 220px;
   transition: 0.2s ease-in-out;
@@ -76,22 +75,35 @@ $primary-color: #3483fa;
 }
 
 .cart {
-  display: flex;
-  flex-basis: 30%;
+  @include flex-center;
+  flex-basis: 20%;
   flex-flow: column wrap;
+  background-color: $primary-color;
+  border-radius: 25px;
+  box-shadow: 2px 6px 15px 5px rgba(143, 143, 143, 0.4);
+  color: white;
+  font-size: 12px;
+  line-height: 24px;
   .cart__title {
-    flex-basis: 1;
-    font-size: 16pt;
+    text-align: left;
+    font-size: 14pt;
+    font-weight: bold;
     text-align: center;
+    margin-top: 5%;
   } 
 }
 
 .empty-cart {
-  background: linear-gradient(67deg, $primary-color 52%, #5c9dff 100%);
-  color: rgb(221, 221, 221);
+  background: white;
+  color: $primary-color;
+  font-weight: bold;
   border: 0;
+  border-radius: 25px;
+  width: 90%;
+  margin: auto;
+  margin-bottom: 5%;
   padding: 10px;
   &:hover {
-    opacity: 0.8;
+    opacity: 0.9;
   }
 }

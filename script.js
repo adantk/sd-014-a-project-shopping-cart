@@ -1,4 +1,5 @@
 const cartList = document.querySelector('.cart__items');
+let allProducts = [];
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -17,11 +18,21 @@ function createCustomElement(element, className, innerText) {
 function cartItemClickListener(event) {
   cartList.removeChild(event.target);
   const ar = JSON.parse(localStorage.getItem('products'));
-  
-  const arr = ar.filter(({ sku, name, salePrice }) => 
-    `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}` !== event.target.innerText);
+  const removedItem = ar.find(({ sku, name, salePrice }) => {
+    return `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}` === event.target.innerText;  
+  });
+  const indexOfRemovedItem = allProducts.map((a, i) => { 
+    if (a.name === removedItem.name) { return i; }}).find((b) => typeof (b) === 'number');
 
-  localStorage.setItem('products', JSON.stringify(arr));
+  allProducts.splice(indexOfRemovedItem, 1);
+  localStorage.setItem('products', JSON.stringify(allProducts));
+
+  const sum = allProducts.map((a) => a.salePrice);
+  if (sum.length === 0) { document.querySelector('.total-price').innerText = 0; }
+  else { 
+    const total = sum.reduce((acc, value) => acc + value);
+    document.querySelector('.total-price').innerText = total;
+  }
 }
 
 // function getSkuFromProductItem(item) {
@@ -37,16 +48,16 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const ar = [];
-
 function saveItem({ sku, name, salePrice }) {
   const product = {
     sku,
     name,
     salePrice,
   };
-  ar.push(product);
-  localStorage.setItem('products', JSON.stringify(ar));
+  allProducts.push(product);
+  const sum = allProducts.map((a) => a.salePrice).reduce((acc, b) => acc + b);
+  document.querySelector('.total-price').innerText = sum;
+  localStorage.setItem('products', JSON.stringify(allProducts));
 }
 
 function createProductItemElement({ sku, name, image }) {
@@ -90,5 +101,6 @@ window.onload = () => {
   refreshList.forEach(({ sku, name, salePrice }) => {
     const addedItem = createCartItemElement({ sku, name, salePrice });
     cartList.appendChild(addedItem);
+    saveItem({ sku, name, salePrice });
   });
 };
