@@ -28,16 +28,36 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const totalPrice = async () => {
+  const carItem = document.querySelectorAll('.cart__item');
+  let precoTotal = 0;
+  carItem.forEach((i) => {
+    const preco = i.innerHTML.substr((i.innerHTML.split('').indexOf('$') + 1), i.innerHTML.length);
+    precoTotal += parseFloat(preco);
+  });
+  const price = document.querySelector('.total-price');
+  price.innerHTML = '';
+  const pricetext = document.createElement('p');
+  pricetext.innerHTML = `${precoTotal.toFixed(2)}`;
+  if (pricetext.innerHTML.endsWith('.00')) {
+    pricetext.innerHTML = `${Math.floor(precoTotal)}`;
+    price.appendChild(pricetext);
+  } else if (pricetext.innerHTML.endsWith('0')) {
+    pricetext.innerHTML = `${precoTotal.toFixed(1)}`;
+    price.appendChild(pricetext);
+  } else price.appendChild(pricetext);
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
-  totalPrice()
+  totalPrice();
   // https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
 }
 
 function deleteAll() {
   const carItem = document.querySelectorAll('.cart__item');
   carItem.forEach((item) => item.remove());
-  totalPrice()
+  totalPrice();
 }
 
 const deleteButton = document.querySelector('.empty-cart');
@@ -69,7 +89,7 @@ const addItemCar = async ({ target }) => {
   const idURLJson = await idURL.json();
   const itemCar = document.querySelector('.cart__items');
   itemCar.appendChild(createCartItemElement(idURLJson));
-  totalPrice()
+  totalPrice();
 };
 
 const getButton = () => {
@@ -77,19 +97,8 @@ const getButton = () => {
   buttons.forEach((button) => button.addEventListener('click', addItemCar));
 };
 
-const totalPrice = async () => {
-  const carItem = document.querySelectorAll('.cart__item');
-  let precoTotal = 0;
-  carItem.forEach((item) => {
-    let texSplit = item.innerHTML.split('')
-    let preco = item.innerHTML.substr((texSplit.indexOf('$') + 1), item.innerHTML.length)
-    let precoFloat = parseFloat(preco);
-    precoTotal += precoFloat;
-  })
-  console.log(precoTotal);
-}
-
 window.onload = async () => { 
   await getItemList('computador');
   getButton(); 
+  totalPrice();
 };
