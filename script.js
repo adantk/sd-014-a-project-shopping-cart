@@ -24,11 +24,11 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
   // coloque seu código aqui
 }
 
@@ -40,7 +40,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const appenSection = (object) => {
+const appendSection = (object) => {
   const { id, title, thumbnail } = object;
   const obj = {
     sku: id,
@@ -53,14 +53,40 @@ const appenSection = (object) => {
   itemsSection.appendChild(child);
 };
 
-const fetchMercadoLivre = async () => {
-  const resolveRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-  const resolveJSON = await resolveRaw.json();
-  resolveJSON.results.forEach((element) => {
-    appenSection(element);
+const getAndAddElement = async (event) => {
+ const item = (event.target.parentNode);
+ const itemID = item.firstChild.innerHTML;
+ 
+ const resolveRaw = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
+ const resolveJSON = await resolveRaw.json();
+ const { id, title, price } = resolveJSON;
+ const obj = {
+   sku: id,
+   name: title,
+   salePrice: price,
+ };
+ const child = createCartItemElement(obj);
+ const father = document.querySelector('.cart__items');
+ father.appendChild(child);
+};
+
+const fetchCart = async () => {
+  const itemsAdd = document.querySelectorAll('.item__add');
+
+  itemsAdd.forEach((element) => {
+    element.addEventListener('click', getAndAddElement);
   });
 };
 
+const fetchItems = async () => {
+  const resolveRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const resolveJSON = await resolveRaw.json();
+  resolveJSON.results.forEach((element) => {
+    appendSection(element);
+  });
+  fetchCart();
+};
+
 window.onload = () => { 
-  fetchMercadoLivre();
+  fetchItems();
 };
