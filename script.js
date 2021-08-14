@@ -30,12 +30,14 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  totalPrice()
   // https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
 }
 
 function deleteAll() {
   const carItem = document.querySelectorAll('.cart__item');
   carItem.forEach((item) => item.remove());
+  totalPrice()
 }
 
 const deleteButton = document.querySelector('.empty-cart');
@@ -67,12 +69,25 @@ const addItemCar = async ({ target }) => {
   const idURLJson = await idURL.json();
   const itemCar = document.querySelector('.cart__items');
   itemCar.appendChild(createCartItemElement(idURLJson));
+  totalPrice()
 };
 
 const getButton = () => {
   const buttons = document.querySelectorAll('.item__add');
   buttons.forEach((button) => button.addEventListener('click', addItemCar));
 };
+
+const totalPrice = async () => {
+  const carItem = document.querySelectorAll('.cart__item');
+  let precoTotal = 0;
+  carItem.forEach((item) => {
+    let texSplit = item.innerHTML.split('')
+    let preco = item.innerHTML.substr((texSplit.indexOf('$') + 1), item.innerHTML.length)
+    let precoFloat = parseFloat(preco);
+    precoTotal += precoFloat;
+  })
+  console.log(precoTotal);
+}
 
 window.onload = async () => { 
   await getItemList('computador');
