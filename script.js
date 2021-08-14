@@ -33,6 +33,14 @@ function cartItemClickListener(event) {
   // https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
 }
 
+function deleteAll() {
+  const carItem = document.querySelectorAll('.cart__item');
+  carItem.forEach((item) => item.remove());
+}
+
+const deleteButton = document.querySelector('.empty-cart');
+deleteButton.addEventListener('click', deleteAll);
+
 function createCartItemElement(item) {
   const li = document.createElement('li');
   li.className = 'cart__item';
