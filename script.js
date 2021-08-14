@@ -1,4 +1,5 @@
 let cartItems;
+let itemsSection;
 // Declared in the upper scope because script.js is linked to header on HTML => later on it will be fulfilled
 
 function createProductImageElement(imageSource) {
@@ -44,12 +45,23 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+function loadingText() {
+  const loadingElement = document.createElement('span');
+  loadingElement.className = 'loading';
+  loadingElement.innerText = 'Carregando...';
+
+  itemsSection.appendChild(loadingElement);
+}
+
 async function getItems(query) {
   if (!query) alert('Nenhum termo informado');
 
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
 
   try {
+    loadingText();
+    // Adds the loading element to the items section
+
     const response = await fetch(url);
     const json = await response.json();
 
@@ -62,11 +74,12 @@ async function getItems(query) {
 }
 
 async function appendItems(query) {
-  const itemsSection = document.querySelector('.items');
-
   const itemsList = await getItems(query);
 
   if (itemsList) {
+    itemsSection.removeChild(itemsSection.querySelector('.loading'));
+    // Removes the loading element from the items section
+
     itemsList.forEach(({ id, title, thumbnail }) => {
       const itemElement = createProductItemElement({ id, title, thumbnail });
 
@@ -117,7 +130,7 @@ function createTotalPriceElement() {
 function getTotalPrice() {
   let totalPrice = 0;
   const items = document.querySelectorAll('.cart__item');
-  
+
   items.forEach((item) => {
     const itemText = item.innerText;
     const itemPrice = Number(itemText.substring(itemText.indexOf('$') + 1));
@@ -157,7 +170,7 @@ function removeFromCart() {
   document.addEventListener('click', async (event) => {
     if (event.target.classList.contains('cart__item')) {
       cartItems.removeChild(event.target);
-      
+
       saveToLocalStorage();
       updateTotalPrice();
     }
@@ -169,7 +182,7 @@ function clearCart() {
 
   emptyButton.addEventListener('click', () => {
     cartItems.innerHTML = '';
-    
+
     saveToLocalStorage();
     updateTotalPrice();
   });
@@ -177,6 +190,7 @@ function clearCart() {
 
 window.onload = () => {
   cartItems = document.querySelector('.cart__items');
+  itemsSection = document.querySelector('.items');
 
   appendItems('computador');
   addToCart();
