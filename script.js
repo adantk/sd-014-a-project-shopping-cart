@@ -28,10 +28,6 @@ function createProductItemElement({
   return section;
 }
 
-/* function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-} */
-
 function cartItemClickListener(event) {
   event.target.remove();
 }
@@ -49,13 +45,12 @@ function createCartItemElement({
 }
 
 async function jsonComputer() {
-  const load = document.createElement('h1');
-  load.className = 'loading';
-  load.innerText = 'loading';
+  const load = createCustomElement('h1', 'loading', 'loading');
   document.querySelector('.items').appendChild(load);
+
   const js = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json());
-    load.remove();
+  load.remove();
   js.results.forEach((element) => {
     const elementos = document.querySelector('.items');
     elementos.appendChild(createProductItemElement({
@@ -72,19 +67,20 @@ function addventListeBotton() {
     valu.addEventListener('click', async (event) => {
       const x = event.target.parentElement.firstChild.innerText;
       const carrinho = document.querySelector('.cart__items');
-      const produt = await fetch(`https://api.mercadolibre.com/items/${x}`)
-        .then((y) => y.json());
+      const produt = await fetch(`https://api.mercadolibre.com/items/${x}`);
+      const objetoJson = await produt.json();
+
       carrinho.appendChild(createCartItemElement({
-        sku: produt.id,
-        name: produt.title,
-        salePrice: produt.price,
+        sku: objetoJson.id,
+        name: objetoJson.title,
+        salePrice: objetoJson.price,
       }));
       localStorage.setItem('items', carrinho.innerHTML);
     });
   });
 }
 
- function carrinhoStorage() {
+function carrinhoStorage() {
   const items = localStorage.getItem('items');
   const carrinho = document.querySelector('.cart__items');
   carrinho.innerHTML = items;
@@ -97,10 +93,10 @@ function addventListeBotton() {
 
 function removeCarrinho() {
   const items = document.querySelectorAll('.cart__item');
-  
-    items.forEach((elementos) => {
-      elementos.remove();
-    });
+
+  items.forEach((elementos) => {
+    elementos.remove();
+  });
 }
 
 window.onload = async () => {
