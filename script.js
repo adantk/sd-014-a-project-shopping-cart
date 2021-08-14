@@ -69,6 +69,17 @@ function createTotalPriceElement() {
   cartSection.appendChild(totalPrice);
 }
 
+function createTotalPriceSection() {
+  const cartSection = document.querySelector('.cart');
+
+  const totalPriceText = document.createElement('span');
+  totalPriceText.innerText = 'Total: ';
+
+  cartSection.appendChild(totalPriceText);
+
+  createTotalPriceElement();
+}
+
 function getTotalPrice() {
   let totalPrice = 0;
   const items = document.querySelectorAll('.cart__item');
@@ -192,6 +203,6 @@ window.onload = () => {
 
   appendItems('computador');
   loadLocalStorage();
-  createTotalPriceElement();
+  createTotalPriceSection();
   updateTotalPrice();
 };
