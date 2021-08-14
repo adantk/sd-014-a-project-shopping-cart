@@ -1,6 +1,14 @@
 const cartItemsOl = document.querySelector('.cart__items');
 const cart = document.querySelector('.cart');
 const totalPriceElement = document.querySelector('.total-price');
+const emptyCartButton = document.querySelector('.empty-cart');
+
+function emptyCart() {
+  emptyCartButton.addEventListener('click', () => {
+    cartItemsOl.innerHTML = '';
+    totalPriceElement.innerText = 0;
+  });
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -101,4 +109,5 @@ function restoreLocalStorage() {
 window.onload = () => {
   productSearch('computador');
   restoreLocalStorage();
+  emptyCart();
 };
