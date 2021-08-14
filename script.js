@@ -24,8 +24,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   // section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  const mkBtn = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
-  mkBtn.addEventListener('click', add2Cart)
+  const mkBtn = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');  
   section.appendChild(mkBtn);
 
   return section;
@@ -37,7 +36,6 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.parentElement.removeChild(event.target);
-
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -54,18 +52,18 @@ const add2Cart = async (product) => {
   const prdSKU = getSkuFromProductItem(product.target.parentElement);
   const myResponse = await fetch(`https://api.mercadolibre.com/items/${prdSKU}`);
   const pls = await myResponse.json();
-  const convert4me = createCartItemElement({sku: pls.id, name: pls.title, salePrice: pls.price })
+  const convert4me = createCartItemElement({ sku: pls.id, name: pls.title, salePrice: pls.price });
   convert4me.addEventListener('click', cartItemClickListener);
   cartItems.appendChild(convert4me);
-}
+};
 // I do NOT understand why when I try to fetch it from outside this function it simply does not work. I do NOT get it.
 
 const splashList = async (anItem) => {
   anItem.forEach((it) => {
     const newitem = createProductItemElement({ sku: it.id, name: it.title, image: it.thumbnail });
     // console.log(newitem.price);
+    newitem.addEventListener('click', add2Cart);
     itemsClass.appendChild(newitem);
-
   });
 };
 
@@ -83,7 +81,6 @@ const fetchQuery = async (search) => {
 // };
 
 window.onload = () => {
-  fetchQuery('computador')
+  fetchQuery('computador');
   // alert(fetchQuery('computador'));
-
 };
