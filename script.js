@@ -12,6 +12,13 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+const carrinho = document.querySelector('.cart__items')
+
+const salvarStorage = () => {
+  localStorage.removeItem('carrinho');
+  localStorage.setItem('carrinho', carrinho.innerHTML)
+}
+
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -51,6 +58,7 @@ const totalPrice = async () => {
 function cartItemClickListener(event) {
   event.target.remove();
   totalPrice();
+  salvarStorage();
   // https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
 }
 
@@ -58,6 +66,7 @@ function deleteAll() {
   const carItem = document.querySelectorAll('.cart__item');
   carItem.forEach((item) => item.remove());
   totalPrice();
+  salvarStorage();
 }
 
 const deleteButton = document.querySelector('.empty-cart');
@@ -93,6 +102,7 @@ const addItemCar = async ({ target }) => {
   const itemCar = document.querySelector('.cart__items');
   itemCar.appendChild(createCartItemElement(idURLJson));
   totalPrice();
+  salvarStorage();
 };
 
 const getButton = () => {
@@ -100,8 +110,15 @@ const getButton = () => {
   buttons.forEach((button) => button.addEventListener('click', addItemCar));
 };
 
+const carregarStorage = () => {
+  carrinho.innerHTML = localStorage.getItem('carrinho');
+  const carItem = document.querySelectorAll('.cart__item');
+  carItem.forEach((item) => item.addEventListener('click', cartItemClickListener));
+}
+
 window.onload = async () => { 
   await getItemList('computador');
   getButton(); 
   totalPrice();
+  carregarStorage();
 };
