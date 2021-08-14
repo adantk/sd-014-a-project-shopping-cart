@@ -28,8 +28,13 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function remove({ target }) {
+
+}
+
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
+  //https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
 }
 
 function createCartItemElement(item) {
@@ -40,7 +45,7 @@ function createCartItemElement(item) {
   return li;
 }
 
-const getListPromisse = async (computador) => {
+const getItemList = async (computador) => {
   const url = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${computador}`);
   const urlJson = await url.json();
   const arrArray = urlJson.results.map((element) => ({
@@ -66,6 +71,6 @@ const getButton = () => {
 };
 
 window.onload = async () => { 
-  await getListPromisse('computador');
+  await getItemList('computador');
   getButton(); 
 };
