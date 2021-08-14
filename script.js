@@ -1,3 +1,5 @@
+const items = document.querySelector('.items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,8 +30,9 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
   // coloque seu código aqui
+  
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -42,16 +45,34 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 const getProduct = () => {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computer')
-  .then((response) => response.json())
-  .then((result) => result.results)
-  .then((data) => {
-    const items = document.querySelector('.items');
-    data.map(({ id: sku, title: name, thumbnail: image }) => 
-    items.appendChild(createProductItemElement({ sku, name, image })));
-  })
-  .catch((error) => console.log('erro!', error));
+    .then((response) => response.json())
+    .then((result) => result.results)
+    .then((data) => {
+      data.map(({ id: sku, title: name, thumbnail: image }) =>
+        items.appendChild(createProductItemElement({ sku, name, image })));
+    })
+    .catch((error) => console.log('erro!', error));
 };
 
-window.onload = () => { 
+const addToCart = () => {
+ items.addEventListener('click', (event) => {
+  const isButton = event.target.nodeName === 'BUTTON';
+  if (!isButton) {
+    return;
+  }
+  const item = event.target.parentNode;
+  const itemId = item.querySelector('span.item__sku').innerText;
+
+  fetch(`https://api.mercadolibre.com/items/${itemId}`)
+  .then((response) => response.json())
+  // .then(({ id: sku, title: name, price: salePrice }) => console.log({ sku, name, salePrice }));
+  .then(({ id: sku, title: name, price: salePrice }) => 
+  createCartItemElement({ sku, name, salePrice }))
+  .then((li) => document.querySelector('ol').appendChild(li));
+ });
+};
+
+window.onload = () => {
   getProduct();
+  addToCart();
 };
