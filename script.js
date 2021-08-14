@@ -1,6 +1,3 @@
-const items = document.querySelector('.items');
-const button = document.querySelector('.item__add');
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -44,17 +41,28 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 const getListPromisse = async (computador) => {
-  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${computador}`).then((response) => {
-    response.json().then((data) => {
-      const arrArray = data.results.map((element) => ({
-        sku: element.id,
-        name: element.title,
-        image: element.thumbnail,
-      }));
-      console.log(arrArray);
-      arrArray.forEach((element) => items.appendChild(createProductItemElement(element)));
-    });
-  });
-};
+  const url = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${computador}`);
+  const urlJson = await url.json()
+  const arrArray = urlJson.results.map((element) => ({
+    sku: element.id,
+    name: element.title,
+    image: element.thumbnail,
+    }));
+    console.log(arrArray);
+    const items = document.querySelector('.items');
+    arrArray.forEach((element) => items.appendChild(createProductItemElement(element)));
+}
 
-window.onload = async () => { await getListPromisse('computador'); };
+const getButton = () => {
+  const buttons = document.querySelectorAll('.item__add');
+  console.log(buttons)
+  buttons.forEach((button) => button.addEventListener('click', functionTest));
+}
+
+const functionTest = () => {
+  console.log('Botão apertado');
+}
+
+window.onload = async () => { 
+  await getListPromisse('computador');
+  getButton(); };
