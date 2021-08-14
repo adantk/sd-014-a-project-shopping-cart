@@ -5,6 +5,16 @@ const ENDPOINTS = {
 
 const CART = [];
 
+// gera um número praticamente aleatório
+// https://dev.to/rahmanfadhil/how-to-generate-unique-id-in-javascript-1b13
+function getRandomID() { return (Math.random() * Date.now()).toString(); }
+
+function updateCartTotal() {
+  const total = CART.reduce((sum, item) => sum + item.salePrice, 0);
+  const priceElement = document.querySelector('.total-price');
+  priceElement.innerText = total;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -36,10 +46,12 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  event.target.remove();
-  const productId = event.target.dataset.id;
-  CART.splice(CART.indexOf(productId), 1);
+  const cartItemId = event.target.dataset.id;
+  const productInfo = CART.find((product) => product.id === cartItemId);
+  CART.splice(CART.indexOf(productInfo), 1);
   localStorage.setItem('CART', JSON.stringify(CART));
+  event.target.remove();
+  updateCartTotal();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -48,6 +60,15 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+}
+
+function addProductToCart(productInfo) {
+  const cartItemElement = createCartItemElement(productInfo);
+  cartItemElement.addEventListener('click', cartItemClickListener);
+  cartItemElement.dataset.id = productInfo.id;
+  cartItemElement.dataset.sku = productInfo.sku;
+  cartItemElement.dataset.price = productInfo.salePrice;
+  document.querySelector('.cart__items').appendChild(cartItemElement);
 }
 
 /**
@@ -63,19 +84,11 @@ async function fetchMLData(endpoint, query) {
   return data;
 }
 
-async function fetchProductInfo(productId) {
-  return fetchMLData(ENDPOINTS.item, productId)
+async function fetchProductInfo(productSku) {
+  return fetchMLData(ENDPOINTS.item, productSku)
   .then(({ title: name, price: salePrice }) => (
-    { sku: productId, name, salePrice }
+    { sku: productSku, name, salePrice }
   ));
-}
-
-async function addProductToCart(productId) {
-  const productInfo = await fetchProductInfo(productId);
-  const cartItemElement = createCartItemElement(productInfo);
-  cartItemElement.addEventListener('click', cartItemClickListener);
-  cartItemElement.dataset.id = productInfo.sku;
-  document.querySelector('.cart__items').appendChild(cartItemElement);
 }
 
 /** Adiciona os produtos na seção principal */
@@ -88,23 +101,27 @@ async function addProducts(section) {
   });
 }
 
-async function loadCart() {
+function loadCart() {
   CART.push(...JSON.parse(localStorage.getItem('CART') || '[]'));
   if (CART.length > 0) {
-    CART.forEach(async (cartProductID) => {
-      await addProductToCart(cartProductID);
+    CART.forEach((cartProductInfo) => {
+      addProductToCart(cartProductInfo);
     });
+    updateCartTotal();
   } else {
     localStorage.setItem('CART', JSON.stringify(CART));
   }
 }
 
-function clickAddProductToCartListener(event) {
+async function clickAddProductToCartListener(event) {
   if (event.target.classList.contains('item__add')) {
-    const productId = getSkuFromProductItem(event.target.parentElement);
-    addProductToCart(productId);
-    CART.push(productId);
+    const productSku = getSkuFromProductItem(event.target.parentElement);
+    const productInfo = await fetchProductInfo(productSku);
+    productInfo.id = getRandomID(); 
+    addProductToCart(productInfo);
+    CART.push(productInfo);
     localStorage.setItem('CART', JSON.stringify(CART));
+    updateCartTotal();
   }
 }
 
@@ -112,7 +129,7 @@ function clickAddProductToCartListener(event) {
 async function preparePage() {
   const productsSection = document.querySelector('.items');
   await addProducts(productsSection);
-  await loadCart();
+  loadCart();
   productsSection.addEventListener('click', clickAddProductToCartListener);
 }
 
