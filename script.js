@@ -58,9 +58,9 @@ const loadLocalStorage = () => {
   const listCompras = document.querySelector(cartItemsDuplicate);
   listCompras.innerHTML = localStorage.getItem('cartList');
   const itemsCarts = document.querySelectorAll('.cart__item');
-  for (let index = 0; index < itemsCarts.length; index += 1) {
-    itemsCarts[index].addEventListener('click', cartItemClickListener);
-  }
+  itemsCarts.forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
 };
 
 const createCartItemElement = ({ id: sku, title: name, price: salePrice }) => {
