@@ -49,7 +49,8 @@ const getAPI = () => {
         sku: result.id, 
         name: result.title,
         image: result.thumbnail })));            
-         }); 
+         });
     });
-}; 
+};
+
 window.onload = () => { getAPI(); };
