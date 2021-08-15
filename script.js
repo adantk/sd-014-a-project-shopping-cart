@@ -127,6 +127,12 @@ function appendProductsOnList(products) {
 const emptyCart = document.querySelector('.empty-cart');
 emptyCart.addEventListener('click', cleanCart);
 
+const items = document.querySelector('.items');
+const loading = document.createElement('div');
+loading.className = 'loading';
+loading.innerText = 'loading...';
+items.appendChild(loading);
+
 fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json())
   .then((response) => response.results)
