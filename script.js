@@ -33,7 +33,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  return cartList.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -44,7 +44,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// FUNÇÕES MINHA DAQUI PRA BRAIXO (REQUISITO 1)
 const fecthID = async (endpoint) => {
  const responseRaw = await fetch(`https://api.mercadolibre.com/items/${endpoint}`);
  const responseJson = await responseRaw.json();
