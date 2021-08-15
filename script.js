@@ -1,3 +1,5 @@
+const UrlBase = 'https://api.mercadolibre.com/sites/MLB/';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -40,4 +42,20 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+// https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Operators/await
+// https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Operators/async_function
+// https://thoughtbot.com/blog/good-things-come-to-those-who-await#:~:text=returns%20a%20promise%3A-,const%20response%20%3D%20await%20fetch(%22https%3A%2F%2Fapi.example,value%20we%20assign%20to%20response%20.
+async function Products() {
+  const response = await fetch(`${UrlBase}/search?q=computador`);
+  const produto = await response.json();
+  return produto;
+}
+
+window.onload = async () => {
+  const produtos = await Products();
+  produtos.results.forEach((product) => {
+    const element = createProductItemElement(product);
+    const items = document.querySelector('.items');
+    items.appendChild(element);
+  });
+};
