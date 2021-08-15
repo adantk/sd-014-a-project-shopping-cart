@@ -12,12 +12,12 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-const carrinho = document.querySelector('.cart__items')
+const carrinho = document.querySelector('.cart__items');
 
 const salvarStorage = () => {
   localStorage.removeItem('carrinho');
-  localStorage.setItem('carrinho', carrinho.innerHTML)
-}
+  localStorage.setItem('carrinho', carrinho.innerHTML);
+};
 
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
@@ -114,7 +114,7 @@ const carregarStorage = () => {
   carrinho.innerHTML = localStorage.getItem('carrinho');
   const carItem = document.querySelectorAll('.cart__item');
   carItem.forEach((item) => item.addEventListener('click', cartItemClickListener));
-}
+};
 
 window.onload = async () => { 
   await getItemList('computador');
