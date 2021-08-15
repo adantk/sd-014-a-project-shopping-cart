@@ -1,3 +1,5 @@
+const itemsCart = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -27,18 +29,34 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito 4 (parte 1)
+const localStorageSave = () => {
+  const ol = document.querySelector(itemsCart);
+  localStorage.setItem('listCart', ol.innerHTML);
+};
+
+// Requisito 3
 function cartItemClickListener(event) {
-  const ol = document.querySelector('#cart__items');
+  const ol = document.querySelector(itemsCart);
   ol.removeChild(event.target);
+  localStorageSave();
 }
 
+// Requisito 4 (parte 2)
+const localStorageLoad = () => {
+  const ol = document.querySelector(itemsCart);  
+  ol.innerHTML = localStorage.getItem('listCart');
+  ol.forEach((item) => item.addEventListener('click', cartItemClickListener));
+};
+
 function createCartItemElement({ sku, name, salePrice }) {
-  const ol = document.querySelector('.cart__items');
-  const li = document.createElement('li');
+  const ol = document.querySelector(itemsCart);
+  const li = document.createElement('li');  
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
+  localStorageSave();
   return li;
 }
 
@@ -60,7 +78,7 @@ const createFetch = (idProduct) => {
     .then((response) => response.json())
     .then((object) => {
     // Chama função que add item na lista ol (carrinho)
-    createCartItemElement({ sku: object.id, name: object.title, salePrice: object.price });
+    createCartItemElement({ sku: object.id, name: object.title, salePrice: object.price });    
     });
 };
 
@@ -80,7 +98,7 @@ const clickButton = () => {
 
 // Requisito 6
 const clearCart = () => {
-  const ol = document.querySelector('.cart__items');
+  const ol = document.querySelector(itemsCart);
   const clearButton = document.querySelector('.empty-cart');
   clearButton.addEventListener('click', () => {
     ol.innerHTML = '';
@@ -91,4 +109,5 @@ window.onload = async () => {
   await getList();
   await clickButton();
   await clearCart();
+  await localStorageLoad();  
 };
