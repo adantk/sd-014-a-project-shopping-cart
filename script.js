@@ -28,17 +28,18 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const ol = document.querySelector('.cart__items');
+  ol.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');  
   const ol = document.querySelector('.cart__items');
+  const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;  
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
-  return li;
+  return li;  
 }
 
 // Requisito 1
@@ -54,10 +55,11 @@ const getList = async () => {
 
 // Requisito 2
 // Requisição para o endpoint
-const createFetch = (idProduct) => {  
+const createFetch = (idProduct) => {
   fetch(`https://api.mercadolibre.com/items/${idProduct}`)
     .then((response) => response.json())
-    .then((object) => {    
+    .then((object) => {
+    // Chama função que add item na lista ol (carrinho)
     createCartItemElement({ sku: object.id, name: object.title, salePrice: object.price });
     });
 };
@@ -78,5 +80,5 @@ const clickButton = () => {
 
 window.onload = async () => {
   await getList();
-  await clickButton();
+  await clickButton();  
 };
