@@ -13,9 +13,9 @@ function createCustomElement(element, className, innerText) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
-
+event.target.remove(); // Element.remove()método remove o elemento da árvore a que pertence.
+ }
+ 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) { //  createCartItemElement() para criar os componentes HTML referentes a um item do carrinho.
   const li = document.createElement('li');
    li.className = 'cart__item';
@@ -23,12 +23,10 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) { // 
    li.addEventListener('click', cartItemClickListener);
    return li;
  }
-
+ 
 // 2. Adicione o produto ao carrinho de compras
 async function createCart(event) {
    // Cada produto na página HTML possui um botão com o nome Adicionar ao carrinho!
-  // Ao clicar nesse botão você deve realizar uma requisição para o endpoint:
- 
     const $ItemID = event.target.parentElement.firstChild.innerText; // $ItemID deve ser o valor id do item selecionado.
     const ol = document.querySelector('.cart__items');
     const apiItem = await fetch(`https://api.mercadolibre.com/items/${$ItemID}`);
@@ -47,9 +45,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   const buttonAdd = section.querySelector('.item__add'); 
   // Ao clicar nesse botão você deve realizar uma requisição para o endpoint:
-  
-  // evento de click para cada botão da minha NodeList
-  buttonAdd.addEventListener('click', createCart);
+   buttonAdd.addEventListener('click', createCart);
   return section;
 }
 // 1. Crie uma listagem de produtos
