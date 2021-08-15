@@ -44,7 +44,7 @@ const saveLocalStorage = () => {
 const somaPrecos = () => {
   const selectPrice = document.querySelectorAll('.price');
   const precoTotal = [...selectPrice].reduce((acc, curr) => 
-  acc + parseFloat(parseFloat(curr.innerText).toFixed(2)), 0);
+  acc + parseFloat(parseFloat(curr.innerText).toFixed(2)), 0); /* Solução obtida a partir do vídeo: https://www.youtube.com/watch?v=wLeSTjpTfsg&ab_channel=MatheusBattisti-HoradeCodar */
   document.querySelector('.total-price').innerText = precoTotal;
 };
 
@@ -108,8 +108,22 @@ const createProductItemElement = async () => {
   adicionaItem();
 };
 
+function limparCarrinho() {
+  const btnClear = document.querySelector('.empty-cart');
+  const totalPrice = document.querySelector('.total-price');
+  btnClear.addEventListener('click', () => {
+    const listaDeItens = document.querySelectorAll('.cart__item');
+    listaDeItens.forEach((item) => {
+      item.remove();
+    });
+    totalPrice.innerHTML = '0,00';
+    saveLocalStorage();
+  });
+}
+
 window.onload = () => {
   mercadolivreAPI();
   createProductItemElement();
   loadLocalStorage();
+  limparCarrinho();
 };
