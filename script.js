@@ -102,8 +102,12 @@ const getJson = async () => {
 // Requisito 4
 const storedItems = () => {
   if (localStorage.getItem('stored')) {
-    document.querySelector('.cart__items').innerHTML
+    const cartItems = document.querySelector('.cart__items');
+    cartItems.innerHTML
       += localStorage.getItem('stored');
+    cartItems.childNodes.forEach((item) => {
+      item.addEventListener('click', cartItemClickListener);
+    });
     totalSum();
   }
 };
