@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const UrlBase = 'https://api.mercadolibre.com/sites/MLB/';
 
 function createProductImageElement(imageSource) {
@@ -6,7 +7,7 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
-//comecando projeto Jhonathancs iniciando projeto
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -46,8 +47,8 @@ function createCartItemElement({ sku, name, salePrice }) {
 // https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Operators/async_function
 // https://thoughtbot.com/blog/good-things-come-to-those-who-await#:~:text=returns%20a%20promise%3A-,const%20response%20%3D%20await%20fetch(%22https%3A%2F%2Fapi.example,value%20we%20assign%20to%20response%20.
 async function Products() {
-  const response = await fetch(`${UrlBase}/search?q=computador`);
-  const produto = await response.json();
+  const respo = await fetch(`${UrlBase}/search?q=computador`);
+  const produto = await respo.json();
   return produto;
 }
 
