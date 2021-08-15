@@ -1,4 +1,5 @@
 const items = document.querySelector('.items');
+const cartItems = document.querySelector('.cart__items');
 let cart;
 
 function createProductImageElement(imageSource) {
@@ -15,8 +16,11 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function saveCart() {
+  localStorage.setItem('saveCart', cartItems.innerHTML);
+}
+
 function cartItemClickListener(event) {
-  const cartItems = document.querySelector('.cart__items');
   const clicado = event.target; // Armazena a li clicada na variavel
   cartItems.removeChild(clicado); // Apaga a filha de ol clicada
 }
@@ -38,7 +42,8 @@ async function getCart(itemId) {
     price: json.price,
   }; // Objeto para eu trabalhar apenas com o que eu preciso da api do produto
   const addCart = document.querySelector('.cart__items');
-  return addCart.appendChild(createCartItemElement(cart)); // chama como filho o retorno da createCart(...) entregando meu objeto cart como parametro
+  addCart.appendChild(createCartItemElement(cart)); // chama como filho o retorno da createCart(...) entregando meu objeto cart como parametro
+  saveCart(); // Salva os itens do carrinho no local storage
 }
 
 function getSkuFromProductItem(item) {
@@ -73,6 +78,17 @@ async function getComputer(query) {
   // mapeia os results e coloca como parametro de createProductItemElement deixando ela como filha de items
 }
 
+function loadCart() {
+  if (localStorage.length > 0) {
+    cartItems.innerHTML = localStorage.getItem('saveCart'); 
+    // Se houver algo em local storage, adiciona o HTML ao ol do carrinho
+  }
+  const cartItem = document.querySelectorAll('.cart__item');
+  cartItem.forEach((item) => item.addEventListener('click', cartItemClickListener)); 
+  // Carrega o eventListener para os li's salvos do carrinho
+}
+
 window.onload = () => {
   getComputer('computador');
+  loadCart();
 };
