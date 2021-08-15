@@ -12,7 +12,11 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({
+  sku,
+  name,
+  image,
+}) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -28,13 +32,22 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function actualizeLocalStorage() {
+  const items = document.querySelector('ol');
+  localStorage.setItem('cartItems', items.innerHTML);
+}
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
-  
+  actualizeLocalStorage();
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({
+  sku,
+  name,
+  salePrice,
+}) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -42,7 +55,24 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// window.onload = () => { };
+window.onload = () => {
+  const cartItems = document.querySelector('.cart__items');
+  cartItems.innerHTML = localStorage.getItem('cartItems');
+  cartItems.addEventListener('click', cartItemClickListener);
+};
+
+function appendProducts(response) {
+  const listOfCart = document.querySelector('.cart__items');
+  const infosOfProduct = {
+    sku: response.id,
+    name: response.title,
+    salePrice: response.price,
+  };
+  const itemCart = createCartItemElement(infosOfProduct);
+  itemCart.id = response.price;
+  listOfCart.appendChild(itemCart);
+  actualizeLocalStorage();
+}
 
 function appendProductsOnCart() {
   const buttonsAddToCart = document.querySelectorAll('.item__add');
@@ -52,16 +82,21 @@ function appendProductsOnCart() {
       fetch(`https://api.mercadolibre.com/items/${itemID}`)
         .then((response) => response.json())
         .then((response) => {
-          const listOfCart = document.querySelector('.cart__items');
-          const infosOfProduct = { 
-            sku: response.id,
-            name: response.title,
-            salePrice: response.price,
-          };
-          const itemCart = createCartItemElement(infosOfProduct);
-          listOfCart.appendChild(itemCart);
+          appendProducts(response);
         });
     });
+  });
+}
+
+function appendProductsOnList(products) {
+  products.forEach((product) => {
+    const items = document.querySelector('.items');
+    const infosOfProduct = {
+      sku: product.id,
+      name: product.title,
+      image: product.thumbnail,
+    };
+    items.appendChild(createProductItemElement(infosOfProduct));
   });
 }
 
@@ -70,15 +105,7 @@ function process() {
     .then((response) => response.json())
     .then((response) => response.results)
     .then((products) => {
-      products.forEach((product) => {
-        const items = document.querySelector('.items');
-        const infosOfProduct = {
-          sku: product.id,
-          name: product.title,
-          image: product.thumbnail,
-        };
-        items.appendChild(createProductItemElement(infosOfProduct));
-      });
+      appendProductsOnList(products);
     })
     .then(() => {
       appendProductsOnCart();
