@@ -9,6 +9,7 @@
 }
 
 $primary-color: #3483fa;
+$secondary-color: #b1b1b1;
 
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
@@ -16,6 +17,8 @@ $primary-color: #3483fa;
 * {
   font-family: Poppins, Lato, sans-serif;
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
@@ -78,32 +81,38 @@ $primary-color: #3483fa;
   @include flex-center;
   flex-basis: 20%;
   flex-flow: column wrap;
-  background-color: $primary-color;
+  background-color: $secondary-color;
   border-radius: 25px;
   box-shadow: 2px 6px 15px 5px rgba(143, 143, 143, 0.4);
   color: white;
   font-size: 12px;
   line-height: 24px;
+  position: sticky;
+  margin-right: 20px;
+  top: 20px;
   .cart__title {
     text-align: left;
     font-size: 14pt;
     font-weight: bold;
     text-align: center;
     margin-top: 5%;
+    margin-bottom: 20px;
   } 
 }
 
 .empty-cart {
-  background: white;
-  color: $primary-color;
+  background: $primary-color;
+  color: white;
   font-weight: bold;
   border: 0;
   border-radius: 25px;
+  box-shadow: 2px 6px 15px 5px rgba(143, 143, 143, 0.8);
   width: 90%;
   margin: auto;
+  margin-top: 25%;
   margin-bottom: 5%;
   padding: 10px;
   &:hover {
-    opacity: 0.9;
+    opacity: 0.8;
   }
 }

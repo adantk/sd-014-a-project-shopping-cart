@@ -1,6 +1,13 @@
 const cartList = document.querySelector('.cart__items');
 const totalPrice = document.querySelector('.total-price');
-const allProducts = [];
+const emptyCart = document.querySelector('.empty-cart');
+let allProducts = [];
+
+emptyCart.addEventListener('click', () => {
+  localStorage.clear();
+  allProducts = [];
+  window.location.reload();
+});
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
