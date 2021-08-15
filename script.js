@@ -58,6 +58,15 @@ apiJson.results.forEach((produto) => items.appendChild(createProductItemElement(
 } // acessar results que é um array com os resultados da pesquisa. Utilizando forEach porque map me traz um novo array que não será usado.  
 // forEach executa uma dada função em cada elemento de um array
 
+// 6. Crie um botão para limpar carrinho de compras
+function clear() {
+  const btn = document.querySelector('.empty-cart');
+  btn.addEventListener('click', () => {
+    const lista = document.querySelector('.cart__items');
+   lista.innerHTML = '';
+});
+}
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -65,4 +74,5 @@ function getSkuFromProductItem(item) {
 window.onload = () => { 
   fetchMercado();
   createCart();
+  clear();
  };
