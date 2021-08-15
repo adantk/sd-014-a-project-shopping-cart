@@ -28,7 +28,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  const ol = document.querySelector('.cart__items');
+  const ol = document.querySelector('#cart__items');
   ol.removeChild(event.target);
 }
 
@@ -36,10 +36,10 @@ function createCartItemElement({ sku, name, salePrice }) {
   const ol = document.querySelector('.cart__items');
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;  
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
-  return li;  
+  return li;
 }
 
 // Requisito 1
@@ -78,7 +78,17 @@ const clickButton = () => {
   });
 };
 
+// Requisito 6
+const clearCart = () => {
+  const ol = document.querySelector('.cart__items');
+  const clearButton = document.querySelector('.empty-cart');
+  clearButton.addEventListener('click', () => {
+    ol.innerHTML = '';
+  });  
+};
+
 window.onload = async () => {
   await getList();
-  await clickButton();  
+  await clickButton();
+  await clearCart();
 };
