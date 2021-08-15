@@ -55,3 +55,14 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.total-price {
+  display: none;
+  display: block;
+}
+
+.loading {
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+}
