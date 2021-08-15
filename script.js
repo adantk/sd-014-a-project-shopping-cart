@@ -1,3 +1,5 @@
+const cartItemsDuplicate = '.cart__items';
+
 const mercadolivreAPI = () => {
   const api = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
   return new Promise((resolve) => {
@@ -34,15 +36,31 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+const saveLocalStorage = () => {
+  const itemsList = document.querySelector(cartItemsDuplicate);
+  localStorage.setItem('cartList', itemsList.innerHTML);
+};
+
 function cartItemClickListener(event) { /* Com base na função 'remove': https://developer.mozilla.org/en-US/docs/Web/API/Element/remove */
   event.target.remove();
+  saveLocalStorage();
 }
+
+const loadLocalStorage = () => {
+  const listCompras = document.querySelector(cartItemsDuplicate);
+  listCompras.innerHTML = localStorage.getItem('cartList');
+  const itemsCarts = document.querySelectorAll('.cart__item');
+  for (let index = 0; index < itemsCarts.length; index += 1) {
+    itemsCarts[index].addEventListener('click', cartItemClickListener);
+  }
+};
 
 const createCartItemElement = ({ id: sku, title: name, price: salePrice }) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  saveLocalStorage();
   return li;
 };
 
@@ -57,8 +75,9 @@ const adicionaItem = () => {
       const evento = event.target;
       const sku = getSkuFromProductItem(evento.parentElement);
       const wait = await itemAPI(sku);
-      const carrinho = document.querySelector('.cart__items');
+      const carrinho = document.querySelector(cartItemsDuplicate);
       carrinho.appendChild(createCartItemElement(wait));
+      saveLocalStorage();
     }));
 };
 
@@ -83,4 +102,5 @@ const createProductItemElement = async () => {
 window.onload = () => {
   mercadolivreAPI();
   createProductItemElement();
+  loadLocalStorage();
 };
