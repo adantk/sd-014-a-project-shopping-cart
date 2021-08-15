@@ -32,17 +32,18 @@ function cartItemClickListener(event) {
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
+  const li = document.createElement('li');  
   const ol = document.querySelector('.cart__items');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  ol.appendChild('li');
-  return li;  
+  ol.appendChild(li);
+  return li;
 }
 
-const getList = () => {  
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+// Requisito 1
+const getList = async () => {  
+  await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
     .then((object) => {
       object.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
@@ -51,26 +52,29 @@ const getList = () => {
     });
 };
 
-const createFetch = (sku) => {
-  fetch(`https://api.mercadolibre.com/items/${sku}`)
-    .then((response) => response.json())
-    .then((object) => {
-      const objectId = object.results.find((ids) => {
-        if (ids.id === sku) {
-          createCartItemElement(sku);
-        }
-        return objectId;
-      });
-    });
+// Requisito 2
+// Requisição para o endpoint
+const createFetch = async (idProduct) => {
+  const element = await fetch(`https://api.mercadolibre.com/items/${idProduct}`)
+    .then((response) => response.json);    
+    createCartItemElement({ sku: element.id, name: element.title, salePrice: element.price });
 };
 
-// capturar botão e add escutador de eventos nele
+// Ao clicar no botão capturar a ID do produto
 const clickButton = () => {
-  const click = document.querySelector('.item__add');
-  click.addEventListener('click', createFetch);
+  const getButton = document.querySelectorAll('.item__add');
+  console.log(getButton);
+  getButton.forEach((button) => {
+    button.addEventListener('click', async (event) => {
+      const idProduct = event.target.parentElement.firstChild.innerText;
+      console.log(idProduct);
+      // Chama função que fará requisição para o endpoint
+      createFetch(idProduct);
+    });
+  });
 };
 
-window.onload = () => {
-  getList();
-  clickButton();
+window.onload = async () => {
+  await getList();
+  await clickButton();
 };
