@@ -1,3 +1,13 @@
+function totalPriceCart() {
+  const totalPriceElement = document.querySelector('.total-price');
+  const items = document.querySelectorAll('.cart__item');
+  let totalPrice = 0;
+  items.forEach((item) => {
+    totalPrice += Number(item.id);
+  });
+  totalPriceElement.innerText = totalPrice;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,9 +38,10 @@ function createProductItemElement({
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// } 
+// Não tive necessidade de usar essa função.
 
 function actualizeLocalStorage() {
   const items = document.querySelector('ol');
@@ -40,6 +51,7 @@ function actualizeLocalStorage() {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  totalPriceCart();
   actualizeLocalStorage();
 }
 
@@ -59,6 +71,7 @@ window.onload = () => {
   const cartItems = document.querySelector('.cart__items');
   cartItems.innerHTML = localStorage.getItem('cartItems');
   cartItems.addEventListener('click', cartItemClickListener);
+  totalPriceCart();
 };
 
 function appendProducts(response) {
@@ -83,14 +96,18 @@ function appendProductsOnCart() {
         .then((response) => response.json())
         .then((response) => {
           appendProducts(response);
+        })
+        .then(() => {
+          totalPriceCart();
         });
     });
   });
 }
 
 function appendProductsOnList(products) {
+  const items = document.querySelector('.items');
+  items.innerHTML = '';
   products.forEach((product) => {
-    const items = document.querySelector('.items');
     const infosOfProduct = {
       sku: product.id,
       name: product.title,
@@ -100,16 +117,12 @@ function appendProductsOnList(products) {
   });
 }
 
-function process() {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-    .then((response) => response.json())
-    .then((response) => response.results)
-    .then((products) => {
-      appendProductsOnList(products);
-    })
-    .then(() => {
-      appendProductsOnCart();
-    });
-}
-
-process();
+fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  .then((response) => response.json())
+  .then((response) => response.results)
+  .then((products) => {
+    appendProductsOnList(products);
+  })
+  .then(() => {
+    appendProductsOnCart();
+  });
