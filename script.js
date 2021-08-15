@@ -54,10 +54,12 @@ const getList = async () => {
 
 // Requisito 2
 // Requisição para o endpoint
-const createFetch = async (idProduct) => {
-  const element = await fetch(`https://api.mercadolibre.com/items/${idProduct}`)
-    .then((response) => response.json);    
-    createCartItemElement({ sku: element.id, name: element.title, salePrice: element.price });
+const createFetch = (idProduct) => {  
+  fetch(`https://api.mercadolibre.com/items/${idProduct}`)
+    .then((response) => response.json())
+    .then((object) => {    
+    createCartItemElement({ sku: object.id, name: object.title, salePrice: object.price });
+    });
 };
 
 // Ao clicar no botão capturar a ID do produto
@@ -65,7 +67,7 @@ const clickButton = () => {
   const getButton = document.querySelectorAll('.item__add');
   console.log(getButton);
   getButton.forEach((button) => {
-    button.addEventListener('click', async (event) => {
+    button.addEventListener('click', (event) => {
       const idProduct = event.target.parentElement.firstChild.innerText;
       console.log(idProduct);
       // Chama função que fará requisição para o endpoint
