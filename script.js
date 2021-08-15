@@ -49,12 +49,21 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
   return section;
 }
 // 1. Crie uma listagem de produtos
+// Mostre a palavra "loading..." em algum lugar da página apenas durante a requisição à API. O elemento mostrado durante o carregamento da página deve, obrigatóriamente, ter a classe loading.
+
 async function fetchMercado() { // async - dizer que é a função é assíncrona (dentro do assíncrona uso await). 
+ // const carreg = document.createElement('h1');
+const load = createCustomElement('p', 'loading', 'loading...');
+document.body.appendChild(load);
+
   // Await - mandar o javascript aguardar a resposta 
   const items = document.querySelector('.items');
 const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador'); // fetch criar vínculo com API - endereço da requisição 
 const apiJson = await api.json(); // retorna objeto 
-apiJson.results.forEach((produto) => items.appendChild(createProductItemElement(produto))); // Adicione o elemento retornado da função createProductItemElement(product) como filho do elemento <section class="items">
+load.remove();
+apiJson.results.forEach((produto) => items.appendChild(createProductItemElement(produto))); // Adicione o elemento retornado da 
+
+// função createProductItemElement(product) como filho do elemento <section class="items">
 } // acessar results que é um array com os resultados da pesquisa. Utilizando forEach porque map me traz um novo array que não será usado.  
 // forEach executa uma dada função em cada elemento de um array
 
@@ -67,9 +76,9 @@ function clear() {
 });
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 window.onload = () => { 
   fetchMercado();
