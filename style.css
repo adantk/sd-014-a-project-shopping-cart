@@ -9,6 +9,9 @@
   flex-basis: 70%;
   flex-wrap: wrap;
   justify-content: center;
+  border: 8px solid rgb(255, 241, 89);
+  border-radius: 10px;
+  margin-top: 10px;
 }
 
 .item {
@@ -21,7 +24,8 @@
   margin: 5px;
   width: 200px;
 }
-.cart__items{
+
+.cart__items {
   list-style-type: square;
 }
 
@@ -44,7 +48,7 @@
 }
 
 .price {
-   display: none;
+  display: none;
 }
 
 
@@ -66,4 +70,24 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+#logo {
+  height: 110px;
+  position: relative;
+  margin-left: 35%;
+}
+
+header {
+
+  /* background-image: url(mercadolivre.jpg); */
+
+  /* height: 110px;
+  width: 482px; */
+  background-repeat: no-repeat;
+  background-color: rgb(238, 222, 49);
+
+  /* position: relative;
+  margin-left: 30%;
+  font-size: 50px; */
 }
