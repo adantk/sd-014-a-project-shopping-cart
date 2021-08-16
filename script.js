@@ -49,13 +49,8 @@ const criaProdutos = async () => {
     .then((result) => result.results)
     .then((dados) => {
       const items = document.querySelector('.items');
-      dados.map(({
-          id: sku,
-          title: name,
-          thumbnail: image
-        }) =>
-        items.appendChild(createProductItemElement({ sku, name,
-          image })));
+      dados.map(({ id: sku, title: name, thumbnail: image }) =>
+        items.appendChild(createProductItemElement({ sku, name, image })));
     });
 };
 
