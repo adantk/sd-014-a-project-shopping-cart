@@ -76,9 +76,17 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-
+function cartItemClickListener(event) { // Função que remove o item do carrinho quando clicado
+  event.target.remove();
 }
+
+function showCartTotal() {
+  const total = cartList.reduce((acc, item) => {
+    return acc + item.salePrice;
+  }, 0);
+  console.log(total);
+}
+
 const setUpEmptyCart = () => { // função setUpEmptyCart, zera o carrinho toda vez que utilizada.
   document.getElementsByClassName('empty-cart')[0];
   const buttomEmpty = document.getElementsByClassName('empty-cart')[0]; // buscar o buttum
@@ -101,4 +109,5 @@ window.onload = () => {
   showProductList();
   showCartList();
   setUpEmptyCart();
+  showCartTotal();
 };
