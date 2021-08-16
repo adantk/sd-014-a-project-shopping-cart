@@ -16,9 +16,14 @@ async function ProductSeku(sku) {
   return product;
 }
 
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
 async function addToCart() {
   const sku = getSkuFromProductItem(this.parentElement);
   createCartItemElement(await ProductSeku(sku));
+  saveLocalS(sku);
 }
 
 function createCustomElement(element, className, innerText) {
@@ -36,17 +41,36 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.appendChild(
+    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'),
+  );
 
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  this.remove();
+}
+
+// https://developer.mozilla.org/es/docs/Web/API/Storage/getItem
+function LocalS() {
+  const localStor = localStorage.getItem('cartitems') || [];
+  if (typeof (localStor) === 'string') {
+    if (localStor.includes(',')) return localStor.split(',');
+    return [localStor];
+  }
+  return localStor;
+}
+
+function saveLocalS(sku) {
+  const itens = LocalS();
+  console.log(itens);
+  if (itens.length === 0) {
+    localStorage.setItem('cartitems', sku);
+  } else {
+    localStorage.setItem('cartitems', itens.concat(sku));
+  }
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -68,7 +92,15 @@ async function Products() {
   return produto;
 }
 
+function loadLocalStor() {
+  const itens = LocalS();
+  itens.forEach(async (item) => {
+    createCartItemElement(await ProductSeku(item));
+  });
+}
+
 window.onload = async () => {
+  loadLocalStor();
   const produtos = await Products();
   produtos.results.forEach((product) => {
     const element = createProductItemElement(product);
