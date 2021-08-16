@@ -58,9 +58,24 @@ const criaLista = async () => {
  });
 };
 
+const cartItems = document.querySelector('.cart__items'); // para fazer appendChild (req 2)
+// req 4
+const saveCartLocalStorage = () => {
+  localStorage.setItem('items', cartItems.innerHTML);
+};
+
+function addCartToLocalStorage() {
+  const items = localStorage.getItem('items');
+  const cart = document.querySelector('.cart__items');
+  cart.innerHTML = items;
+  const cartItem = document.querySelectorAll('.cart__item');
+  cartItem.forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
+}
+
 // req 2
-const addCart = async () => {
- const cartItems = document.querySelector('.cart__items'); // para fazer appendChild
+const addCart = async () => { 
  const btnItemAdd = document.querySelectorAll('.item__add'); // pega os botoes 'adicionar ao carrinho'
  btnItemAdd.forEach((btn) => { // para cada botao adiciona um escutador
 btn.addEventListener('click', async (eventAssync) => { // ao clicar teremos um evento assincrono, uma promise
@@ -74,24 +89,13 @@ const item = { // destructuring - pega no json os dados q precisamos nome, id, v
   salePrice: response.price,
 };
 cartItems.appendChild(createCartItemElement(item));
+saveCartLocalStorage();
 });
-localStorage.setItem('items', cartItems.innerHTML);
  }); 
 }; 
-
-// req 4
-function addCartToLocalStorage() {
-  const items = localStorage.getItem('items');
-  const cart = document.querySelector('.cart__items');
-  cart.innerHTML = items;
-  const cartItem = document.querySelectorAll('.cart__item');
-  cartItem.forEach((item) => {
-    item.addEventListener('click', cartItemClickListener);
-  });
-}
 
 window.onload = async () => {
  await criaLista(); 
  await addCart();
- await addCartToLocalStorage;
+ await addCartToLocalStorage();
 };
