@@ -1,7 +1,11 @@
-const cartItems = document.querySelector('.cart__items');
 let total = 0;
+const itemsSection = document.querySelector('.items');
+const cartItems = document.querySelector('.cart__items');
 const totalPrice = document.querySelector('.total-price');
 const emptyCartButton = document.querySelector('.empty-cart');
+const load = document.createElement('div');
+load.className = 'loading';
+itemsSection.appendChild(load);
 
 const setLocalItems = () => {
   localStorage.setItem('cart', cartItems.innerHTML);
@@ -61,7 +65,6 @@ const appendSection = (object) => {
     name: title,
     image: thumbnail,
   };
-  const itemsSection = document.querySelector('.items');
   const child = createProductItemElement(obj);
 
   itemsSection.appendChild(child);
@@ -70,7 +73,8 @@ const appendSection = (object) => {
 const getAndAddElement = async (event) => {
  const item = (event.target.parentNode);
  const itemID = getSkuFromProductItem(item);
- 
+
+ load.innerText = 'loading...';
  const resolveRaw = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
  const resolveJSON = await resolveRaw.json();
  const { id, title, price } = resolveJSON;
@@ -79,6 +83,7 @@ const getAndAddElement = async (event) => {
    name: title,
    salePrice: price,
  };
+ load.remove();
  const child = createCartItemElement(obj);
  cartItems.appendChild(child);
  total += price;
@@ -95,11 +100,13 @@ const fetchCart = async () => {
 };
  
 const fetchItems = async () => {
+  load.innerText = 'loading...';
   const resolveRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const resolveJSON = await resolveRaw.json();
   resolveJSON.results.forEach((element) => {
     appendSection(element);
   });
+  load.remove();
   fetchCart();
 };
 
