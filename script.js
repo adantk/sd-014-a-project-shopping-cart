@@ -103,8 +103,17 @@ const addToCartButton = () => {
   });
 };
 
-const getItemsFromML = () => {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador') // Acessa a API do Mercado Livre
+function loadingText() {
+  const pageBody = document.querySelector('.container');
+  const loading = document.createElement('section');
+  loading.className = 'loading';
+  loading.innerText = 'loading';
+  pageBody.appendChild(loading);
+}
+
+async function getItemsFromML() {
+  loadingText();
+  await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador') // Acessa a API do Mercado Livre
     .then((data) => data.json()) // Transforma a info recebida em JSON
     .then((json) => {
       json.results.forEach((product) => {
@@ -117,7 +126,10 @@ const getItemsFromML = () => {
       });
     })
     .then(() => addToCartButton());
-};
+    const loading = document.querySelector('.loading');
+    const pageBody = document.querySelector('.container');
+    pageBody.removeChild(loading);
+}
 
 function clearCart() {
   const cart = document.querySelector(selector);
