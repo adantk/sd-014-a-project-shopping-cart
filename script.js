@@ -1,3 +1,5 @@
+const endpoint = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -23,6 +25,25 @@ function createProductItemElement({ sku, name, image }) {
 
   return section;
 }
+// requisição API para obter os produtos, e dar um json neles!
+const getFenchAPI = async () => {
+  const resposta = await fetch(endpoint);
+  const resultado = await resposta.json();
+  return resultado.results;
+};
+const appenItem = (item) => {
+  document.querySelector('.items').appendChild(item);
+};
+// desestruturo a lista de produtos, e utilizo as chaves que preciso, para criar um novo objeto que só contem elas.
+const listOfProducts = async () => {
+  const products = await getFenchAPI();
+  products.forEach((product) => {
+    const { id, title, thumbnail } = product;
+    const newProduct = { sku: id, name: title, image: thumbnail };
+    // adiciona cada produto como filho de <section class="items">
+    appenItem(createProductItemElement(newProduct));
+  });
+};
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
@@ -40,4 +61,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+window.onload = () => {
+  listOfProducts();
+};
