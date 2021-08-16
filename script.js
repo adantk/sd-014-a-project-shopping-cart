@@ -143,6 +143,7 @@ const emptyCart = () => {
   const cart = document.querySelector(cartItemsClass);
   cart.innerHTML = '';
   const totalPrice = document.querySelector(totalPriceCart);
+  cartPrice = 0;
   totalPrice.innerHTML = 0;
   localStorage.setItem('cartList', '');
   localStorage.setItem('totalPrice', 0);
