@@ -113,7 +113,12 @@ const createProducts = (product) => {
 };
 
 const addProducts = async () => {
+  const pElement = document.createElement('p');
+  pElement.innerHTML = 'loading...';
+  pElement.className = 'loading';
+  document.querySelector('.container').appendChild(pElement);
   const arrOfProducts = await fetchProducts();
+  document.querySelector('.container').removeChild(pElement);
   arrOfProducts.forEach(createProducts);
 };
 
@@ -143,11 +148,7 @@ const btnRemoveAll = document.querySelector('.empty-cart');
 btnRemoveAll.addEventListener('click', removeAll);
 
 window.onload = async () => {
-  await addProducts().then(() => {
-    const loadingElement = document.querySelector('.loading');
-    const container = document.querySelector('.container');
-    container.removeChild(loadingElement);
-  });
+  await addProducts();
   await loadLocalStorage();
   sumOfProducts();
 };
