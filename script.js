@@ -1,6 +1,8 @@
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
 const lista = document.querySelector('.cart__items');
+const total = document.querySelector('.total-price');
+const btnEmpty = document.querySelector('.empty-cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -32,16 +34,32 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const updatePrice = (productPrice) => {
+  const current = Number(total.innerHTML);
+  total.innerHTML = current + productPrice;
+};
+
 // Requisito #4
 const updateList = () => {
   localStorage.setItem('lista', lista.innerHTML);
 };
 
+// Requisito #2
+const fetchChosenItem = async (id) => {
+  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const item = await response.json();
+  const obj = { sku: item.id, name: item.title, salePrice: item.price };
+  return obj;
+};
+
 // Requisito #3
-function cartItemClickListener(event) {
+async function cartItemClickListener(event) {
   // coloque seu código aqui
+  const id = event.target.innerText.split(' ')[1];
+  const item = await fetchChosenItem(id);
   lista.removeChild(event.target);
   updateList();
+  updatePrice(item.salePrice * (-1));
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -52,20 +70,13 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// Requisito #2
-const fetchChosenItem = async (id) => {
-  const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
-  const item = await response.json();
-  const obj = { sku: item.id, name: item.title, salePrice: item.price };
-  return obj;
-};
-
 const addItemToCart = async (event) => {
   const id = getSkuFromProductItem(event.target.parentElement);
   const info = await fetchChosenItem(id);
   const newLi = createCartItemElement(info);
   lista.appendChild(newLi);
   updateList();
+  updatePrice(info.salePrice);
 };
 
 // Requisito #1
@@ -96,7 +107,7 @@ const getSavedItems = () => {
   lista.innerHTML = localStorage.getItem('lista');
 };
 
-const addCarItemListener = () => {
+const addCartItemListener = () => {
   getSavedItems();
   const items = document.querySelectorAll('.cart__item');
   items.forEach((item) => {
@@ -104,7 +115,14 @@ const addCarItemListener = () => {
   });
 };
 
+const emptyCart = () => {
+  lista.innerHTML = '';
+  total.innerHTML = 0;
+  localStorage.setItem('lista', '');
+}
+btnEmpty.addEventListener('click', emptyCart);
+
 window.onload = () => {
   addItems();
-  addCarItemListener();
+  addCartItemListener();
 };
