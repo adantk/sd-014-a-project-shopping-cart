@@ -4,6 +4,17 @@ const lista = document.querySelector('.cart__items');
 const total = document.querySelector('.total-price');
 const btnEmpty = document.querySelector('.empty-cart');
 
+const addLoading = () => {
+  const load = document.createElement('h1');
+  load.innerHTML = 'Loading...';
+  load.className = 'loading';
+  document.body.appendChild(load);
+};
+
+const removeLoading = () => {
+  document.querySelector('.loading').remove();
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -133,17 +144,6 @@ const setInitialPrice = () => {
     initialPrice += Number(item.innerText.split('$')[1]);
   });
   total.innerHTML = initialPrice;
-};
-
-const addLoading = () => {
-  const load = document.createElement('h1');
-  load.innerHTML = 'Loading...';
-  load.className = 'loading';
-  document.body.appendChild(load);
-};
-
-const removeLoading = () => {
-  document.querySelector('.loading').remove();
 };
 
 window.onload = () => {
