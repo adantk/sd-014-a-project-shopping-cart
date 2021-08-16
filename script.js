@@ -124,15 +124,11 @@ function botaoAdiciona() {
 //   });
 // };
 
-// 6 limpa carrinho
-
-// const limpaCarrinho = document.querySelector('.empty-cart');
-// limpaCarrinho.addEventListener('click', () => {
-//   listaCarrinho.innerHTML = '';
-// });
-
 window.onload = async () => { 
   await criaProduto('computador');
   await botaoAdiciona();
   await loadLocal();
+  document.querySelector('.empty-cart').addEventListener('click', () => {
+  document.querySelector(cart).innerHTML = '';
+});
 };
