@@ -1,5 +1,4 @@
 const items = document.querySelector('.items');
-// const buttom = document.querySelector('.item__add');
 
 // Dadas Funções para o projeto:
 function createProductImageElement(imageSource) {
@@ -45,25 +44,35 @@ function createProductItemElement({ sku, name, image }) {
 // }
 
 // Preparation:
-const URL = 'https://api.mercadolibre.com/sites/MLB/search?q=';
-const type = 'computer';
+const URL = 'https://api.mercadolibre.com';
+
+const requestFormat = async (type, item) => {
+  const url = await fetch(URL + type + item);
+  const urlData = await url.json();
+  return urlData;
+};
 
 // Requisito 01:
-const itemsToHTML = async () => {
-  const url = await fetch(URL + type);
-  const urlData = await url.json();
-  const { results } = urlData;
-
+const itemsToHTML = (request) => {
+  const { results } = request;
   results.forEach((data) => {
     const c = createProductItemElement({ sku: data.id, name: data.title, image: data.thumbnail });
     items.appendChild(c);
   });
 };
 
+// Requisitor 02:
+const btnClick = () => {
+  const btn = document.querySelectorAll('.item__add');
+  btn.forEach((b) => b.addEventListener('click', (event) => {
+    const productID = event.target.parentElement.firstChild.innerText;
+    return requestFormat('/items/', productID);
+  }));
+};
+
 // -------------------------------------------------------------
-
-// window.onload = () => { itemsToHTML(); };
-
 window.onload = async () => {
-  await itemsToHTML(); 
+  const fetchAPI = await requestFormat('/sites/MLB/search?q=', 'computador');
+  await itemsToHTML(fetchAPI);
+  await btnClick();
 };
