@@ -1,7 +1,7 @@
 .container {
   display: flex;
   justify-content: space-around;
-  width: 100%;
+  width: 100%;  
 }
 
 .items {
@@ -44,7 +44,7 @@
   padding: 5px;
 }
 
-.cart {
+.cart { 
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
@@ -54,4 +54,8 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+.item__price {
+  margin: auto;
 }
