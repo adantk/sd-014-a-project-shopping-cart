@@ -75,14 +75,14 @@ const getList = async () => {
 // Requisito 2
 // Requisição para o endpoint
 const createFetch = (idProduct) => {
-    loadingPage.innerHTML = 'loading...';
+    // loadingPage.innerHTML = 'loading...';
     fetch(`https://api.mercadolibre.com/items/${idProduct}`)
     .then((response) => response.json())
     .then((object) => {
     // Chama função que add item na lista ol (carrinho)
     createCartItemElement({ sku: object.id, name: object.title, salePrice: object.price });    
     });
-    loadingPage.remove();
+    // loadingPage.remove();
 };
 
 // Ao clicar no botão capturar a ID do produto
