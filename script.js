@@ -34,6 +34,7 @@ function getSkuFromProductItem(item) { // retorna a SKU do pai
 
 const arr = [];
 const precos = [];
+
 const atualizaPreco = () => {
   const total = precos.reduce((acc, cur) => 
       acc + cur,
@@ -42,10 +43,8 @@ const atualizaPreco = () => {
 };
 
 function cartItemClickListener(event) { // função para apagar linha selecionada
-  // coloque seu código aqui
   precos.splice(arr.indexOf(event.target.innerText.substring(5, 18)), 1);
   arr.splice(arr.indexOf(event.target.innerText.substring(5, 18)), 1);
-  // total = precos.reduce((acc,cur)=>acc += cur ,0)
   localStorage.list = JSON.stringify(arr);
   atualizaPreco();
   event.target.remove();
@@ -63,8 +62,6 @@ function createCartItemElement({ // cria lista
   return li;
 }
 
-// let total = precos.reduce((acc,cur)=>acc += cur ,0);
-
 const removeChild = () => { // BOTÃO DE APAGAR TUDO NA LISTA
   const carIt = document.getElementsByClassName('cart__items');
   while (carIt[0].firstChild) {
@@ -72,10 +69,8 @@ const removeChild = () => { // BOTÃO DE APAGAR TUDO NA LISTA
     arr.pop();
     precos.pop();
   }
-  // const total = precos.reduce((acc,cur)=>acc += cur ,0)
   atualizaPreco();
   localStorage.list = JSON.stringify([]);
-  localStorage.prices = JSON.stringify([]);
 };
 
 const listItem = (id) => {
@@ -87,7 +82,6 @@ const listItem = (id) => {
         name: dados.title,
         salePrice: dados.price,
       }));
-      // total += dados.price;
       arr.push(dados.id);
       localStorage.list = JSON.stringify(arr);
       precos.push(dados.price);
@@ -97,14 +91,25 @@ const listItem = (id) => {
 
 const findId = (e) => {
   listItem(getSkuFromProductItem(e.target.parentNode));
-  // arr.push(getSkuFromProductItem(e.target.parentNode));
-  // localStorage.list = JSON.stringify(arr);
 };
+
+const loading = () => {
+  const cria = document.createElement('p');
+  cria.innerText = 'Loading';
+  cria.classList.add('loading');
+  document.body.appendChild(cria);
+};
+const removeLoading = () => {
+  document.getElementsByClassName('loading')[0].remove();
+};
+
 const callFetch = () => {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  loading();
   fetch(url).then((resposta) => resposta.json())
 
     .then((dados) => {
+      removeLoading();
       const contItem = document.getElementsByClassName('items');
       const btnAdd = document.getElementsByClassName('item__add');
       dados.results.forEach((cur, i) => {
@@ -119,7 +124,6 @@ const callFetch = () => {
 };
 
 callFetch();
-// atualizaPreco()
 window.onload = () => {
   const price = document.createElement('p');
   price.classList.add('total-price');
@@ -130,12 +134,4 @@ window.onload = () => {
     JSON.parse(localStorage.list).forEach((cur) => listItem(cur));
   }
   atualizaPreco();
-  // if(listados.length > 0){
-  //   listados.forEach((cur)=> arr.push(cur.innerText.substring(5,18)))
-  // }
-  // total = localStorage.getItem('total').toFixed
-  // atualizaPreco()
-  // arr = localStorage.getItem('list');
-  // arr = JSON.parse(arr);
-  // arr.forEach((cur)=> listItem(cur))
 };
