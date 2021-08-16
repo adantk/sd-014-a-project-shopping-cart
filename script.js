@@ -1,11 +1,4 @@
-// const saveCarrinho = () => {
-//   localStorage.clear();
-//   localStorage.setItem('ok', meuCarrinho.innerHTML);
-// };
-
-// const loadCarrinho = () => {
-//   meuCarrinho.innerHTML = localStorage.getItem('ok');
-// };
+const cart = '.cart__items';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -33,13 +26,20 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// 4
+const saveLocal = () => {
+  localStorage.setItem('lista', document.querySelector(cart).innerHTML);
+};
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 // 3
+// função para remover item carrinho, clicando
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/remove */
 function cartItemClickListener(event) {
   event.target.remove();
-//   // saveCarrinho();
+  saveLocal();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -49,6 +49,17 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+// 4
+const loadLocal = () => {
+  const items = localStorage.getItem('lista');
+  document.querySelector(cart).innerHTML = items;
+  const cartItem = document.querySelectorAll('.cart__item');
+  cartItem.forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
+};
+
 // 1
 // Cria os itens
 function achaProduto(params) {
@@ -68,12 +79,11 @@ const criaProduto = async (query) => {
   achaProduto(resposta.results);
 };
 
-const carrinho = document.querySelector('.cart__items');
-
 // 2
 // funçao para adicionar o produto
 function adicionaAoCarrinho(params) {
   document.querySelector('.cart__items').appendChild(createCartItemElement(params));
+  saveLocal();
 }
 
 // função para pegar informaçoes do item clicado
@@ -116,7 +126,13 @@ function botaoAdiciona() {
 
 // 6 limpa carrinho
 
+// const limpaCarrinho = document.querySelector('.empty-cart');
+// limpaCarrinho.addEventListener('click', () => {
+//   listaCarrinho.innerHTML = '';
+// });
+
 window.onload = async () => { 
   await criaProduto('computador');
-  botaoAdiciona();
+  await botaoAdiciona();
+  await loadLocal();
 };
