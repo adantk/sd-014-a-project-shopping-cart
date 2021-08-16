@@ -1,6 +1,17 @@
 const items = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
+const clearCart = document.querySelector('.empty-cart');
 let cart;
+
+function emptyCart() {
+  clearCart.addEventListener('click', () => {
+  const cartItem = document.querySelectorAll('.cart__item');
+  cartItem.forEach((item) => { 
+    item.parentNode.removeChild(item); 
+    // Para cada LI, chama o pai e exclui um filho, resultando na remoção de todos os itens
+  });
+});
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -86,6 +97,7 @@ function loadCart() {
   const cartItem = document.querySelectorAll('.cart__item');
   cartItem.forEach((item) => item.addEventListener('click', cartItemClickListener)); 
   // Carrega o eventListener para os li's salvos do carrinho
+  emptyCart();
 }
 
 window.onload = () => {
