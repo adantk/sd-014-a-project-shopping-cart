@@ -21,9 +21,9 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createProductImageElement(image));
  const btnAdd = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
  // btnAdd.addEventListener('click', addCarrinho);
-  btnAdd.addEventListener('click', (event) => {
-    console.log(event.target);
-    console.log(sku);
+  btnAdd.addEventListener('click', () => {
+    // console.log(event.target);
+    // console.log(sku);
     fetchItens(sku);
   });
   
@@ -37,13 +37,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
- //  itemCarrinho.removeChild(event.target); // Pega o item que foi clicado e remove ele pelo evento .target
-
-  // pegando a lista de elementos do carrinho
-  // const listaCarrinho = document.querySelectorAll('li.cart__item');
-  // listaCarrinho.addEventListener('click', function (evento) {
-  //   console.log(evento.target); // pega o evento, qual o item clicado e remove ele da lista
-  // });
+ const itemRemover = event.target;
+ itemRemover.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -84,30 +79,26 @@ const getProduto = async () => {
   // console.log(produtos.results);
 };
 
-// 2
-const fetchItens = async (itemId) => {
-  console.log(itemId);
-  const fetchItem = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
-  const responseItem = await fetchItem.json();
-  console.log(responseItem);
-  addCarrinho(responseItem);
-  // const { id, automatic_relist, available_quantity } = responseItem;
-  // console.log(id, automatic_relist, available_quantity);
-  return responseItem;
-};
-
 function addCarrinho(idItem) {
-  console.log(idItem);
-  
+  // console.log(idItem);
   const itemId = createCartItemElement( // envia os parametros do id do item recebido para a função createCartItemElement
     { sku: idItem.id, 
       name: idItem.title, 
       salePrice: idItem.price,
     },
-  )
+  );
     const itemCarrinho = document.querySelector('.cart__items');
     itemCarrinho.appendChild(itemId);     
 }
+// 2
+const fetchItens = async (itemId) => {
+  // console.log(itemId);
+  const fetchItem = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
+  const responseItem = await fetchItem.json();
+  // console.log(responseItem);
+  addCarrinho(responseItem);
+  return responseItem;
+};
 
 window.onload = async () => { 
   await fetchApi();
