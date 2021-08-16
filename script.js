@@ -36,6 +36,17 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function loading() {
+  const div = document.querySelector('.container');
+  const divLoading = createCustomElement('div', 'loading', 'loading...');
+  div.appendChild(divLoading);
+}
+
+function noLoading() {
+  const load = document.querySelector('.loading');
+  load.remove();
+}
+
 const saveLocalStorage = () => {
   const itemsList = document.querySelector(cartItemsDuplicate);
   localStorage.setItem('cartList', itemsList.innerHTML);
@@ -105,6 +116,7 @@ const createProductItemElement = async () => {
 
     items.appendChild(section);
   });
+  noLoading();
   adicionaItem();
 };
 
@@ -126,4 +138,5 @@ window.onload = () => {
   createProductItemElement();
   loadLocalStorage();
   limparCarrinho();
+  loading();
 };
