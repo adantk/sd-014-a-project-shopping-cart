@@ -1,5 +1,15 @@
 const itemsCart = '.cart__items';
-const loadingPage = '.loadingPage';
+
+// Requisito 7
+const loadingPage = () => {
+  const loading = document.querySelector('.loading');
+  loading.innerText = 'Loading...';
+  document.body.appendChild(loading);
+};
+
+const removeLoadingPage = () => {
+  document.getElementsByClassName('loading')[0].remove();
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -62,27 +72,27 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 // Requisito 1
-const getList = async () => {  
+const getList = async () => {
+  loadingPage();
   await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
     .then((object) => {
+      removeLoadingPage();
       object.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
-        createProductItemElement({ sku, name, image });
+        createProductItemElement({ sku, name, image });        
       });
-    });
+    });  
 };
 
 // Requisito 2
 // Requisição para o endpoint
-const createFetch = (idProduct) => {
-    // loadingPage.innerHTML = 'loading...';
-    fetch(`https://api.mercadolibre.com/items/${idProduct}`)
+const createFetch = async (idProduct) => {  
+  await fetch(`https://api.mercadolibre.com/items/${idProduct}`)
     .then((response) => response.json())
     .then((object) => {
     // Chama função que add item na lista ol (carrinho)
     createCartItemElement({ sku: object.id, name: object.title, salePrice: object.price });    
-    });
-    // loadingPage.remove();
+    });  
 };
 
 // Ao clicar no botão capturar a ID do produto
