@@ -1,5 +1,6 @@
 const itens = document.querySelector('.items');
 const preco = document.querySelector('.total-price');
+const removeBtn = document.querySelector('.empty-cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -43,6 +44,12 @@ const sumValue = () => {
   saveCart();
 };
 
+const removeAll = () => {
+  cartItems.innerHTML = '';
+  sumValue();
+  saveCart();
+};
+
 const remove = (ele) => {
   cartItems.removeChild(ele.target);
   sumValue();
@@ -70,6 +77,7 @@ const fetchCart = async (id) => {
   }));
   cartItemClickListener();
   sumValue();
+  removeBtn.addEventListener('click', removeAll);
   saveCart();
 };
 
@@ -101,11 +109,8 @@ const fecthLista = async () => {
     }));
   });
   btnAdd();
-  
   cart();
   sumValue();
-
-  // cartItemClickListener();
 };
 
 /* function getSkuFromProductItem(item) {
