@@ -1,3 +1,5 @@
+const cartItems = document.querySelector('.cart__items'); // para fazer appendChild (req 2)
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,12 +30,28 @@ function createProductItemElement({ sku, name, image }) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
+// req 4 I
+const saveCartLocalStorage = () => {
+  localStorage.setItem('items', cartItems.innerHTML);
+};
 
 // req 3
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const cartItem = document.querySelector('.cart__item'); // seleciona item no carrinho
   cartItem.remove(event.target); // usa metodo 'remove'
+  saveCartLocalStorage();
+}
+
+// req 4 II
+function addCartToLocalStorage() {
+  const items = localStorage.getItem('items');
+  const cart = document.querySelector('.cart__items');
+  cart.innerHTML = items;
+  const cartItem = document.querySelectorAll('.cart__item');
+  cartItem.forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -58,22 +76,6 @@ const criaLista = async () => {
  });
 };
 
-const cartItems = document.querySelector('.cart__items'); // para fazer appendChild (req 2)
-// req 4
-const saveCartLocalStorage = () => {
-  localStorage.setItem('items', cartItems.innerHTML);
-};
-
-function addCartToLocalStorage() {
-  const items = localStorage.getItem('items');
-  const cart = document.querySelector('.cart__items');
-  cart.innerHTML = items;
-  const cartItem = document.querySelectorAll('.cart__item');
-  cartItem.forEach((item) => {
-    item.addEventListener('click', cartItemClickListener);
-  });
-}
-
 // req 2
 const addCart = async () => { 
  const btnItemAdd = document.querySelectorAll('.item__add'); // pega os botoes 'adicionar ao carrinho'
@@ -97,5 +99,5 @@ saveCartLocalStorage();
 window.onload = async () => {
  await criaLista(); 
  await addCart();
- await addCartToLocalStorage();
+ addCartToLocalStorage();
 };
