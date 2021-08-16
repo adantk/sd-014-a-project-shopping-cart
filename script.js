@@ -20,7 +20,7 @@ function createCustomElement(element, className, innerText) {
  * action e na cartItemClickListener, a fim de
  * atualizar a soma em cada interação do carrinho.
  */
-const sumOfProducts = async () => {
+const sumOfProducts = () => {
   const itemsCart = document.querySelectorAll('.cart__item');
   const pElement = document.querySelector('.total-price');
   let sum = 0;
