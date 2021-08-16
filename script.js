@@ -19,12 +19,12 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
+  
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  
   return section;
 }
 
@@ -32,10 +32,16 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito #4
+const updateList = () => {
+  localStorage.setItem('lista', lista.innerHTML);
+};
+
 // Requisito #3
 function cartItemClickListener(event) {
   // coloque seu código aqui
   lista.removeChild(event.target);
+  updateList();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -59,6 +65,7 @@ const addItemToCart = async (event) => {
   const info = await fetchChosenItem(id);
   const newLi = createCartItemElement(info);
   lista.appendChild(newLi);
+  updateList();
 };
 
 // Requisito #1
@@ -87,7 +94,7 @@ const addItems = async () => {
 
 const getSavedItems = () => {
   lista.innerHTML = localStorage.getItem('lista');
-}
+};
 
 const addCarItemListener = () => {
   getSavedItems();
@@ -101,7 +108,3 @@ window.onload = () => {
   addItems();
   addCarItemListener();
 };
-
-window.onbeforeunload = () => {
-  localStorage.setItem('lista', lista.innerHTML);
-}
