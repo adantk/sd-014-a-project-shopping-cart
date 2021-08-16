@@ -29,11 +29,20 @@ const clearProductList = () => {
   document.getElementsByClassName('items')[0].innerText = ''; // a função remove todos os itens da lista substituidno a lista por uma string vazia.
   console.log('learProductList', document.getElementsByClassName('items'));
 };
+
+function showLoading() {
+  document.getElementsByClassName('items')[0].appendChild(createCustomElement('span', 'loading', 'Loading'));
+}
+
+function hideLoading() {
+  document.getElementsByClassName('items')[0].innerText = '';
+}
 const showProductList = async () => {
   clearProductList();
+  showLoading(); 
   const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   const responseJson = await responseRaw.json();
-
+  hideLoading();
   responseJson.results.forEach((element) => {
     const itemEl = createProductItemElement(
       {
