@@ -21,6 +21,9 @@
   margin: 5px;
   width: 200px;
 }
+.cart__items{
+  list-style-type: square;
+}
 
 .item .item__sku {
   display: none;
@@ -35,6 +38,15 @@
 .item .item__image {
   width: 100%;
 }
+
+.item .item__price {
+  display: none;
+}
+
+.price {
+   display: none;
+}
+
 
 .item .item__add {
   background-color: green;

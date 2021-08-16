@@ -1,4 +1,5 @@
 const itens = document.querySelector('.items');
+const preco = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,11 +15,16 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+
+
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
+  //li.appendChild(createCustomElement('span', 'price', salePrice));
+  li.setAttribute('value', salePrice);
+  /* soma += salePrice;
+  preco.innerText = soma; */
   return li;
 }
 
@@ -29,8 +35,19 @@ const saveCart = () => {
   localStorage.setItem('itens', cartItems.innerHTML);
 };
 
+const sumValue = () => {
+  let soma = 0;
+  document.querySelectorAll('.cart__item').forEach((valor) => {
+    const valorA = valor.getAttribute('value');
+    soma += parseFloat(valorA);
+  });
+  preco.innerHTML = Math.round(soma*100)/100;
+  saveCart();
+}
+
 const remove = (ele) => {
   cartItems.removeChild(ele.target);
+  console.log(sumValue());
   saveCart();
 };
 
@@ -48,22 +65,23 @@ const fetchCart = async (id) => {
   const respRaw = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const respJson = await respRaw.json();
   // console.log(respJson);
-  const addItems = document.querySelector('.cart__items');
-  addItems.appendChild(createCartItemElement({
+  cartItems.appendChild(createCartItemElement({
     sku: respJson.id,
     name: respJson.title,
     salePrice: respJson.price,
   }));
   cartItemClickListener();
+  sumValue();
   saveCart();
 };
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ sku, name, image, price }) {
   const section = document.createElement('section');
   section.className = 'item';
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createCustomElement('span', 'item__price', price));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
@@ -81,10 +99,14 @@ const fecthLista = async () => {
       sku: arrays.id,
       name: arrays.title,
       image: arrays.thumbnail,
+      price: arrays.price,
     }));
   });
   btnAdd();
+  
   cart();
+  sumValue();
+
   // cartItemClickListener();
 };
 
