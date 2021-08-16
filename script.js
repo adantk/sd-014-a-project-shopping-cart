@@ -31,7 +31,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -54,10 +54,16 @@ async function getItem(ItemID) {
   return item.json();
 }
 
+function setLocalStorage() {
+  const ol = document.getElementsByClassName('cart__items')[0];
+  localStorage.setItem('stored', ol.innerHTML);  
+}
+
 async function cartItemCreator(event) {
   const itemId = await getSkuFromProductItem(event.target.parentElement);
   const objectItem = await getItem(itemId);
   document.querySelector('.cart__items').appendChild(createCartItemElement(objectItem));
+  setLocalStorage();
 }
 
 function addListeners() {
@@ -68,6 +74,9 @@ function addListeners() {
 window.onload = () => {
   getProducts('computador', addListeners);
   listaItens = document.querySelector('.items');
+  document.querySelector('.cart__items').innerHTML = localStorage.getItem('stored');
+  document.querySelectorAll('.cart__item')
+    .forEach((elem) => elem.addEventListener('click', cartItemClickListener));
 };
 
 /* Requisito 1
@@ -83,4 +92,14 @@ window.onload = () => {
   3 - Usar a função cartItemCreator para criar a lista de itens no carrinho de compras
     3.1 - Retornar o objeto JSON a partir do ID do item (que é obtido com a função getSkuFromProductItem)
     3.2 - Usar a função createCartItemElement para criar os elementos HTML referentes ao item
+*/
+
+/* Requisito 3
+  1 - A função cartItemClickListener deve remover os itens da lista (.remove())
+  2 - Os listeners devem ser adicionados toda vez que a página é atualizada.
+*/
+
+/* Requisito 4
+  1 - O HTML interno da lista deve ser adicionado ao local storage, na função setLocalStorage
+  2 - Ao atualizar a página, o HTML interno da lista deve ser readicionado à lista de carrinho de compras
 */
