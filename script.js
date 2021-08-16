@@ -41,11 +41,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// function cartItemClickListener(event) {
-//   const ol = document.querySelector('.cart__items');
-//   localStorage.removeItem(event.target);
-//   ol.removeChild(event.target);
-// }
+const p = document.getElementsByClassName('total-price')[0];
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -54,6 +50,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', (event) => {
     ol.removeChild(event.target);
     saveLocal();
+    p.innerText = (p.innerText * 1) - (salePrice * 1);
   });
   return li;
 }
@@ -66,8 +63,7 @@ function findID(id) {
       const makeCart = createCartItemElement(dataObj);
       ol.appendChild(makeCart);
       saveLocal();
-      const p = document.getElementsByClassName('total-price')[0];
-      p.innerText = `Preço: ${dados.price}`;
+      p.innerText = (dados.price * 1) + (p.innerText * 1);
     });
 }
 
