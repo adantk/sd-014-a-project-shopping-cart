@@ -1,4 +1,5 @@
 const cartItems = document.querySelector('.cart__items');
+// const cartItem = document.querySelectorAll('.cart__item');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -58,10 +59,46 @@ const getItems = async () => {
 };
 // Agradeço ao Matheus Martino pela monitoria de revisão do Bloco 9!
 
+// Requisito 5
+const createTotalPrice = (() => {
+  const cart = document.querySelector('.cart');
+  const totalPriceParent = document.createElement('span');
+  totalPriceParent.className = 'total-price';
+  cart.appendChild(totalPriceParent);
+
+  const totalPriceElement = document.createElement('p');
+  totalPriceElement.className = 'total-price-parag';
+  totalPriceParent.appendChild(totalPriceElement);
+
+  // totalPriceElement.innerText = 'Preço total: ';
+});
+createTotalPrice();
+
+const totalPrice = (() => {
+  const actualPrice = document.querySelector('.total-price-parag');
+  const cartItem = document.querySelectorAll('.cart__item');
+  let sumPrices = 0;
+
+  cartItem.forEach((item) => {
+  const itemPrice = item.innerText;
+  const posicaoInicial = itemPrice.indexOf('$') + 1; // indexOf() retorna o primeiro índice em que o elemento pode ser encontrado
+  const posicaoFinal = itemPrice.length;
+  const stringDeInteresse = itemPrice.substr(posicaoInicial, posicaoFinal); // substr() retorna uma parte especificada da string
+  const numero = parseFloat(stringDeInteresse); // convertendo a string em número;
+  console.log(numero);
+  sumPrices += numero;
+  });
+  actualPrice.innerText = `${Math.round(sumPrices * 100) / 100}`;
+});
+// Source: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+// Source: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/String/substr
+// Source: https://www.w3schools.com/jsref/jsref_parsefloat.asp
+
 // Requisito 3
 function cartItemClickListener(event) {
   cartItems.removeChild(event.target);
   saveCart();
+  totalPrice();
 }
 
 // Requisito 4 parte 2
@@ -89,7 +126,6 @@ const addToCart = async () => {
     buttonItem.addEventListener('click', async (event) => {
     const itemID = getSkuFromProductItem(event.target.parentElement);
     const endpoint = `https://api.mercadolibre.com/items/${itemID}`;
-    
     const request = await fetch(endpoint);
     const response = await request.json();
     const item = { // Adicionando as informações do produto ao carrinho 
@@ -99,11 +135,10 @@ const addToCart = async () => {
     };
     cartItems.appendChild(createCartItemElement(item));
     saveCart();
+    totalPrice();
     });
   });
 };
-
-// Requisito 5
 
 // Requisito 6
 const emptyCart = document.querySelector('.empty-cart');
@@ -116,4 +151,5 @@ window.onload = async () => { // async/await para organizar o tempo entre criar 
   await getItems(); 
   addToCart();
   loadingCart();
+  totalPrice();
 };
