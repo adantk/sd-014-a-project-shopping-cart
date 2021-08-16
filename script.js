@@ -149,9 +149,10 @@ function verificacaoInicial() {
   const lista = localStorage.getItem('carrinho').split(',');
   lista.forEach((item) => {
     retornoAPI(`https://api.mercadolibre.com/items/${item}`)
-    .then((r) => listaCompras.appendChild(createCartItemElement(r)));
+    .then((r) => listaCompras.appendChild(createCartItemElement(r)))
+    .then(() => carregando(2));
   });
-  carregando(2);
+  //  carregando(2);
   //  console.log(lista);
 }
 
