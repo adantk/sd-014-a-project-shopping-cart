@@ -1,6 +1,7 @@
 const cartItems = document.querySelector('.cart__items');
 let total = 0;
 const totalPrice = document.querySelector('.total-price');
+const emptyCartButton = document.querySelector('.empty-cart');
 
 const setLocalItems = () => {
   localStorage.setItem('cart', cartItems.innerHTML);
@@ -115,6 +116,12 @@ const calculateTotal = () => {
   } 
    totalPrice.innerHTML = total;
 };
+
+emptyCartButton.addEventListener('click', () => {
+  cartItems.innerHTML = '';
+  total = 0;
+  totalPrice.innerHTML = total;
+});
 
 window.onload = () => {
   if (localStorage.cart) {
