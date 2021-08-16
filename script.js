@@ -77,6 +77,7 @@ const addToCart = () => {
 const emptyCart = () => {
   clearBtn.addEventListener('click', () => {
     cartItems.innerHTML = '';
+    localStorage.removeItem('list');
   });
 };
 
