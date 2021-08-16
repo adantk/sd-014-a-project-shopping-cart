@@ -1,10 +1,13 @@
 const items = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
 const clearCart = document.querySelector('.empty-cart');
+const total = document.querySelector('.total-price');
 let cart;
 
 function emptyCart() {
   clearCart.addEventListener('click', () => {
+  total.innerHTML = '0';
+  localStorage.setItem('totalPrice', 0);
   const cartItem = document.querySelectorAll('.cart__item');
   cartItem.forEach((item) => { 
     item.parentNode.removeChild(item); 
@@ -33,6 +36,8 @@ function saveCart() {
 
 function cartItemClickListener(event) {
   const clicado = event.target; // Armazena a li clicada na variavel
+  console.log(clicado.innerText.split(' $'));
+  // clicado.innerText.split(' $');
   cartItems.removeChild(clicado); // Apaga a filha de ol clicada
 }
 
@@ -42,6 +47,13 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener); // Chama a callback ao clicar em alguma li
   return li; // retorna uma li com o id, nome e preço do produto clicado
+}
+
+function totalPrice($$) {
+  const precoTotal = Number(total.innerText) + Number($$); 
+  // Graças ao Number() os valores são somados e não concatenados
+  total.innerHTML = precoTotal; // soma o valor atual com o novo valor, sempre acumulando
+  localStorage.setItem('totalPrice', total.innerHTML);
 }
 
 async function getCart(itemId) {
@@ -55,6 +67,7 @@ async function getCart(itemId) {
   const addCart = document.querySelector('.cart__items');
   addCart.appendChild(createCartItemElement(cart)); // chama como filho o retorno da createCart(...) entregando meu objeto cart como parametro
   saveCart(); // Salva os itens do carrinho no local storage
+  totalPrice(json.price);
 }
 
 function getSkuFromProductItem(item) {
@@ -92,6 +105,7 @@ async function getComputer(query) {
 function loadCart() {
   if (localStorage.length > 0) {
     cartItems.innerHTML = localStorage.getItem('saveCart'); 
+    total.innerHTML = localStorage.getItem('totalPrice');
     // Se houver algo em local storage, adiciona o HTML ao ol do carrinho
   }
   const cartItem = document.querySelectorAll('.cart__item');
