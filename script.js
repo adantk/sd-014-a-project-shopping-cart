@@ -3,6 +3,7 @@ const cartItems = document.querySelector('.cart__items');
 const clearBtn = document.querySelector('.empty-cart');
 const loading = document.querySelector('.loading');
 
+// Requisito 7
 const killLoad = () => {
   loading.parentNode.removeChild(loading);
 };
