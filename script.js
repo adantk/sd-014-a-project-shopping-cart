@@ -2,17 +2,18 @@ const items = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
 const clearCart = document.querySelector('.empty-cart');
 const total = document.querySelector('.total-price');
+const cartItem = document.querySelectorAll('.cart__item');
 let cart;
 
 function emptyCart() {
   clearCart.addEventListener('click', () => {
-  total.innerHTML = '0';
-  localStorage.setItem('totalPrice', 0);
-  const cartItem = document.querySelectorAll('.cart__item');
+  total.innerHTML = '0'; // Volta o valor para 0
+  localStorage.setItem('totalPrice', 0); // zera o localStorage
   cartItem.forEach((item) => { 
     item.parentNode.removeChild(item); 
     // Para cada LI, chama o pai e exclui um filho, resultando na remoção de todos os itens
   });
+  localStorage.setItem('saveCart', cartItems.innerHTML = ''); // Esvazia a ol no localStorage
 });
 }
 
@@ -34,25 +35,33 @@ function saveCart() {
   localStorage.setItem('saveCart', cartItems.innerHTML);
 }
 
+function saveTotalPrice() {
+  localStorage.setItem('totalPrice', total.innerText);
+}
+
 function cartItemClickListener(event) {
   const clicado = event.target; // Armazena a li clicada na variavel
-  console.log(clicado.innerText.split(' $'));
-  // clicado.innerText.split(' $');
+  total.innerText = Math
+    .round((Number(total.innerText) - Number(clicado.innerText.split(' $')[1])) * 100) / 100;
+    // Subtrai o preço total pelo preço do item retirado
+  saveTotalPrice(); // salva o preço total em localStorage
   cartItems.removeChild(clicado); // Apaga a filha de ol clicada
+  saveCart();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener); // Chama a callback ao clicar em alguma li
+  li.addEventListener('click', cartItemClickListener); // Chama a callback ao clicar em alguma li 
   return li; // retorna uma li com o id, nome e preço do produto clicado
 }
 
 function totalPrice($$) {
-  const precoTotal = Number(total.innerText) + Number($$); 
+  const precoTotal = Math.round((Number(total.innerText) + Number($$)) * 100) / 100; 
   // Graças ao Number() os valores são somados e não concatenados
-  total.innerHTML = precoTotal; // soma o valor atual com o novo valor, sempre acumulando
+  // Ref: https://medium.com/@cristi.nord/javascript-number-70f5bfb9d2b0
+  total.innerText = precoTotal; // soma o valor atual com o novo valor, sempre acumulando
   localStorage.setItem('totalPrice', total.innerHTML);
 }
 
@@ -67,7 +76,8 @@ async function getCart(itemId) {
   const addCart = document.querySelector('.cart__items');
   addCart.appendChild(createCartItemElement(cart)); // chama como filho o retorno da createCart(...) entregando meu objeto cart como parametro
   saveCart(); // Salva os itens do carrinho no local storage
-  totalPrice(json.price);
+  totalPrice(json.price); 
+  // Atribui o preço do item clicado ao totalPrice que acumula o valor total do cart
 }
 
 function getSkuFromProductItem(item) {
@@ -106,10 +116,10 @@ function loadCart() {
   if (localStorage.length > 0) {
     cartItems.innerHTML = localStorage.getItem('saveCart'); 
     total.innerHTML = localStorage.getItem('totalPrice');
-    // Se houver algo em local storage, adiciona o HTML ao ol do carrinho
+    // Se houver algo em local storage, adiciona o HTML ao ol do carrinho e ao preço total
   }
-  const cartItem = document.querySelectorAll('.cart__item');
-  cartItem.forEach((item) => item.addEventListener('click', cartItemClickListener)); 
+  document.querySelectorAll('.cart__item')
+    .forEach((item) => item.addEventListener('click', cartItemClickListener)); 
   // Carrega o eventListener para os li's salvos do carrinho
   emptyCart();
 }
