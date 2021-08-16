@@ -130,6 +130,16 @@ const loadLocalStorage = async () => {
   }
 };
 
+const removeAll = () => {
+  const ol = document.querySelector('ol');
+  ol.innerHTML = '';
+  sumOfProducts();
+  localStorage.clear();
+};
+
+const btnRemoveAll = document.querySelector('.empty-cart');
+btnRemoveAll.addEventListener('click', removeAll);
+
 window.onload = async () => {
   await addProducts();
   await loadLocalStorage();
