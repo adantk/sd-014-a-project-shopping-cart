@@ -12,7 +12,16 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+// Mudei de lugar pq o lint tava chorando
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -23,6 +32,24 @@ function createProductItemElement({ sku, name, image }) {
 
   return section;
 }
+// Requisito 2 parte 1
+const addProductToCart = () => {
+  // Armazena os botões
+  const addBtn = document.querySelectorAll('.item__add');
+  // "Separa" os botões, addBtn = todos os 50 botões.
+  addBtn.forEach((element) => {
+    element.addEventListener('click', async (event) => {
+      const sku = event.target.parentElement.firstChild.innerText; // Acessa o elemento .item__sku do botão clicado.
+      const endpoint = `https://api.mercadolibre.com/items/${sku}`;
+      const request = await fetch(endpoint)
+      .then((response) => response.json());
+      // Acessa elemento cart__items e faz um filho do resultado da função createCartItemElement
+      const ol = document.querySelector('.cart__items');
+      ol.appendChild(createCartItemElement(request));
+    });
+  });
+};
+
 // Requisito 1
 const convertJson = async () => {
   const endpoint = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
@@ -34,7 +61,14 @@ const convertJson = async () => {
   request.forEach((computer) => {
     // Acessa elemento items e faz um filho do resultado da função createProductItemElement
     document.querySelector('.items').appendChild(createProductItemElement(computer));
-  });
+  }); 
+  addProductToCart();
+};
+
+// Requisito 6
+const emptyCart = () => {
+ const cartItem = document.querySelectorAll('.cart__item');
+ cartItem.forEach((item) => item.remove());
 };
 
 function getSkuFromProductItem(item) {
@@ -45,12 +79,8 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
-window.onload = () => { };
+window.onload = () => {
+  convertJson();
+  // Inserido no window.onload pois o script se encontra do head e o botão esvaziar carrinho ainda não foi criado.
+  document.querySelector('.empty-cart').addEventListener('click', emptyCart);
+};
