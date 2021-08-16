@@ -61,10 +61,11 @@ function createCustomElement(element, className, innerText) {
 }
 
 const renderLoanding = (startOrStop, elementAppend) => {
-  (startOrStop === 'start')?
-  elementAppend.appendChild(createCustomElement('h2', 'loading', 'Carregando...'))
-  :
-    elementAppend.removeChild(document.querySelector('.loading'));
+  if (startOrStop === 'start') {
+  elementAppend.appendChild(createCustomElement('h2', 'loading', 'Carregando...'));
+  } else { 
+  elementAppend.removeChild(document.querySelector('.loading'));
+  }
 };
 
 function createProductImageElement(imageSource) {
@@ -125,15 +126,13 @@ function renderClearCartStorage(ItensCart) { // essa função se nao for passado
   updateCartStorage(elementsOlCart);
 }
 
-function buttonClearCart() {
+const buttonClear = () => {
   const button = document.querySelector('.empty-cart');
-  button.addEventListener('click', () => {
-    renderClearCartStorage();
-  });
-}
+  button.addEventListener('click', renderClearCartStorage);
+};
 
 window.onload = () => {
   renderClearCartStorage('olCart');
-  buttonClearCart();
   requestionApiMl('computador');
+  buttonClear();
 };
