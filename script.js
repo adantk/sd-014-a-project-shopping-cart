@@ -79,7 +79,6 @@ const fetchCart = async (id) => {
   removeBtn.addEventListener('click', removeAll);
   saveCart();
   loading.remove();
-
 };
 
 function createProductItemElement({ sku, name, image, price }) {
