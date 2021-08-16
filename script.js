@@ -14,7 +14,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) { // SKU: código identificador do produto, utilizado para controle do estoque
+function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -29,6 +29,12 @@ function createProductItemElement({ sku, name, image }) { // SKU: código identi
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
+
+// Requisito 4 parte 1
+const saveCart = () => {
+  localStorage.setItem('savedCartItems', JSON.stringify(cartItems.innerHTML)); // setItem armazena/salva um item no local storage
+};
+// Source: https://www.devmedia.com.br/trabalhando-com-html5-local-storage-e-json/29045
 
 // Requisito 1
 const getItems = async () => {
@@ -53,9 +59,17 @@ const getItems = async () => {
 
 // Requisito 3
 function cartItemClickListener(event) {
-  const cartItem = document.querySelector('.cart__item');
-  cartItem.remove(event.target);
+  cartItems.removeChild(event.target);
+  saveCart();
 }
+
+// Requisito 4 parte 2
+const loadingCart = () => {
+  cartItems.innerHTML = localStorage.getItem('savedCartItems'); 
+  // getItem recupera ou acessa o item a partir da sua chave
+  // .innerHTML troca o conteúdo do elemento pelo que foi salvo no setItem
+  cartItems.forEach((item) => item.addEventListener('click', cartItemClickListener));
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -82,15 +96,25 @@ const addToCart = async () => {
       salePrice: response.price,
     };
     cartItems.appendChild(createCartItemElement(item));
+    saveCart();
     });
   });
 };
 
-// Requisito 4
-// const saveCart = () => {
-//   localStorage.setItem('cartItems', cartItems.innerHTML); // setItem armazena um valor no local storage
-// };
-// Source: https://www.devmedia.com.br/trabalhando-com-html5-local-storage-e-json/29045
+// =====================
+
+// Requisito 5
+// const totalPrice = (() => {
+//   const cart = document.querySelector('.cart');
+//   const totalPriceElement = document.createElement('p');
+//   cart.appendChild(totalPriceElement);
+
+//   const totalSum = 0;
+//   const items = document.querySelectorAll('.cart__item');
+//   items.forEach((item) => {
+//     const itemPrice = item.innerText;
+//   });
+// });
 
 // Requisito 6
 const emptyCart = document.querySelector('.empty-cart');
@@ -101,4 +125,5 @@ emptyCart.addEventListener('click', () => {
 window.onload = async () => { // async/await para organizar o tempo entre criar a lista de produtos, adicionar botões e adicionar produtos ao carrinho 
   await getItems(); 
   addToCart();
+  loadingCart();
 };
