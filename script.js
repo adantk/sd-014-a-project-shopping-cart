@@ -1,6 +1,7 @@
 const items = document.querySelector('.items');
 const olCartList = document.querySelector('ol');
 const myTotalPrice = document.querySelector('.total-price');
+const loadingText = document.createElement('span');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -51,7 +52,15 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const getProducts = () => {
+const myLoadingText = () => {
+  loadingText.innerText = 'loading...';
+  loadingText.className = 'loading';
+  items.appendChild(loadingText);
+};
+
+const getProducts = async () => {
+  myLoadingText();
+  items.appendChild(loadingText);
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computer')
     .then((response) => response.json())
     .then((result) => result.results)
@@ -59,6 +68,7 @@ const getProducts = () => {
       data.map(({ id: sku, title: name, thumbnail: image }) =>
         items.appendChild(createProductItemElement({ sku, name, image })));
     })
+    .then(() => document.getElementsByClassName('loading')[0].remove())
     .catch((error) => console.log('erro!', error));
 };
 
@@ -77,7 +87,7 @@ const increaseTotalPrice = () => {
 };
 
 const addToCart = () => {
- items.addEventListener('click', async function createElement(event) {
+  items.addEventListener('click', async function createElement(event) {
     const isButton = event.target.nodeName === 'BUTTON';
     if (!isButton) {
       return;
@@ -112,7 +122,7 @@ const emptyCart = () => {
 };
 
 window.onload = () => {
-  getProducts(); 
+  getProducts();
   addToCart();
   loadCartItems();
   cartItemClickListener();
