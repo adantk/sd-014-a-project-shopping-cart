@@ -55,6 +55,7 @@ const showCartList = () => { // função que busca a informação e demonstra a 
   cartList.forEach((productJson) => {
     cart.appendChild(createCartItemElement(productJson));
   });
+  showCartTotal();
 };
 let cartList = [];
 const buttonAddCart = () => { // função para buscar add os items quando clicado no buttom e incluir na linha.
@@ -77,14 +78,18 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) { // Função que remove o item do carrinho quando clicado
-  event.target.remove();
+  // console.log(event.target.id);
+  cartList = cartList.filter((item) => { // filter está retirando do Array o ID que eu estou querendo remover do array.
+    return item.id !== event.target.id;
+  });
+  showCartList();
 }
 
 function showCartTotal() {
   const total = cartList.reduce((acc, item) => {
-    return acc + item.salePrice;
+    return acc + item.price;
   }, 0);
-  console.log(total);
+  document.getElementsByClassName('total-price')[0].innerText = total;
 }
 
 const setUpEmptyCart = () => { // função setUpEmptyCart, zera o carrinho toda vez que utilizada.
@@ -99,6 +104,7 @@ const setUpEmptyCart = () => { // função setUpEmptyCart, zera o carrinho toda 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.id = sku; // vai passar esse ID para a função de click para filtrar do array
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
