@@ -81,6 +81,16 @@ const btnClick = () => {
   }));
 };
 
+// Requisito 6:
+const btnEmpty = document.querySelector('.empty-cart');
+const list = document.querySelector('.cart__items');
+
+btnEmpty.addEventListener('click', () => {
+  while (list.firstChild) {
+    list.removeChild(list.firstChild);
+  }
+});
+
 // -------------------------------------------------------------
 window.onload = async () => {
   await requestFormat('/sites/MLB/search?q=', 'computador', itemsToHTML);
