@@ -42,20 +42,45 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-async function getProducts(QUERY) {
+async function getProducts(QUERY, callback) {
   const products = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`);
   const productsJson = await products.json();
   productsJson.results.forEach((item) => listaItens.appendChild(createProductItemElement(item)));
+  callback();
 }
 
-/*
+async function getItem(ItemID) {
+  const item = await fetch(`https://api.mercadolibre.com/items/${ItemID}`);
+  return item.json();
+}
+
+async function cartItemCreator(event) {
+  const itemId = await getSkuFromProductItem(event.target.parentElement);
+  const objectItem = await getItem(itemId);
+  document.querySelector('.cart__items').appendChild(createCartItemElement(objectItem));
+}
+
+function addListeners() {
+  document.querySelectorAll('button.item__add')
+    .forEach((item) => item.addEventListener('click', cartItemCreator));
+}
+
+window.onload = () => {
+  getProducts('computador', addListeners);
+  listaItens = document.querySelector('.items');
+};
+
+/* Requisito 1
   1- Fazer fetch da URL do Mercado Livre
   2- Armazenar o resultado da busca em uma variável
   3- Transformar resultado em JSON
   4- Mostrar a lista de produtos na tela
 */
 
-window.onload = () => {
-  listaItens = document.querySelector('.items');
-  console.log(getProducts('computador'));
-};
+/* Requisito 2
+  1 - Adicionar um Event Listener no botão de 'Adicionar ao carrinho'
+  2 - Acessar o ID do item (item__sku) a partir do botão
+  3 - Usar a função cartItemCreator para criar a lista de itens no carrinho de compras
+    3.1 - Retornar o objeto JSON a partir do ID do item (que é obtido com a função getSkuFromProductItem)
+    3.2 - Usar a função createCartItemElement para criar os elementos HTML referentes ao item
+*/
