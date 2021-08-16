@@ -39,8 +39,20 @@ const saveCart = () => {
 };
 // Source: https://www.devmedia.com.br/trabalhando-com-html5-local-storage-e-json/29045
 
+// Requisito 7
+const loadingElement = (() => {
+  const body = document.querySelector('body');
+  const createdElement = document.createElement('span');
+  createdElement.className = 'loading';
+  body.insertAdjacentElement('afterbegin', createdElement); // posicionando novo elemento como primeiro filho de body
+});
+loadingElement();
+// Source: https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentElement
+
 // Requisito 1
 const getItems = async () => {
+  const loading = document.querySelector('.loading');
+  loading.innerText = 'loading...'; // adiciona mensagem enquanto a página é carregada
   const query = 'computador';
   // const endpoint = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
@@ -56,6 +68,7 @@ const getItems = async () => {
       image: thumbnail,
     }));
   });
+  loading.remove(); // remove a mensagem ao finaliza o carregamento da página
 };
 // Agradeço ao Matheus Martino pela monitoria de revisão do Bloco 9!
 
