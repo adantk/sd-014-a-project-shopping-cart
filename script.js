@@ -62,10 +62,12 @@ function createCartItemElement({ sku, name, salePrice }) {
 // req 1
 const criaLista = async () => {
   const query = 'computador';
-
+  const loading = document.querySelector('.loading');
+  loading.innerText = 'loading...';
  const endopoint = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
  const request = await fetch(endopoint);
  const resposta = await request.json();
+ loading.remove();
  const resultado = resposta.results;
 
  const sectionItems = document.querySelector('.items');
