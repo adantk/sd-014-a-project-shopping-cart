@@ -1,12 +1,18 @@
 const itemSection = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
 const clearBtn = document.querySelector('.empty-cart');
+const loading = document.querySelector('.loading');
+
+const killLoad = () => {
+  loading.parentNode.removeChild(loading);
+};
 
 // Requisito 1
 // O próprio VS Code sugeriu e transformou as funções em async
 const fetchProducts = async (query) => {
   const resp = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${query}`);
   const data = await resp.json();
+  killLoad();
   return data.results;
 };
 
