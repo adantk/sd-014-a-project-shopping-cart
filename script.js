@@ -70,6 +70,17 @@ const createDinamicItems = () => {
   }));
 };
 
+const createLoading = () => {
+  const p = document.createElement('p');
+  p.className = 'loading';
+  p.innerText = 'loading...';
+  document.body.appendChild(p);
+};
+
+const removeLoading = () => {
+  document.querySelector('.loading').remove();
+};
+
  const addItemCart = () => {
   const btnAddCart = document.querySelectorAll('.item__add');
   btnAddCart.forEach((btn, index) => {
@@ -91,6 +102,7 @@ const createDinamicItems = () => {
 };
 
 window.onload = () => {
-  createDinamicItems().then(() => addItemCart());
+  createLoading();
+  createDinamicItems().then(() => addItemCart()).then(() => removeLoading());
   removeCarItems();
 };
