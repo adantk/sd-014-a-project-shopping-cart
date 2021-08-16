@@ -12,11 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({
-  sku,
-  name,
-  image
-}) {
+function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -36,11 +32,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({
-  sku,
-  name,
-  salePrice
-}) {
+function createCartItemElement({ sku, name, salePrice }) {
   const ol = document.querySelector('.cart__items');
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -62,12 +54,9 @@ const criaProdutos = async () => {
           title: name,
           thumbnail: image
         }) =>
-        items.appendChild(createProductItemElement({
-          sku,
-          name,
-          image
-        })));
-    })
+        items.appendChild(createProductItemElement({ sku, name,
+          image })));
+    });
 };
 
 // Requisito 2
@@ -80,7 +69,7 @@ const criaCarrinho = (id) => {
 };
 
 const btnCarrinho = () => {
-  const buttons = document.querySelectorAll('.item__add');;
+  const buttons = document.querySelectorAll('.item__add'); 
   buttons.forEach((button) => {
     button.addEventListener('click', (event) => {
       const id = event.target.parentElement.firstChild.innerText;
