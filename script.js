@@ -1,4 +1,5 @@
 const items = document.querySelector('.items');
+const olCartList = document.querySelector('ol');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -34,6 +35,7 @@ function cartItemClickListener() {
   // coloque seu código aqui
   document.querySelector('ol').addEventListener('click', (event) => {
     event.target.remove();
+    localStorage.setItem('myCartList', olCartList.innerHTML);
   });  
 }
 
@@ -42,6 +44,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+
   return li;
 }
 
@@ -56,25 +59,36 @@ const getProducts = () => {
     .catch((error) => console.log('erro!', error));
 };
 
-const addToCart = () => {
- items.addEventListener('click', (event) => {
-  const isButton = event.target.nodeName === 'BUTTON';
-  if (!isButton) {
-    return;
-  }
-  const item = event.target.parentNode;
-  const itemId = item.querySelector('span.item__sku').innerText;
+const fetchItemById = async (itemId) => {
+  const myFetch = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
+  const response = await myFetch.json();
+  return response;
+};
 
-  fetch(`https://api.mercadolibre.com/items/${itemId}`)
-  .then((response) => response.json())
-  .then(({ id: sku, title: name, price: salePrice }) => 
-  createCartItemElement({ sku, name, salePrice }))
-  .then((li) => document.querySelector('ol').appendChild(li));
- });
+const addToCart = () => {
+ items.addEventListener('click', async function createElement(event) {
+    const isButton = event.target.nodeName === 'BUTTON';
+    if (!isButton) {
+      return;
+    }
+    const item = event.target.parentNode;
+    const itemId = item.querySelector('span.item__sku').innerText;
+    const fetchItem = await fetchItemById(itemId);
+    const createElementById = ({ id: sku, title: name, price: salePrice }) => {
+      olCartList.appendChild(createCartItemElement({ sku, name, salePrice }));
+    };
+    createElementById(fetchItem);
+    localStorage.setItem('myCartList', olCartList.innerHTML);
+  });
+};
+
+const loadCartItems = () => {
+  olCartList.innerHTML = localStorage.getItem('myCartList');
 };
 
 window.onload = () => {
-  getProducts();
+  getProducts(); 
   addToCart();
   cartItemClickListener();
+  loadCartItems();
 };
