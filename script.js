@@ -1,4 +1,6 @@
 // inicializando projeto
+const olItens = document.querySelector('.cart__items');
+const sectionItens = document.querySelector('.items');
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -30,7 +32,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  olItens.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -42,19 +44,38 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 // inicio do projeto
+
+const getResultsForCart = async (product) => {
+  const resultAPI = await fetch(`https://api.mercadolibre.com/items/${product}`);
+  const resultCpmplete = await resultAPI.json();
+  olItens.appendChild(createCartItemElement({
+    sku: resultCpmplete.id,
+    name: resultCpmplete.title,
+    salePrice: resultCpmplete.price,
+  }));
+  cartItemClickListener();
+};
+
+const buttonAddCart = () => {
+  const btn = document.querySelectorAll('.item__add');
+  btn.forEach((ele) => ele.addEventListener('click', (event) => {
+    getResultsForCart(event.target.parentElement.firstChild.innerText);
+  }));
+};
+
 // função assincrona para conectar com a API e pegar os resultados desejados
 const getResultsFromAPI = async (search) => {
   const itemsAPI = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`);
   // pega uma chave específica.
-  const responseItemsAPI = await itemsAPI.json().then((e) => e.results);
-  const sectionItens = document.querySelector('.items');
+  const responseItemsAPI = await itemsAPI.json();
   // passar por cada elemento retonado do responseItemsAPI
-  responseItemsAPI.forEach((element) => {
+  responseItemsAPI.results.forEach((element) => {
     // guardando o retono do forEach e chamando a função para criar a estrutura dos itens na pagina
     const returnEle = createProductItemElement(element);
     // criando dimanicamente os elementos na página dentro da section items
-    sectionItens.appendChild(returnEle);
+    sectionItens.appendChild(returnEle);    
   });
+  buttonAddCart();
 };
 
 window.onload = () => { 
