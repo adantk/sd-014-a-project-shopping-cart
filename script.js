@@ -1,4 +1,5 @@
 const itemsCart = '.cart__items';
+const loadingPage = '.loadingPage';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -26,13 +27,20 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+  return item.querySelector('span.item__sku').innerText;  
 }
 
-// Requisito 4 (parte 1)
+// Requisito 4
 const localStorageSave = () => {
+  localStorage.clear();
   const ol = document.querySelector(itemsCart);
   localStorage.setItem('listCart', ol.innerHTML);
+};
+
+const localStorageLoad = () => {
+  const ol = document.querySelector(itemsCart);  
+  ol.innerHTML = localStorage.getItem('listCart');
+  localStorageSave();
 };
 
 // Requisito 3
@@ -41,13 +49,6 @@ function cartItemClickListener(event) {
   ol.removeChild(event.target);
   localStorageSave();
 }
-
-// Requisito 4 (parte 2)
-const localStorageLoad = () => {
-  const ol = document.querySelector(itemsCart);  
-  ol.innerHTML = localStorage.getItem('listCart');
-  ol.forEach((item) => item.addEventListener('click', cartItemClickListener));
-};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const ol = document.querySelector(itemsCart);
@@ -74,12 +75,14 @@ const getList = async () => {
 // Requisito 2
 // Requisição para o endpoint
 const createFetch = (idProduct) => {
-  fetch(`https://api.mercadolibre.com/items/${idProduct}`)
+    loadingPage.innerHTML = 'loading...';
+    fetch(`https://api.mercadolibre.com/items/${idProduct}`)
     .then((response) => response.json())
     .then((object) => {
     // Chama função que add item na lista ol (carrinho)
     createCartItemElement({ sku: object.id, name: object.title, salePrice: object.price });    
     });
+    loadingPage.remove();
 };
 
 // Ao clicar no botão capturar a ID do produto
