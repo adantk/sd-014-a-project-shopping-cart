@@ -1,3 +1,5 @@
+const carrinho = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -10,6 +12,26 @@ function createCustomElement(element, className, innerText) {
   e.className = className;
   e.innerText = innerText;
   return e;
+}
+// Questão 5
+function totalSomado() {
+  const totalSomados = document.createElement('span');
+  let somatorio = 0;
+  if (document.querySelector('.total-price')) {
+    document.querySelector('.total-price').remove();
+  }
+  cartItems.forEach((i) => {
+    const itemPrice = i.innerText.split('$')[1];
+    somatorio += parseFloat(itemPrice);
+  });
+  totalSomados.innerText = `${somatorio}`;
+  totalSomados.className = 'total-price';
+  document.querySelector('.cart').appendChild(totalSomados);
+}
+
+// requisito 3
+function cartItemClickListener(event) {// coloque seu código aqui
+  event.target.remove();
 }
 
 // Questao 2. resolvida.....
@@ -32,9 +54,10 @@ const criarBtn = () => {
       const productApi = await fetch(`https://api.mercadolibre.com/items/${id}`)
       const retornoJson = await productApi.json();
       carrinho.appendChild(createCartItemElement(retornoJson));
+      localStorage.setItem('stored', carrinho.innerHTML);
     }));
-
 };
+
 
 //Resolvendo a questão 1.....
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -64,18 +87,25 @@ const transJson = async () => {
     createProductItemElement(product);
   });
   criarBtn();
+  loading.remove();
 };
 // 
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// requisito 4.
+const localstorage = () => {
+  if (localStorage.getItem('stored')) {
+    document.querySelector('.cart__items').innerHTML
+      += localStorage.getItem('stored');
+  }
+};
+// Requisito 6....
+document.getElementById('empty-cart').addEventListener('click', () => {
+  carrinho.innerText = '';
+  document.getElementById('total-price').innerText = 0;
+  localStorage.clear();
+});
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-  event.target.remove();
-}
-
-window.onload = () => {
+window.onload = async () => {
   transJson();
+  localstorage();
 };
