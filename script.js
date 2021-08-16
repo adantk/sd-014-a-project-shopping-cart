@@ -2,6 +2,7 @@ const itemSection = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
 const clearBtn = document.querySelector('.empty-cart');
 const loading = document.querySelector('.loading');
+const total = document.querySelector('.total-price');
 
 // Requisito 7
 const killLoad = () => {
@@ -43,14 +44,36 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+// Requisito 5
+// Primeiro tentei fazer da seguinte forma abaixo, mas não consegui fazer com que o valor total fosse alterado quando um item era removido da lista, então mudei de lógica, a partir do que vi na mentoria, para a função seguinte.
+// const prices = [];
+// const totalPrice = ({ price: salePrice }) => {
+//   prices.push(salePrice);
+//   const sumPrices = prices.reduce((acc, price) => acc + price, 0)
+//   total.innerText = `${Math.round(sumPrices * 100) / 100}`;
+//   localStorage.setItem('price', total.innerHTML);
 // }
+
+const totalPrice = () => {
+  let getTotal = 0;
+  cartItems.childNodes.forEach((item) => {
+    getTotal += parseFloat(item.innerText.split('$')[1]);
+  });
+  total.innerText = `${getTotal}`;
+  localStorage.setItem('price', total.innerHTML);
+};
+// referência https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
 
 // Requisito 3
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  localStorage.setItem('list', cartItems.innerHTML);
+  totalPrice();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -62,19 +85,14 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 // Requisito 2
-// const fetchProduct = async (idSku) => {
-//   const resp = await fetch(`https://api.mercadolibre.com/items/${idSku}`);
-//   const data = await resp.json();
-//    createCartItemElement(data);
-// };
-// Havia feito o fetch separado, mas não consegui trabalhar com ele direito dessa forma
 const addToCart = () => {
   itemSection.addEventListener('click', async (event) => {
     if (event.target.classList.contains('item__add')) {
-      const idSku = event.target.parentElement.firstChild.innerText;
+      const idSku = getSkuFromProductItem(event.target.parentElement);
       const resp = await fetch(`https://api.mercadolibre.com/items/${idSku}`);
       const data = await resp.json();
       cartItems.appendChild(createCartItemElement(data));
+      totalPrice();
       localStorage.setItem('list', cartItems.innerHTML);
     }
   });
@@ -84,13 +102,18 @@ const addToCart = () => {
 const emptyCart = () => {
   clearBtn.addEventListener('click', () => {
     cartItems.innerHTML = '';
+    total.innerHTML = '';
     localStorage.removeItem('list');
+    localStorage.removeItem('price');
   });
 };
 
 // Requisito 4
 const storedCart = () => {
-  if (localStorage) cartItems.innerHTML = localStorage.getItem('list');
+  if (localStorage) {
+    cartItems.innerHTML = localStorage.getItem('list');
+    total.innerHTML = localStorage.getItem('price');
+  }
   cartItems.childNodes.forEach((li) => li.addEventListener('click', cartItemClickListener));
 };
 
