@@ -15,13 +15,11 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-
-
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  //li.appendChild(createCustomElement('span', 'price', salePrice));
+  // li.appendChild(createCustomElement('span', 'price', salePrice));
   li.setAttribute('value', salePrice);
   /* soma += salePrice;
   preco.innerText = soma; */
@@ -41,13 +39,13 @@ const sumValue = () => {
     const valorA = valor.getAttribute('value');
     soma += parseFloat(valorA);
   });
-  preco.innerHTML = Math.round(soma*100)/100;
+  preco.innerHTML = Math.round(soma * 100) / 100;
   saveCart();
-}
+};
 
 const remove = (ele) => {
   cartItems.removeChild(ele.target);
-  console.log(sumValue());
+  sumValue();
   saveCart();
 };
 
