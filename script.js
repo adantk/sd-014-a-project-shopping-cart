@@ -4,17 +4,6 @@ const lista = document.querySelector('.cart__items');
 const total = document.querySelector('.total-price');
 const btnEmpty = document.querySelector('.empty-cart');
 
-const addLoading = () => {
-  const load = document.createElement('h1');
-  load.innerHTML = 'Loading...';
-  load.className = 'loading';
-  document.body.appendChild(load);
-};
-
-const removeLoading = () => {
-  document.querySelector('.loading').remove();
-};
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -80,6 +69,17 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+const addLoading = () => {
+  const load = document.createElement('h1');
+  load.innerHTML = 'Loading...';
+  load.className = 'loading';
+  document.body.appendChild(load);
+};
+
+const removeLoading = () => {
+  document.querySelector('.loading').remove();
+};
 
 const addItemToCart = async (event) => {
   const id = getSkuFromProductItem(event.target.parentElement);
