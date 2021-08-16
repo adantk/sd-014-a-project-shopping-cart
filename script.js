@@ -32,8 +32,13 @@ const clearCart = () => {
   saveCart();
 };
 
-const addLoading = () => { document.body.appendChild(loading); };
-const removeLoading = () => { document.body.removeChild(loading); };
+const toggleLoading = () => {
+    if (document.body.lastChild === loading) {
+      document.body.removeChild(loading);
+    } else {
+      document.body.appendChild(loading);
+    }
+  };
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -85,29 +90,33 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
 const fetchAPI = (URL) => fetch(URL).then((response) => response.json());
 
-const fetchItems = () => {
-  addLoading();
-  fetchAPI(API_URL)
-    .then(({ results }) => {
-      results.forEach((item) => { itemsContainer.appendChild(createProductItemElement(item)); });
-      removeLoading();
-    });
+const fetchItems = async () => {
+  toggleLoading();
+  try {
+    const { results } = await fetchAPI(API_URL);
+    results.forEach((item) => { itemsContainer.appendChild(createProductItemElement(item)); });
+  } catch (error) {
+    console.log(error);
+  }
+  toggleLoading();
 };
 
-const addItemsToCart = (event) => {
-  const addButton = event.target;
-  if (addButton.className === 'item__add') {
-    const itemId = getSkuFromProductItem(addButton.parentElement);
-    addLoading();
-    fetchAPI(API_ITEM + itemId)
-      .then((itemInfo) => {
+const addItemsToCart = async (event) => {
+    const addButton = event.target;
+    if (addButton.className === 'item__add') {
+      const itemId = getSkuFromProductItem(addButton.parentElement);
+      toggleLoading();
+      try {
+        const itemInfo = await fetchAPI(API_ITEM + itemId);
         cartItems.appendChild(createCartItemElement(itemInfo));
         updatePrice(itemInfo.price);
         saveCart();
-        removeLoading();
-      });
-  }
-};
+      } catch (error) {
+        console.log('Error:', error);
+      }
+      toggleLoading();
+    }
+  };
 
 window.onload = () => {
   fetchItems();
