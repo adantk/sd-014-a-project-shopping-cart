@@ -1,3 +1,5 @@
+let listaItens;
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,7 +14,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -32,7 +34,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -40,4 +42,20 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+async function getProducts(QUERY) {
+  const products = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`);
+  const productsJson = await products.json();
+  productsJson.results.forEach((item) => listaItens.appendChild(createProductItemElement(item)));
+}
+
+/*
+  1- Fazer fetch da URL do Mercado Livre
+  2- Armazenar o resultado da busca em uma variável
+  3- Transformar resultado em JSON
+  4- Mostrar a lista de produtos na tela
+*/
+
+window.onload = () => {
+  listaItens = document.querySelector('.items');
+  console.log(getProducts('computador'));
+};
