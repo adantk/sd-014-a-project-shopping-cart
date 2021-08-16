@@ -33,6 +33,15 @@ const createProduct = (sku, name, image) =>
   return item.querySelector('span.item__sku').innerText;
 }
 
+const getItemLocalStorage = () => {
+  if (localStorage.getItem('list') === null) {
+    localStorage.getItem('list', JSON.stringify([]));
+  } else {
+    const listProducts = localStorage.getItem('list');
+    getOl().innerHTML = listProducts;
+  }
+};
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   console.log('oi');
@@ -41,6 +50,7 @@ function cartItemClickListener(event) {
 
 const makeAppend = (li) => {
   getOl().appendChild(li);
+  localStorage.setItem('list', getOl().innerHTML);
 };
 
 // Função que cria os elementos no carrinho de compras, remove os elementos e coloca os elementos no local storage logo depois de criados.
@@ -49,12 +59,8 @@ const makeAppend = (li) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-
   li.addEventListener('click', cartItemClickListener);
-
   makeAppend(li); 
-
-  localStorage.setItem('list', getOl().innerHTML);
 
   return li;
 }
@@ -75,15 +81,6 @@ const buttonListener = () => {
     fetchItem(getId);
     }
   });
-};
-
-const getItem = () => {
-  if (localStorage.getItem('list') === null) {
-    localStorage.getItem('list', JSON.stringify([]));
-  } else {
-    const listProducts = localStorage.getItem('list');
-    getOl().innerHTML = listProducts;
-  }
 };
 
 const loadingMessage = () => {
@@ -115,8 +112,18 @@ const fetchProducts = async () => {
   }
  };
 
+ const clearCart = () => {
+   const getClearButton = document.querySelector('.empty-cart');
+   getClearButton.addEventListener('click', () => {
+      const getLi = document.querySelectorAll('.cart__item');
+      getLi.forEach((item) => item.remove());
+      localStorage.clear();
+   });
+ };
+
 window.onload = () => {
  fetchProducts();
- getItem();
- buttonListener(); 
+ getItemLocalStorage();
+ buttonListener();
+ clearCart();  
 }; 
