@@ -40,4 +40,26 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+const fetchFreeMarketAsync = async (QUERY) => {
+  const responseRaw = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`);
+  const responseJson = await responseRaw.json(); // my object
+  const arrayResults = responseJson.results; // produtos
+  const listItens = document.querySelector('.items');
+  arrayResults.forEach((product) => {
+    const infosOfObject = {
+      sku: product.id,
+      name: product.title,
+      image: product.thumbnail,
+    };
+  listItens.appendChild(createProductItemElement(infosOfObject));
+});
+};
+
+// const btnAddCarAsync = async (ItemID)
+
+window.onload = () => { 
+  fetchFreeMarketAsync('computador');
+};
+// pega id - pelo botao
+// clicar pega id do botao - do elemento 
+// procurar id para usar no fect do requisito
