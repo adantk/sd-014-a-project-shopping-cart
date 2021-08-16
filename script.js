@@ -32,7 +32,8 @@ function getSkuFromProductItem(item) {
 
 // Requisito 4 parte 1
 const saveCart = () => {
-  localStorage.setItem('savedCartItems', JSON.stringify(cartItems.innerHTML)); // setItem armazena/salva um item no local storage
+  // localStorage.setItem('savedCartItems', JSON.stringify(cartItems.innerHTML));
+  localStorage.setItem('savedCartItems', cartItems.innerHTML); // setItem armazena/salva um item no local storage
 };
 // Source: https://www.devmedia.com.br/trabalhando-com-html5-local-storage-e-json/29045
 
@@ -66,9 +67,10 @@ function cartItemClickListener(event) {
 // Requisito 4 parte 2
 const loadingCart = () => {
   cartItems.innerHTML = localStorage.getItem('savedCartItems'); 
+  const cartItem = document.querySelectorAll('.cart__item');
   // getItem recupera ou acessa o item a partir da sua chave
   // .innerHTML troca o conteúdo do elemento pelo que foi salvo no setItem
-  cartItems.forEach((item) => item.addEventListener('click', cartItemClickListener));
+  cartItem.forEach((item) => item.addEventListener('click', cartItemClickListener));
 };
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -101,25 +103,13 @@ const addToCart = async () => {
   });
 };
 
-// =====================
-
 // Requisito 5
-// const totalPrice = (() => {
-//   const cart = document.querySelector('.cart');
-//   const totalPriceElement = document.createElement('p');
-//   cart.appendChild(totalPriceElement);
-
-//   const totalSum = 0;
-//   const items = document.querySelectorAll('.cart__item');
-//   items.forEach((item) => {
-//     const itemPrice = item.innerText;
-//   });
-// });
 
 // Requisito 6
 const emptyCart = document.querySelector('.empty-cart');
 emptyCart.addEventListener('click', () => {
   cartItems.innerHTML = '';
+  localStorage.clear();
 });
 
 window.onload = async () => { // async/await para organizar o tempo entre criar a lista de produtos, adicionar botões e adicionar produtos ao carrinho 
