@@ -28,11 +28,24 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito 4
+const funcLocalStorage = () => {
+  const salvar = document.querySelector('.cart__items');
+  localStorage.setItem('listaCarrinho', salvar.innerHTML);
+};
+
+const reloadLocalStorage = () => {
+  const salvo = document.querySelector('.cart__items');
+  salvo.innerHTML = localStorage.getItem('listaCarrinho');
+  funcLocalStorage(); 
+};
+
+// Requisito 3
 function cartItemClickListener(event) {
-  // coloque seu código aqui
   const ol = document.querySelector('.cart__items');
   ol.removeChild(event.target);
-}
+  funcLocalStorage();
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const ol = document.querySelector('.cart__items');
@@ -41,10 +54,11 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
+  funcLocalStorage();
   return li;
 }
 
-// Requisito 1
+// Requisito 1s
 const criaProdutos = async () => {
   await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
@@ -78,4 +92,5 @@ const btnCarrinho = () => {
 window.onload = async () => {
   await criaProdutos();
   await btnCarrinho();
+  await reloadLocalStorage();
 };
