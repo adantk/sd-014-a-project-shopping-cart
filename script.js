@@ -41,6 +41,7 @@ function createProductItemElement({ sku, name, image }) {
 
 function cartItemClickListener(item) {
   // coloque seu código aqui
+  totalPriceShow();
   item.addEventListener('click', (event) => {
     carrinho[0].removeChild(event.target);
     totalPriceShow();
@@ -64,7 +65,6 @@ function refreshCartItemClickListener() {
 function refreshLocalStorage() {
   const localCart = document.querySelector(selector);
   localCart.innerHTML = localStorage.getItem('Storage');
-  console.log(localCart);
   refreshCartItemClickListener();
   const totalPrice = document.querySelector(selector2);
   totalPrice.innerHTML = localStorage.getItem('TotalPrice');
@@ -78,33 +78,26 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// eslint-disable-next-line max-lines-per-function
+function jsonObject(json) {
+  return {
+    sku: json.id,
+    name: json.title,
+    salePrice: json.price,
+  };
+}
+
 const addToCartButton = () => {
   const addCarrinho = document.querySelectorAll('.item__add'); // Busca todos os botões das 'caixas' informativas dos produtos
-  // eslint-disable-next-line max-lines-per-function
   addCarrinho.forEach((button) => {
-    // eslint-disable-next-line max-lines-per-function
     button.addEventListener('click', (target) => { // Ao clicar, executa a função descrita
     const alvo = target.target.previousSibling.previousSibling.previousSibling.innerText;
     fetch(`https://api.mercadolibre.com/items/${alvo}`)
       .then((data) => data.json()) // Transforma a info recebida em JSON
-      .then((json) => {
-        const infos = {
-          sku: json.id,
-          name: json.title,
-          salePrice: json.price,
-        };
-        carrinho[0].appendChild(createCartItemElement(infos));
-      })
+      .then((json) => { carrinho[0].appendChild(createCartItemElement(jsonObject(json))); })
       .then(() => {
-        const carrinhoNode = document.querySelector('.cart__items');
-        const item = carrinhoNode.lastChild;
-        cartItemClickListener(item);
-      })
-      .then(() => {
-        const cart = document.querySelector(selector);
-        totalPriceShow();
-        localStorage.setItem('Storage', cart.innerHTML);
+        const carrinhoNode = document.querySelector(selector);
+        cartItemClickListener(carrinhoNode.lastChild);
+        localStorage.setItem('Storage', carrinhoNode.innerHTML);
       });
     });
   });
