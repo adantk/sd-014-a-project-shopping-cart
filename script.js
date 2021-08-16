@@ -41,6 +41,7 @@ function getSkuFromProductItem(item) {
 }
 
 const action = async (e) => {
+  if (!localStorage.getItem('cart')) localStorage.setItem('cart', JSON.stringify([]));
   const itemsCart = JSON.parse(localStorage.getItem('cart'));
   const id = getSkuFromProductItem(e.target.parentNode);
   const response = await fetch(`https://api.mercadolibre.com/items/${id}`);
@@ -97,9 +98,7 @@ const addProducts = async () => {
 };
 
 const loadLocalStorage = () => {
-  if (!localStorage.getItem('cart')) {
-    localStorage.setItem('cart', JSON.stringify([]));
-  } else {
+  if (localStorage.getItem('cart')) {
     const itemsCart = JSON.parse(localStorage.getItem('cart'));
     itemsCart.forEach((item) => {
       const li = document.createElement('li');
