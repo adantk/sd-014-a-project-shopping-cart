@@ -1,3 +1,16 @@
+const salvaListaLS = () => {
+  const getOl2 = document.getElementsByClassName('cart__items')[0];
+  if (getOl2.childElementCount > 0) {
+    for (let index = 0; index < getOl2.children.length; index += 1) {
+      localStorage.setItem(`chave ${[index]}`, getOl2.children[index].innerHTML);
+    }
+  } else {
+    localStorage.clear();
+  }  
+};
+
+const clearLocalStorage = () => localStorage.clear();
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -30,6 +43,8 @@ function getSkuFromProductItem(item) {
   function cartItemClickListener(event) {
     // coloque seu código aqui
     event.target.remove();
+    clearLocalStorage();
+    salvaListaLS();
   }
   
   function createCartItemElement({ sku, name, salePrice }) {
@@ -52,9 +67,7 @@ const chamaFetchId = async (id) => {
     getOl.appendChild(lista);
     });
   };
-
-window.onload = () => { };
-
+  
 const fetchML = (pesquisa) => 
     fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${pesquisa}`)
     .then((resposta) => resposta.json());
@@ -69,12 +82,29 @@ const chamafetchMl = async (pesquisa) => {
         const { id: sku, title: name, thumbnail: image } = resultado;
     const item = createProductItemElement({ sku, name, image });
     const Botao = item.getElementsByClassName('item__add')[0];
-    Botao.addEventListener('click', (event) => {
+    Botao.addEventListener('click', async (event) => {
       const getIdProduct = getSkuFromProductItem(event.target.parentNode);
-      chamaFetchId(getIdProduct);
+      await chamaFetchId(getIdProduct);
+      clearLocalStorage();
+      salvaListaLS();
     });
     const items = document.getElementsByClassName('items')[0];
     items.appendChild(item);
     }));
 };
-window.onload = () => chamafetchMl('computador');
+
+const recriaLi = () => {
+  const getOl3 = document.getElementsByClassName('cart__items')[0];
+  for (let index = 0; index < localStorage.length; index += 1) {
+  const li2 = document.createElement('li');
+  li2.className = 'cart__item';
+  li2.innerText = localStorage.getItem(`chave ${index}`);
+  li2.addEventListener('click', cartItemClickListener);
+  getOl3.appendChild(li2);
+  }
+};
+
+window.onload = () => {
+  chamafetchMl('computador');
+  recriaLi();
+};
