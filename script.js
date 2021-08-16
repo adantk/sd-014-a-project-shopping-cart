@@ -121,7 +121,23 @@ const createTagTotalPrice = () => {
   cart.appendChild(totalPrice);
 };
 
+const emptyCart = () => {
+  const cart = document.querySelector(cartItemsClass);
+  cart.innerHTML = '';
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.innerHTML = 0;
+  localStorage.setItem('cartList', '');
+  localStorage.setItem('totalPrice', 0);
+  
+}
+
+const loadButton = () => {
+  const buttonEmptyCart = document.querySelector('.empty-cart');
+  buttonEmptyCart.addEventListener('click', emptyCart);
+};
+
 window.onload = () => {
+  loadButton();
   loadElements('computador');
   loadCartFromStorage();
   createTagTotalPrice();
