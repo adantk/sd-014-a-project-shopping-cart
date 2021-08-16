@@ -1,4 +1,6 @@
 const getOl = () => document.querySelector('.cart__items');
+const getLi = () => Array.from(document.querySelectorAll('.cart__item'));
+const getCartPrice = () => document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -33,24 +35,31 @@ const createProduct = (sku, name, image) =>
   return item.querySelector('span.item__sku').innerText;
 }
 
-const getItemLocalStorage = () => {
-  if (localStorage.getItem('list') === null) {
-    localStorage.getItem('list', JSON.stringify([]));
-  } else {
-    const listProducts = localStorage.getItem('list');
-    getOl().innerHTML = listProducts;
-  }
-};
+const sumTotalPrice = () => {
+  const cartList = getLi().map((item) => item.innerText);
+  const priceList = cartList.map((string) => string.split('PRICE: $')[1]);
+  const totalValue = priceList.reduce((acc, sum) => acc + parseFloat(sum), 0);
+  getCartPrice().innerText = Math.round(totalValue * 100) / 100;
+ };
+ 
+const subTotalPrice = (event) => {
+  const itemSelected = event.target.innerText;
+  const itemValue = itemSelected.split('PRICE: $')[1];
+  const newValue = getCartPrice().innerText - itemValue;
+  getCartPrice().innerHTML = Math.round(newValue * 100) / 100;
+};  
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  console.log('oi');
-  document.querySelector('.cart__items').removeChild(event.target);  
+  getOl().removeChild(event.target); 
+  subTotalPrice(event); 
 }
 
 const makeAppend = (li) => {
   getOl().appendChild(li);
   localStorage.setItem('list', getOl().innerHTML);
+  localStorage.setItem('price', getCartPrice().innerHTML);
+  sumTotalPrice();
 };
 
 // Função que cria os elementos no carrinho de compras, remove os elementos e coloca os elementos no local storage logo depois de criados.
@@ -59,7 +68,9 @@ const makeAppend = (li) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+
   li.addEventListener('click', cartItemClickListener);
+
   makeAppend(li); 
 
   return li;
@@ -81,6 +92,17 @@ const buttonListener = () => {
     fetchItem(getId);
     }
   });
+};
+
+const getItemLocalStorage = () => {
+  if (localStorage.getItem('list') === null) {
+    localStorage.getItem('list', JSON.stringify([]));
+  } else {
+    const listProducts = localStorage.getItem('list');
+    const price = localStorage.getItem('price');
+    getOl().innerHTML = listProducts;
+    getCartPrice().innerHTML = price;
+  }
 };
 
 const loadingMessage = () => {
@@ -115,15 +137,18 @@ const fetchProducts = async () => {
  const clearCart = () => {
    const getClearButton = document.querySelector('.empty-cart');
    getClearButton.addEventListener('click', () => {
-      const getLi = document.querySelectorAll('.cart__item');
-      getLi.forEach((item) => item.remove());
+      getLi().forEach((item) => item.remove());
       localStorage.clear();
+      getCartPrice().innerText = '0';
    });
  };
 
 window.onload = () => {
  fetchProducts();
  getItemLocalStorage();
+
+ getLi().forEach((item) => item.addEventListener('click', cartItemClickListener));
+
  buttonListener();
  clearCart();  
 }; 
