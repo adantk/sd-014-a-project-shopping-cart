@@ -46,10 +46,10 @@
 
 .cart {
   display: flex;
-  flex-basis: 30%;  
+  flex-basis: 30%;
   flex-flow: column wrap;
   border: 2px solid blue;
-  border-radius: 5px;  
+  border-radius: 5px;
   margin-top: 5px;
   padding: 1em;
   height: fit-content;
