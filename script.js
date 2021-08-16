@@ -1,22 +1,40 @@
 const cartItemsClass = '.cart__items';
+const totalPriceCart = '.total-price';
 let cartPrice = 0;
+
+const whileLoading = () => {
+  const loading = document.createElement('span');
+  loading.innerHTML = 'loading...';
+  loading.className = 'loading';
+  const loadingPlace = document.querySelector('.cart');
+  loadingPlace.appendChild(loading);
+};
+
+const removeLoading = () => {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+};
 
 const savePriceToLocalStorage = (totalPrice) => {
   localStorage.setItem('totalPrice', totalPrice.innerHTML);
   };
 
 const addPriceItem = (price) => {
-  const totalPrice = document.querySelector('.total-price');
+  const totalPrice = document.querySelector(totalPriceCart);
   cartPrice += price;
   totalPrice.innerHTML = cartPrice;
   savePriceToLocalStorage(totalPrice);
 };
 
 const removePriceItem = (price) => {
-  const totalPrice = document.querySelector('.total-price');
+  const totalPrice = document.querySelector(totalPriceCart);
   cartPrice -= price;
   totalPrice.innerHTML = cartPrice;
   savePriceToLocalStorage(totalPrice);
+};
+
+const saveToLocalStorage = (cart) => { 
+  localStorage.setItem('cartList', cart.innerHTML);
 };
 
 async function cartItemClickListener(event) {
@@ -54,8 +72,9 @@ async function getSkuFromProductItem(item) {
 }
 
 const fetchRequestEndpoint = async (idProduct) => {
-  return fetch(`https://api.mercadolibre.com/items/${idProduct}`)
-   .then((response) => response.json());
+  const responseRaw = await fetch(`https://api.mercadolibre.com/items/${idProduct}`);
+  const responseJson = await responseRaw.json();
+  return responseJson;
 };
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -65,10 +84,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-const saveToLocalStorage = (cart) => { 
-  localStorage.setItem('cartList', cart.innerHTML);
-};
 
 const addItemToCart = async (event) => {
   whileLoading();
@@ -127,28 +142,15 @@ const createTagTotalPrice = () => {
 const emptyCart = () => {
   const cart = document.querySelector(cartItemsClass);
   cart.innerHTML = '';
-  const totalPrice = document.querySelector('.total-price');
+  const totalPrice = document.querySelector(totalPriceCart);
   totalPrice.innerHTML = 0;
   localStorage.setItem('cartList', '');
   localStorage.setItem('totalPrice', 0);
-}
+};
 
 const emptyButton = () => {
   const buttonEmptyCart = document.querySelector('.empty-cart');
   buttonEmptyCart.addEventListener('click', emptyCart);
-};
-
-const whileLoading = () => {
-  const loading = document.createElement('span');
-  loading.innerHTML = 'loading...';
-  loading.className = 'loading';
-  const loadingPlace = document.querySelector('.cart');
-  loadingPlace.appendChild(loading)
-}
-
-const removeLoading = () => {
-  const loading = document.querySelector('.loading');
-  loading.remove();
 };
 
 window.onload = () => {
