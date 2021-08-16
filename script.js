@@ -1,4 +1,4 @@
-const cartItems = document.querySelector('.cart__items'); // para fazer appendChild (req 2)
+const cartItems = document.querySelector('.cart__items'); 
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -37,7 +37,6 @@ const saveCartLocalStorage = () => {
 
 // req 3
 function cartItemClickListener(event) {
-  // coloque seu código aqui
   const cartItem = document.querySelector('.cart__item'); // seleciona item no carrinho
   cartItem.remove(event.target); // usa metodo 'remove'
   saveCartLocalStorage();
@@ -46,8 +45,7 @@ function cartItemClickListener(event) {
 // req 4 II
 function addCartToLocalStorage() {
   const items = localStorage.getItem('items');
-  const cart = document.querySelector('.cart__items');
-  cart.innerHTML = items;
+  cartItems.innerHTML = items; // const cartItems declarada la no inicio do script
   const cartItem = document.querySelectorAll('.cart__item');
   cartItem.forEach((item) => {
     item.addEventListener('click', cartItemClickListener);
@@ -95,6 +93,13 @@ saveCartLocalStorage();
 });
  }); 
 }; 
+
+// req 5
+// req 6
+const limpaCarrinho = document.querySelector('.empty-cart');
+limpaCarrinho.addEventListener('click', () => {
+cartItems.innerHTML = ' ';
+});
 
 window.onload = async () => {
  await criaLista(); 
