@@ -72,7 +72,9 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 const addItemToCart = async (event) => {
   const id = getSkuFromProductItem(event.target.parentElement);
+  addLoading();
   const info = await fetchChosenItem(id);
+  removeLoading();
   const newLi = createCartItemElement(info);
   lista.appendChild(newLi);
   updateList();
@@ -94,7 +96,9 @@ const createItemListener = () => {
 };
 
 const addItems = async () => {
+  addLoading();
   const results = await fetchProducts();
+  removeLoading();
   results.forEach((result) => {
     const info = { sku: result.id, name: result.title, image: result.thumbnail };
     const product = createProductItemElement(info);
@@ -129,6 +133,17 @@ const setInitialPrice = () => {
     initialPrice += Number(item.innerText.split('$')[1]);
   });
   total.innerHTML = initialPrice;
+};
+
+const addLoading = () => {
+  const load = document.createElement('h1');
+  load.innerHTML = 'Loading...';
+  load.className = 'loading';
+  document.body.appendChild(load);
+};
+
+const removeLoading = () => {
+  document.querySelector('.loading').remove();
 };
 
 window.onload = () => {
