@@ -48,27 +48,27 @@ function createCartItemElement({
 
 const fetchMercadoLivre = async (QUERY) => {
   const mlApi = `https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`;
+  const request = await fetch(mlApi);
+  const data = await request.json();
+  const result = data.results;
 
-  await fetch(mlApi)
-    .then((response) => response.json())
-    .then((data) => data.results)
-    .then((results) => results.forEach((result) =>
-      document.querySelector('.items').appendChild(createProductItemElement({
-        sku: result.id,
-        name: result.title,
-        image: result.thumbnail,
-      }))));
+  await result.forEach((i) => document.querySelector('.items')
+  .appendChild(createProductItemElement({
+    sku: i.id,
+    name: i.title,
+    image: i.thumbnail,
+  })));
 };
 
 const fetchItem = () => {
-  const btn = document.querySelectorAll('.item__add'); // Busca a classe do botão no HTML
+  const btn = document.querySelectorAll('.item__add');
 
-  btn.forEach((list) => { // Cria um evento que para cada clique no botão seja adicionado o produto na lista do carrinho de compras!
+  btn.forEach((list) => { 
     list.addEventListener('click', async (event) => { 
-      const targett = event.target.parentElement.firstChild.innerHTML; 
-      const cart = document.querySelector('.cart__items'); // Busca a classe da lista do carrinho de compras!
-      const fetchItemMl = await fetch(`https://api.mercadolibre.com/items/${targett}`)
-        .then((response) => response.json()); // Transforma os dados em Json!
+      const targetIdProduct = event.target.parentElement.firstChild.innerHTML; 
+      const cart = document.querySelector('.cart__items');
+      const fetchItemMl = await fetch(`https://api.mercadolibre.com/items/${targetIdProduct}`)
+        .then((response) => response.json());
       cart.appendChild(createCartItemElement({ 
         sku: fetchItemMl.id,
         name: fetchItemMl.title,
