@@ -119,7 +119,7 @@ const emptyCart = () => {
   lista.innerHTML = '';
   total.innerHTML = 0;
   localStorage.setItem('lista', '');
-}
+};
 btnEmpty.addEventListener('click', emptyCart);
 
 window.onload = () => {
