@@ -49,15 +49,6 @@ function getSkuFromProductItem(item) {
 }
 
 // Requisito 5
-// Primeiro tentei fazer da seguinte forma abaixo, mas não consegui fazer com que o valor total fosse alterado quando um item era removido da lista, então mudei de lógica, a partir do que vi na mentoria, para a função seguinte.
-// const prices = [];
-// const totalPrice = ({ price: salePrice }) => {
-//   prices.push(salePrice);
-//   const sumPrices = prices.reduce((acc, price) => acc + price, 0)
-//   total.innerText = `${Math.round(sumPrices * 100) / 100}`;
-//   localStorage.setItem('price', total.innerHTML);
-// }
-
 const totalPrice = () => {
   let getTotal = 0;
   cartItems.childNodes.forEach((item) => {
