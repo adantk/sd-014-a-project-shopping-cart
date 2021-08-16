@@ -71,14 +71,15 @@ const saveToLocalStorage = (cart) => {
 };
 
 const addItemToCart = async (event) => {
+  whileLoading();
   const idProductAdd = await getSkuFromProductItem(event);
   const returnEndPoint = await fetchRequestEndpoint(idProductAdd);
   const { id, title, price } = await returnEndPoint;
   const cart = document.querySelector(cartItemsClass);
   cart.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
   saveToLocalStorage(cart);
-  
   addPriceItem(price);
+  removeLoading();
 };
 
 function createCustomElement(element, className, innerText) {
@@ -107,9 +108,11 @@ const fetchProduct = async (search) => {
 };
 
 const loadElements = async (search) => {
+  whileLoading();
   const result = await fetchProduct(search);
   result.forEach(({ id, title, thumbnail }) => document.querySelector('.items')
     .appendChild(createProductItemElement({ sku: id, name: title, image: thumbnail })));
+  removeLoading();
 };
 
 const createTagTotalPrice = () => {
@@ -128,18 +131,29 @@ const emptyCart = () => {
   totalPrice.innerHTML = 0;
   localStorage.setItem('cartList', '');
   localStorage.setItem('totalPrice', 0);
-  
 }
 
-const loadButton = () => {
+const emptyButton = () => {
   const buttonEmptyCart = document.querySelector('.empty-cart');
   buttonEmptyCart.addEventListener('click', emptyCart);
 };
 
+const whileLoading = () => {
+  const loading = document.createElement('span');
+  loading.innerHTML = 'loading...';
+  loading.className = 'loading';
+  const loadingPlace = document.querySelector('.cart');
+  loadingPlace.appendChild(loading)
+}
+
+const removeLoading = () => {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+};
+
 window.onload = () => {
-  loadButton();
+  emptyButton();
   loadElements('computador');
   loadCartFromStorage();
   createTagTotalPrice();
-  
-}
+};
