@@ -1,4 +1,5 @@
 const cart = document.querySelector('.cart__items');
+const items = document.querySelector('.items');
 const totalPrice = document.querySelector('.total-price');
 
 const saveLocalStorage = () => {
@@ -59,13 +60,25 @@ function createCartItemElement({
   return li;
 }
 
+const load = () => {
+  const createP = document.createElement('p');
+  createP.innerHTML = 'Loading...';
+  createP.classList.add('loading');
+  document.body.appendChild(createP);
+};
+const removeLoad = () => {
+  document.getElementsByClassName('loading')[0].remove();
+};
+
 const fetchMercadoLivre = async (QUERY) => {
   const mlApi = `https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`;
+  load();
   const request = await fetch(mlApi);
   const data = await request.json();
   const result = data.results;
-
-  await result.forEach((i) => document.querySelector('.items')
+  
+  removeLoad();
+  await result.forEach((i) => items
   .appendChild(createProductItemElement({
     sku: i.id,
     name: i.title,
@@ -93,10 +106,10 @@ const fetchItem = () => {
 };
 
 const clearCart = () => {
-const btnClear = document.querySelector('.empty-cart');
-
-btnClear.addEventListener('click', () => {
-  cart.innerHTML = null;
+  const btnClear = document.querySelector('.empty-cart');
+  
+  btnClear.addEventListener('click', () => {
+    cart.innerHTML = null;
   });
 };
 
