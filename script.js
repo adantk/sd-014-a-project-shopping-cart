@@ -64,10 +64,11 @@ const fetchMercadoLivre = async (QUERY) => {
 
 const fetchItem = () => {
   const btn = document.querySelectorAll('.item__add');
-
+  
   btn.forEach((list) => { 
     list.addEventListener('click', async (event) => { 
-      const targetIdProduct = event.target.parentElement.firstChild.innerHTML; 
+      const targetId = event.target.parentElement; 
+      const targetIdProduct = getSkuFromProductItem(targetId);
       const fetchItemMl = await fetch(`https://api.mercadolibre.com/items/${targetIdProduct}`);
       const response = await fetchItemMl.json();
       cart.appendChild(createCartItemElement({ 
@@ -79,7 +80,16 @@ const fetchItem = () => {
   });
 };
 
+const clearCart = () => {
+const btnClear = document.querySelector('.empty-cart');
+
+btnClear.addEventListener('click', () => {
+  cart.innerHTML = null;
+  });
+};
+
 window.onload = async () => {
   await fetchMercadoLivre('computador');
   fetchItem();
+  clearCart();
 };
