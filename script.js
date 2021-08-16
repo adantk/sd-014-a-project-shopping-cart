@@ -14,23 +14,23 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 // Questão 5
-function totalSomado() {
-  const totalSomados = document.createElement('span');
-  let somatorio = 0;
-  if (document.querySelector('.total-price')) {
-    document.querySelector('.total-price').remove();
-  }
-  cartItems.forEach((i) => {
-    const itemPrice = i.innerText.split('$')[1];
-    somatorio += parseFloat(itemPrice);
-  });
-  totalSomados.innerText = `${somatorio}`;
-  totalSomados.className = 'total-price';
-  document.querySelector('.cart').appendChild(totalSomados);
-}
+// function totalSomado() {
+//   const totalSomados = document.createElement('span');
+//   let somatorio = 0;
+//   if (document.querySelector('.total-price')) {
+//     document.querySelector('.total-price').remove();
+//   }
+//   cartItems.forEach((i) => {
+//     const itemPrice = i.innerText.split('$')[1];
+//     somatorio += parseFloat(itemPrice);
+//   });
+//   totalSomados.innerText = `${somatorio}`;
+//   totalSomados.className = 'total-price';
+//   document.querySelector('.cart').appendChild(totalSomados);
+// }
 
 // requisito 3
-function cartItemClickListener(event) {// coloque seu código aqui
+function cartItemClickListener(event) { // coloque seu código aqui
   event.target.remove();
 }
 
@@ -47,7 +47,6 @@ const criarBtn = () => {
   const botao = document.querySelectorAll('.item__add');
   botao.forEach((element) =>
     element.addEventListener('click', async (event) => {
-      const carrinho = document.querySelector('.cart__items');
       const produtos = event.target.parentElement;
       const id = produtos.firstChild.innerText;
 
@@ -57,7 +56,6 @@ const criarBtn = () => {
       localStorage.setItem('stored', carrinho.innerHTML);
     }));
 };
-
 
 //Resolvendo a questão 1.....
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -79,7 +77,7 @@ const transJson = async () => {
   const loading = createCustomElement('h1', 'loading', 'loading');
   loading.className = 'loading';
   document.body.appendChild(loading);
-  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador',)
+  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const responseJson = await responseRaw.json();
   const arrayRates = responseJson.results;
 
@@ -94,7 +92,7 @@ const transJson = async () => {
 // requisito 4.
 const localstorage = () => {
   if (localStorage.getItem('stored')) {
-    document.querySelector('.cart__items').innerHTML
+    carrinho.innerHTML
       += localStorage.getItem('stored');
   }
 };
