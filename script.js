@@ -6,7 +6,7 @@ function totalPriceCart() {
   const items = document.querySelectorAll('.cart__item');
   let totalPrice = 0;
   items.forEach((item) => {
-    totalPrice += Number(item.id);
+    totalPrice += parseFloat(item.id);
   });
   totalPriceElement.innerText = totalPrice;
 }
@@ -96,7 +96,11 @@ function appendProductsOnCart() {
       const itemID = getSkuFromProductItem(event.target.parentElement);
       fetch(`${URL_2}${itemID}`)
         .then((response) => response.json())
-        .then((product) => { appendProducts(product); }).then(() => { totalPriceCart(); });
+        .then((product) => {
+          appendProducts(product);
+        }).then(() => {
+          totalPriceCart();
+        });
     });
   });
 }
@@ -127,18 +131,19 @@ function loadingElement() {
   items.appendChild(loading);
 }
 
-async function process(item = 'computador') {
-  try {
-    loadingElement();
-    emptyCartButton();
-    const fetchMercadoLivre = await fetch(`${URL_1}${item}`);
-    const mercadoLivreJSON = await fetchMercadoLivre.json();
-    const products = mercadoLivreJSON.results;
-    appendProductsOnList(products);
-    appendProductsOnCart();
-  } catch (error) {
-    console.log('Deu ruim!!');
-  }
+async function getProductsOnAPI(item = 'computador') {
+  const fetchMercadoLivre = await fetch(`${URL_1}${item}`);
+  const mercadoLivreJSON = await fetchMercadoLivre.json();
+  const products = mercadoLivreJSON.results;
+  return products;
+}
+
+async function process() {
+  loadingElement();
+  emptyCartButton();
+  const products = await getProductsOnAPI();
+  appendProductsOnList(products);
+  appendProductsOnCart();
 }
 
 function addSavedLocalStorage() {
