@@ -1,5 +1,6 @@
 const items = document.querySelector('.items');
 const olCartList = document.querySelector('ol');
+const myTotalPrice = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -31,20 +32,26 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener() {
-  // coloque seu código aqui
-  document.querySelector('ol').addEventListener('click', (event) => {
+const cartItemClickListener = () => {
+  olCartList.addEventListener('click', (event) => {
+    const isLi = event.target.nodeName === 'LI';
+    if (!isLi) {
+      return;
+    }
+    const totalPrice = parseFloat(myTotalPrice.innerText);
+    const removedItemInnerText = event.target.innerText;
+    const removedItemPrice = parseFloat(removedItemInnerText.split('$')[1]);
+    myTotalPrice.innerText = (totalPrice - removedItemPrice);
     event.target.remove();
     localStorage.setItem('myCartList', olCartList.innerHTML);
-  });  
-}
+    localStorage.setItem('totalPrice', myTotalPrice.innerText);
+  });
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-
   return li;
 }
 
@@ -65,6 +72,14 @@ const fetchItemById = async (itemId) => {
   return response;
 };
 
+const increaseTotalPrice = () => {
+  const totalPrice = parseFloat(myTotalPrice.innerText);
+  const addedItemInnerText = olCartList.lastChild.innerText;
+  const addedItemPrice = parseFloat(addedItemInnerText.split('$')[1]);
+
+  myTotalPrice.innerText = (totalPrice + addedItemPrice);
+};
+
 const addToCart = () => {
  items.addEventListener('click', async function createElement(event) {
     const isButton = event.target.nodeName === 'BUTTON';
@@ -79,16 +94,21 @@ const addToCart = () => {
     };
     createElementById(fetchItem);
     localStorage.setItem('myCartList', olCartList.innerHTML);
+    increaseTotalPrice();
+    localStorage.setItem('totalPrice', myTotalPrice.innerText);
   });
 };
 
 const loadCartItems = () => {
   olCartList.innerHTML = localStorage.getItem('myCartList');
+  if (document.querySelectorAll('.cart__item').length >= 1) {
+    myTotalPrice.innerText = localStorage.getItem('totalPrice');
+  }
 };
 
 window.onload = () => {
   getProducts(); 
   addToCart();
-  cartItemClickListener();
   loadCartItems();
+  cartItemClickListener();
 };
