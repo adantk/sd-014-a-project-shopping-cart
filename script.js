@@ -106,8 +106,13 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 
 async function getComputer(query) {
+  const loading = createCustomElement('p', 'loading', 'loading...');
+  // Utiliza a createCustom pra criar meu loading
+  document.body.appendChild(loading); // adiciona o loading como filho de body
   const api = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`); // Busca api
   const json = await api.json(); // Deixa a API 'legivel' pro JS com o Json, transformando ela em objeto
+  const loadClass = document.querySelector('.loading');
+  loadClass.parentNode.removeChild(loadClass); // Remove o loading após a API carregar
   json.results.forEach((result) => items.appendChild(createProductItemElement(result)));
   // mapeia os results e coloca como parametro de createProductItemElement deixando ela como filha de items
 }
