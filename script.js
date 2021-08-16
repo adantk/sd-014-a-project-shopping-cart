@@ -49,26 +49,26 @@ const clearCartList = () => {
   document.getElementsByClassName('cart__items')[0].innerText = '';
 };
 
-const showCartList = () => {
-  clearCartList();
+const showCartList = () => { // função que busca a informação e demonstra a lista do carrinho 
+  clearCartList(); // função que limpa o carrinho antes de fazer a novamente a busca no cart__items
   const cart = document.querySelector('.cart__items');
   cartList.forEach((productJson) => {
     cart.appendChild(createCartItemElement(productJson));
   });
 };
 let cartList = [];
-const buttonAddCart = () => {
+const buttonAddCart = () => { // função para buscar add os items quando clicado no buttom e incluir na linha.
   const button = document.querySelectorAll('.item__add');
   button.forEach((item) => item.addEventListener('click', async (event) => {
-    const selectedProduct = event.target.parentElement;
-    const sku = selectedProduct.firstChild.innerText;
+    const selectedProduct = event.target.parentElement; // faz o evento de buscar o produto e seleciona antes de incluir na lista
+    const sku = selectedProduct.firstChild.innerText; // busca o firstChild Sku
 
     const productJson = await fetch(
       `https://api.mercadolibre.com/items/${sku}`,
     ).then((r) => r.json());
-    cartList.push(productJson);
+    cartList.push(productJson); // push no array com as informaçÕes selecionadas
     // console.log(cartList);
-    showCartList();
+    showCartList(); // mostra novamente a lista.
   }));
 };
 
@@ -79,6 +79,14 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
 
 }
+const setUpEmptyCart = () => { // função setUpEmptyCart, zera o carrinho toda vez que utilizada.
+  document.getElementsByClassName('empty-cart')[0];
+  const buttomEmpty = document.getElementsByClassName('empty-cart')[0]; // buscar o buttum
+  buttomEmpty.addEventListener('click', () => { // add eventLister click
+    cartList = []; // esvazia o array antes de chamar novamente a lista
+    showCartList(); // chama a função que mostra novamente a Lista
+  });
+};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -92,4 +100,5 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 window.onload = () => {
   showProductList();
   showCartList();
+  setUpEmptyCart();
 };
