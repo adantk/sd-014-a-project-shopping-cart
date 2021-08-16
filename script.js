@@ -122,7 +122,17 @@ const emptyCart = () => {
 };
 btnEmpty.addEventListener('click', emptyCart);
 
+const setInitialPrice = () => {
+  const allItems = document.querySelectorAll('.cart__item');
+  let initialPrice = 0;
+  allItems.forEach((item) => {
+    initialPrice += Number(item.innerText.split('$')[1]);
+  });
+  total.innerHTML = initialPrice;
+};
+
 window.onload = () => {
   addItems();
   addCartItemListener();
+  setInitialPrice();
 };
