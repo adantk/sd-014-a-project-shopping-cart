@@ -36,11 +36,10 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// const cartItemClickListener = (event) => {
-//   const itemsCarrinho = document.querySelector('cart__item');
-//   itemsCarrinho.removeChild(event.target)
-//   console.log('cartItemClickListener')
-// }
+const cartItemClickListener = (event) => {
+  const itemsCarrinho = document.querySelector('.cart__items');
+  itemsCarrinho.removeChild(event.target)
+}
 
 function createCartItemElement({
   sku,
@@ -50,7 +49,7 @@ function createCartItemElement({
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -96,6 +95,14 @@ const addItemCarrinho = (objToCart) => {
   let teste = document.getElementsByClassName('cart__items')
   teste[0].appendChild(createCartItemElement(objToCart))
 }
+
+const localStorageItems = JSON.parse(localStorage
+  .getItem('ItemsCart'));
+
+let itemsLocalStorage = localStorage
+  .getItem('ItemsCart') !== null ? localStorageItems : [];
+
+let updateLocalStorage = localStorage.setItem('ItemsCart', JSON.stringify(itemsLocalStorage))
 
 window.onload = async () => {
   await fetchML();
