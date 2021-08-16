@@ -35,20 +35,27 @@ const createProduct = (sku, name, image) =>
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
- getOl().removeChild(event.target);  
+  console.log('oi');
+  document.querySelector('.cart__items').removeChild(event.target);  
 }
 
 const makeAppend = (li) => {
   getOl().appendChild(li);
-  localStorage.setItem('list', getOl.innerHTML);
 };
+
+// Função que cria os elementos no carrinho de compras, remove os elementos e coloca os elementos no local storage logo depois de criados.
 
  function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+
   li.addEventListener('click', cartItemClickListener);
-  makeAppend(li);
+
+  makeAppend(li); 
+
+  localStorage.setItem('list', getOl().innerHTML);
+
   return li;
 }
 
@@ -70,15 +77,7 @@ const buttonListener = () => {
   });
 };
 
-const fetchProducts = async () => {
-  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-  const responseJson = await responseRaw.json();
-        responseJson.results.map(({ id, title, thumbnail }) =>
-        createProduct(id, title, thumbnail));
-        buttonListener(); 
- };
-
- const getItem = () => {
+const getItem = () => {
   if (localStorage.getItem('list') === null) {
     localStorage.getItem('list', JSON.stringify([]));
   } else {
@@ -87,8 +86,37 @@ const fetchProducts = async () => {
   }
 };
 
+const loadingMessage = () => {
+  const body = document.querySelector('body');
+  const message = document.createElement('div');
+  message.className = 'loading';
+  message.innerText = 'loading...';
+  body.appendChild(message);
+};
+
+const deleteMessage = () => {
+  const getMessage = document.querySelector('.loading');
+  const body = document.querySelector('body');
+  body.removeChild(getMessage);
+};
+
+const fetchProducts = async () => {
+  try {
+  loadingMessage();
+  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  if (responseRaw) {
+  deleteMessage();  
+  const responseJson = await responseRaw.json();
+      responseJson.results.map(({ id, title, thumbnail }) =>
+      createProduct(id, title, thumbnail));
+  }
+  } catch (error) {
+    console.log(error);
+  }
+ };
+
 window.onload = () => {
  fetchProducts();
- 
-  getItem();
+ getItem();
+ buttonListener(); 
 }; 
