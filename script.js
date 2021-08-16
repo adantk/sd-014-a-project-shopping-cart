@@ -1,5 +1,6 @@
 const cartItems = document.querySelector('.cart__items');
-// const cartItem = document.querySelectorAll('.cart__item');
+const endpoint1 = 'https://api.mercadolibre.com/sites/MLB/search?q=';
+const endpoint2 = 'https://api.mercadolibre.com/items/';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -42,9 +43,8 @@ const saveCart = () => {
 const getItems = async () => {
   const query = 'computador';
   // const endpoint = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-  const endpoint = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
 
-  const request = await fetch(endpoint);
+  const request = await fetch(`${endpoint1}${query}`);
   const response = await request.json();
   const getResult = response.results;
 
@@ -89,6 +89,7 @@ const totalPrice = (() => {
   sumPrices += numero;
   });
   actualPrice.innerText = `${Math.round(sumPrices * 100) / 100}`;
+  saveCart();
 });
 // Source: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
 // Source: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/String/substr
@@ -125,8 +126,8 @@ const addToCart = async () => {
   itemList.forEach((buttonItem) => { // Adicionando um escutador de eventos para cada elemento (botão) da minha lista de itens
     buttonItem.addEventListener('click', async (event) => {
     const itemID = getSkuFromProductItem(event.target.parentElement);
-    const endpoint = `https://api.mercadolibre.com/items/${itemID}`;
-    const request = await fetch(endpoint);
+    // const endpoint = `https://api.mercadolibre.com/items/${itemID}`;
+    const request = await fetch(`${endpoint2}${itemID}`);
     const response = await request.json();
     const item = { // Adicionando as informações do produto ao carrinho 
       sku: response.id,
@@ -145,6 +146,7 @@ const emptyCart = document.querySelector('.empty-cart');
 emptyCart.addEventListener('click', () => {
   cartItems.innerHTML = '';
   localStorage.clear();
+  totalPrice();
 });
 
 window.onload = async () => { // async/await para organizar o tempo entre criar a lista de produtos, adicionar botões e adicionar produtos ao carrinho 
