@@ -1,9 +1,39 @@
 const cartItemsClass = '.cart__items';
+let cartPrice = 0;
+
+const savePriceToLocalStorage = (totalPrice) => {
+  localStorage.setItem('totalPrice', totalPrice.innerHTML);
+  };
+
+const addPriceItem = (price) => {
+  const totalPrice = document.querySelector('.total-price');
+  cartPrice += price;
+  totalPrice.innerHTML = cartPrice;
+  savePriceToLocalStorage(totalPrice);
+};
+
+const removePriceItem = (price) => {
+  const totalPrice = document.querySelector('.total-price');
+  cartPrice -= price;
+  totalPrice.innerHTML = cartPrice;
+  savePriceToLocalStorage(totalPrice);
+};
+
+async function cartItemClickListener(event) {
+  const cart = document.querySelector(cartItemsClass);
+  const itemHtml = event.target.innerHTML;
+  const priceItem = Number(itemHtml.split('PRICE: $')[1]);
+  removePriceItem(priceItem);
+  event.target.remove();
+  saveToLocalStorage(cart);
+}
 
 const loadCartFromStorage = () => {
   const cart = document.querySelector(cartItemsClass);
   const cartLocalStorage = localStorage.getItem('cartList');
+  const priceLocalStorage = localStorage.getItem('totalPrice');
   cart.innerHTML = (cartLocalStorage);
+  if (priceLocalStorage) cartPrice = priceLocalStorage;
   Array.from(cart.children).forEach((item) => 
     item.addEventListener('click', cartItemClickListener));
     /** Consultei o repositório do Gustavo Dias para resolver essa parte final com 'cart.children'
@@ -28,12 +58,6 @@ const fetchRequestEndpoint = async (idProduct) => {
    .then((response) => response.json());
 };
 
-async function cartItemClickListener(event) {
-  const cart = document.querySelector(cartItemsClass);
-  event.target.remove();
-  localStorage.setItem('cartList', cart.innerHTML);
-}
-
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -42,6 +66,10 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+const saveToLocalStorage = (cart) => { 
+  localStorage.setItem('cartList', cart.innerHTML);
+};
+
 const addItemToCart = async (event) => {
   const idProductAdd = await getSkuFromProductItem(event);
   const returnEndPoint = await fetchRequestEndpoint(idProductAdd);
@@ -49,10 +77,8 @@ const addItemToCart = async (event) => {
   const cart = document.querySelector(cartItemsClass);
   cart.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
   saveToLocalStorage(cart);
-};
-
-const saveToLocalStorage = (cart) => { 
-  localStorage.setItem('cartList', cart.innerHTML)
+  
+  addPriceItem(price);
 };
 
 function createCustomElement(element, className, innerText) {
@@ -84,10 +110,20 @@ const loadElements = async (search) => {
   const result = await fetchProduct(search);
   result.forEach(({ id, title, thumbnail }) => document.querySelector('.items')
     .appendChild(createProductItemElement({ sku: id, name: title, image: thumbnail })));
-    
+};
+
+const createTagTotalPrice = () => {
+  const totalPrice = document.createElement('span');
+  totalPrice.className = 'total-price';
+  
+  totalPrice.innerHTML = cartPrice;
+  const cart = document.querySelector('.cart');
+  cart.appendChild(totalPrice);
 };
 
 window.onload = () => {
   loadElements('computador');
   loadCartFromStorage();
+  createTagTotalPrice();
+  
 }
