@@ -48,29 +48,29 @@ function testReponse(response) {
   throw new Error(`URL: ${response.url} - STATUS: ${response.status}`);
 }
 
-async function getComputerItemFromMlApi(sku) {
+async function getProductItemFromMlApi(sku) {
   createLoading();
   return fetch(`https://api.mercadolibre.com/items/${sku}`)
     .then((response) => testReponse(response));
 }
 
-async function getComputersFromMlApi(query) {
+async function getProductsFromMlApi(query) {
   createLoading();
   return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${query}`)
     .then((response) => testReponse(response))
     .then((json) => json.results);
 }
 
-function sum(ol) {    
+function sum(listElement) {
   let total = 0;
-  ol.childNodes.forEach((li) => {
+  listElement.childNodes.forEach((li) => {
     total += Number(li.lastChild.innerText); // span
   });
   total = Math.round(100 * total) / 100;
   totalPriceSpan.innerText = total;
 }
 
-function cartItemClickListener(event) {  
+function cartItemClickListener(event) {
   event.currentTarget.remove();
   localStorage.setItem(storageKey, cartItemsSection.innerHTML);
   sum(cartItemsSection);
@@ -78,11 +78,11 @@ function cartItemClickListener(event) {
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
-  li.className = 'cart__item';  
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $`;  
-  const salePriceSpan = createCustomElement('span', 'sale-price', salePrice);  
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $`;
+  const salePriceSpan = createCustomElement('span', 'sale-price', salePrice);
   li.append(salePriceSpan);
-  li.addEventListener('click', cartItemClickListener);  
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -90,9 +90,9 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function addItemToCart(event) {  
+function addItemToCart(event) {
   const skuItem = getSkuFromProductItem(event.target.parentElement);
-  getComputerItemFromMlApi(skuItem)
+  getProductItemFromMlApi(skuItem)
     .then(({ id: sku, title: name, price: salePrice }) => {
       const li = createCartItemElement({ sku, name, salePrice });
       cartItemsSection.appendChild(li);
@@ -103,7 +103,7 @@ function addItemToCart(event) {
     .then(() => deleteLoading());
 }
 
-function getLocalStorage() {  
+function getLocalStorage() {
   cartItemsSection.innerHTML = localStorage.getItem(storageKey)
     ? localStorage.getItem(storageKey)
     : '';
@@ -112,22 +112,22 @@ function getLocalStorage() {
   sum(cartItemsSection);
 }
 
-function clearAll() {  
-  cartItemsSection.innerHTML = '';  
+function clearAll() {
+  cartItemsSection.innerHTML = '';
   totalPriceSpan.innerText = 0;
   localStorage.removeItem(storageKey);
 }
 
-window.onload = () => {  
+window.onload = () => {
   emptyCartButton.addEventListener('click', clearAll);
-  getLocalStorage();  
-  getComputersFromMlApi('computador')
-    .then((computers) =>
-    computers.forEach(({ id: sku, title: name, thumbnail: image, price }) => {
-        const productItemSection = createProductItemElement({ sku, name, image, price });        
+  getLocalStorage();
+  getProductsFromMlApi('computador')
+    .then((products) =>
+    products.forEach(({ id: sku, title: name, thumbnail: image, price }) => {
+        const productItemSection = createProductItemElement({ sku, name, image, price });
         productItemSection.lastChild.addEventListener('click', addItemToCart); // button
-        itemsSection.appendChild(productItemSection);        
-      }))    
+        itemsSection.appendChild(productItemSection);
+      }))
     .catch((error) => window.alert(`ERRO: ${error.message}`))
-    .then(() => deleteLoading());   
+    .then(() => deleteLoading());
 };
