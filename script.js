@@ -141,7 +141,7 @@ function removeLoading() {
 function getItemsFromAPI() {
   const fetching = fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const fetchResponse = fetching.then((resp) => resp.json());
-  fetchResponse.then((respJSON) => respJSON.results.forEach((product) => {
+  const JSON = fetchResponse.then((respJSON) => respJSON.results.forEach((product) => {
         const item = createProductItemElement({ sku: product.id,
           name: product.title,
           image: product.thumbnail,
@@ -149,9 +149,7 @@ function getItemsFromAPI() {
         itemEventListener(item, product.id);
         itemContainer.append(item);
       }));
-    setTimeout(() => {
-      removeLoading();
-    }, 3000);
+    JSON.then(() => removeLoading());
 }
 
 // funções que são chamadas imediatamente após a inicialização da página.
