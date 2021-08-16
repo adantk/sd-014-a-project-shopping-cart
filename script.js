@@ -106,9 +106,19 @@ const loadCartItems = () => {
   }
 };
 
+const emptyCart = () => {
+  const clearButton = document.querySelector('.empty-cart');
+  clearButton.addEventListener('click', () => {
+    olCartList.innerHTML = '';
+    document.querySelector('.total-price').innerText = '0';
+    localStorage.clear();
+  });
+};
+
 window.onload = () => {
   getProducts(); 
   addToCart();
   loadCartItems();
   cartItemClickListener();
+  emptyCart();
 };
