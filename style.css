@@ -1,7 +1,21 @@
+* {
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
+  font-family: "Proxima Nova", -apple-system, "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  
+}
+
+
 .container {
   display: flex;
   justify-content: space-around;
-  width: 100%;
+  width: 90%;
+  margin: auto;
+  margin-top: 100px;
+  background-color: #FFFFFF;
+  padding: 35px 0;
+  border-radius: 10px;
 }
 
 .items {
@@ -12,7 +26,7 @@
 }
 
 .item {
-  border: 2px solid blue;
+  border: 2px solid #EDEDED;
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
@@ -37,21 +51,111 @@
 }
 
 .item .item__add {
-  background-color: green;
+  background-color: #3483FA;
   border: 0;
   cursor: pointer;
   margin: 0;
   padding: 5px;
+  color: #D9E7FA;
+  border-radius: 0 0 5px 5px;
 }
 
 .cart {
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
+  border: 1px solid #EDEDED;
+  border-radius: 5px;
+  margin-right: 25px;
 }
 
 .cart .cart__title {
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+  padding: 25px 0 15px;
+}
+
+.header {
+  background-color: #FFF158;
+  height: 85px;
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.empty-cart {
+  background-color: #E2EDFC;
+  color: #3483FA;
+  height: 50px;
+  width: auto;
+  margin: 10px 30px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#logo-name {
+  display: flex;
+  font-size: 2em;
+  align-items: center;
+  justify-content: space-around;
+  width: auto;
+}
+
+#logo-name h1 {
+  padding-left: 20px;
+  color: #2D3277;
+  border: 2px solid black;
+  cursor: pointer;
+}
+#main-logo {
+  height: 60px;
+}
+
+#search-area {
+  width: 80%;
+  height: 30px;
+  border: none;
+  border-radius: 3px;
+  padding-left: 10px;
+}
+
+#icons-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.5em;
+  width: 70px;
+  /* padding: 30px */
+  border: 2px solid black;
+  cursor: pointer;
+}
+
+#icons-header :hover{
+ 
+}
+
+.background-main {
+background-color: #EDEDED;
+}
+
+.button {
+  display: flex;
+  padding: 3px;
+}
+
+#search-and-menu {
+  display: flex;
+  flex-wrap: wrap;
+  /* flex-direction: column; */
+  /* width: auto; */
+  border: 2px solid black;
+}
+
+#nav-menu {
+  display: flex;
+  justify-content: space-around;
+  
+
 }
