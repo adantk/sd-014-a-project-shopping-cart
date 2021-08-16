@@ -15,6 +15,24 @@ function createCustomElement(element, className, innerText) {
 }
 
 /**
+ * Função para a soma dos valores dos items
+ * do carrinho. Ela será invocada na função
+ * action e na cartItemClickListener, a fim de
+ * atualizar a soma em cada interação do carrinho.
+ */
+const sumOfProducts = async () => {
+  const itemsCart = document.querySelectorAll('.cart__item');
+  const pElement = document.querySelector('.total-price');
+  let sum = 0;
+  itemsCart.forEach((item) => {
+    const value = parseFloat(item.innerText.split('$')[1]);
+    sum += value;
+  });
+  sum = (Math.round(sum * 100)) / 100;
+  pElement.innerText = `${sum}`;
+};
+
+/**
  * Função que é disparada quando há o clique em algum
  * elementos do cart para removê-lo.
  * @param {event} e Evento de clique 
@@ -26,6 +44,7 @@ function cartItemClickListener(e) {
     if (item === e.target.innerHTML) arr.splice(i, 1); 
   });
   localStorage.setItem('cart', JSON.stringify(cartItems));
+  sumOfProducts();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -51,6 +70,7 @@ const action = async (e) => {
   document.querySelector('.cart__items').appendChild(newCartElement);
   itemsCart.push(newCartElement.innerHTML);
   localStorage.setItem('cart', JSON.stringify(itemsCart));
+  sumOfProducts();
 };
 
 function createProductItemElement({ sku, name, image }) {
@@ -97,7 +117,7 @@ const addProducts = async () => {
   arrOfProducts.forEach(createProducts);
 };
 
-const loadLocalStorage = () => {
+const loadLocalStorage = async () => {
   if (localStorage.getItem('cart')) {
     const itemsCart = JSON.parse(localStorage.getItem('cart'));
     itemsCart.forEach((item) => {
@@ -112,5 +132,6 @@ const loadLocalStorage = () => {
 
 window.onload = async () => {
   await addProducts();
-  loadLocalStorage();
+  await loadLocalStorage();
+  sumOfProducts();
 };
