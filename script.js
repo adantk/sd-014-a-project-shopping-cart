@@ -1,9 +1,15 @@
+const ol = document.querySelector('.cart__items');
+
+async function saveLocal() {
+  localStorage.setItem('cartList', ol.innerHTML);
+}
+
 const clearBtn = document.getElementsByClassName('empty-cart')[0];
 clearBtn.addEventListener('click', () => {
-  const ol = document.getElementsByClassName('cart__items')[0];
   const p = document.getElementsByClassName('total-price')[0];
   ol.innerHTML = '';
   p.innerHTML = '';
+  saveLocal();
 });
 
 function createProductImageElement(imageSource) {
@@ -35,16 +41,20 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  const ol = document.querySelector('.cart__items');
-  ol.removeChild(event.target);
-}
+// function cartItemClickListener(event) {
+//   const ol = document.querySelector('.cart__items');
+//   localStorage.removeItem(event.target);
+//   ol.removeChild(event.target);
+// }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => {
+    ol.removeChild(event.target);
+    saveLocal();
+  });
   return li;
 }
 
@@ -54,8 +64,8 @@ function findID(id) {
     .then((dados) => {
       const dataObj = { sku: dados.id, name: dados.title, salePrice: dados.price };
       const makeCart = createCartItemElement(dataObj);
-      const ol = document.querySelector('.cart__items');
       ol.appendChild(makeCart);
+      saveLocal();
       const p = document.getElementsByClassName('total-price')[0];
       p.innerText = `Preço: ${dados.price}`;
     });
@@ -72,6 +82,7 @@ function searchData() {
         const btn = makeItem.lastChild;
         btn.addEventListener('click', (event) => { 
           const getId = getSkuFromProductItem(event.target.parentNode);
+          saveLocal();
           findID(getId);
         });
         return item.appendChild(makeItem);    
@@ -80,6 +91,16 @@ function searchData() {
     });
   }
   
-  searchData();
+  function getLocal() {
+    const local = localStorage.getItem('cartList');
+    ol.innerHTML = local;
+  }
 
-window.onload = () => { };
+window.onload = () => { 
+  searchData();
+  getLocal();
+  const li = document.querySelectorAll('.cart__item');
+  li.forEach((item) => item.addEventListener('click', (event) => { 
+    ol.removeChild(event.target); 
+  }));
+ };
