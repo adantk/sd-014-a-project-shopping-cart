@@ -23,6 +23,19 @@ function createProductItemElement({ sku, name, image }) {
 
   return section;
 }
+// Requisito 1
+const convertJson = async () => {
+  const endpoint = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  const request = await fetch(endpoint)
+  // Converte em json
+  .then((response) => response.json())
+  // Acessa a chave results do objeto
+  .then((obj) => obj.results);
+  request.forEach((computer) => {
+    // Acessa elemento items e faz um filho do resultado da função createProductItemElement
+    document.querySelector('.items').appendChild(createProductItemElement(computer));
+  });
+};
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
