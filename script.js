@@ -77,9 +77,18 @@ buttonToAdd();
 // 5 - Com a URL validada, o conteúdo é transformada em json.
 // 6 - Com a transformação do conteúdo para json, criamos uma variável que guarda atributos(sku, name, salePrice) e seus respectivos valores(id, name, price) e, assim, montamos de forma dinâmica no HTML os itens do carrinho criados na função createCartItemElement();
 
-function fetchMercadoLivre() {
+function loadingText() {
+  const pageBody = document.querySelector('.container');
+  const loading = document.createElement('section');
+  loading.className = 'loading';
+  loading.innerText = 'loading';
+  pageBody.appendChild(loading);
+}
+
+async function getItemsFromML() {
+  loadingText();
   const componenteHTML = document.querySelector('.items');
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
     .then((response) => response.results.forEach((resultado) => {
       componenteHTML.appendChild(createProductItemElement({
@@ -91,8 +100,11 @@ function fetchMercadoLivre() {
     .then(() => {
       buttonToAdd();
     });
+    const loading = document.querySelector('.loading');
+    const pageBody = document.querySelector('.container');
+    pageBody.removeChild(loading);
 }
-fetchMercadoLivre();
+getItemsFromML();
 // Código do requisito um baseado no trabalho do colega Fernando: https://github.com/tryber/sd-014-a-project-shopping-cart/pull/13/commits/114096fa1902021e1d50006347d430cb73d69e73
 // 1 - Guardamos em uma variável a resultado do resgate do elemento com a classe 'items'.
 // 2 - Buscamos a URL pedida no enunciado a partir da requisição fetch();
@@ -106,3 +118,6 @@ fetchMercadoLivre();
     cartItems.innerHTML = '';
     localStorage.clear();
   });
+  // Aqui, apesar de eu ter conseguido fazer a estrutura inicial do código, precisei da ajuda do código da nossa colega Anna Hamann: https://github.com/tryber/sd-014-a-project-shopping-cart/pull/2/commits/6de9d002324ecc14d874f9534e230c4177e6015c
+  // 1 - Primeiramente resgatamos  classe 'empty-cart'
+  // 2 - Em seguida, adicionamos um evento de clique ao botão com a classe resgatada, ao qual ao ser clicado, o campo de texto do elemento cartItems fica em branco, assim como o localStorage.
