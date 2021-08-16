@@ -134,6 +134,8 @@ const removeAll = () => {
   const ol = document.querySelector('ol');
   ol.innerHTML = '';
   sumOfProducts();
+  /* https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage */
+  /* Ideia para o uso do método clear() */
   localStorage.clear();
 };
 
@@ -141,7 +143,11 @@ const btnRemoveAll = document.querySelector('.empty-cart');
 btnRemoveAll.addEventListener('click', removeAll);
 
 window.onload = async () => {
-  await addProducts();
+  await addProducts().then(() => {
+    const loadingElement = document.querySelector('.loading');
+    const container = document.querySelector('.container');
+    container.removeChild(loadingElement);
+  });
   await loadLocalStorage();
   sumOfProducts();
 };
