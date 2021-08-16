@@ -1,25 +1,18 @@
-const getPriceForElement = (elementsCart) => { // essa função extra o price do item acessando por elementoHtml
+const getPriceForElement = (elementsCart) => { // essa função acessa o price do item acessando por elementoHtml
   let priceTotalNumber = 0;
-  elementsCart.forEach((element) => { 
-    const elementValue = element.innerText;
-    const elementsItensCart = elementValue.split(' ');// quebra a string removendo os espaços 
-    const priceElement = elementsItensCart[elementsItensCart.length - 1].split('$')[1];// acessa ultima posição do array e remove o cifrao.
-    const priceNumber = parseFloat(priceElement);
-    priceTotalNumber += priceNumber;
+  elementsCart.forEach((element) => {
+  const priceNumber = parseFloat(element.innerText.split('$')[1]);
+  priceTotalNumber += priceNumber;
   });
-  return priceTotalNumber;
+return priceTotalNumber;
 };
 
-const renderLoanding = (startOrStop, elementAppend) => {
-  if (startOrStop === 'start') {
-  const newElemento = document.createElement('h2');
-  newElemento.innerText = 'Carregando...';
-  newElemento.classList.add('loading');
-  elementAppend.appendChild(newElemento);
-  } else { 
-    const elementLoading = document.querySelector('.loading');
-    elementAppend.removeChild(elementLoading);
-  }
+const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
+
+const updatePriceTotalCart = () => { 
+  const elementoPriceTotal = document.querySelector('.total-price');
+  const elementsLiCart = document.querySelectorAll('.cart__item');
+  elementoPriceTotal.innerText = `${getPriceForElement(elementsLiCart)}`;
 };
 
 const updateCartStorage = (elementForAddCart) => { 
@@ -28,29 +21,6 @@ const updateCartStorage = (elementForAddCart) => {
   localStorage.setItem('totalPriceCart', getPriceForElement(elementoPriceTotal));
 };
 
-const updatePriceTotalCart = (addOrClear) => { 
-  const elementoPriceTotal = document.querySelector('.total-price');
-  const elementsLiCart = document.querySelectorAll('.cart__item');
-  if (addOrClear === undefined) {
-    elementoPriceTotal.innerText = '0';
-  } if (typeof addOrClear === 'number') { 
-    elementoPriceTotal.innerText = `${addOrClear}`;
-  } else {
-    elementoPriceTotal.innerText = `${getPriceForElement(elementsLiCart)}`;
-  }
-};
-
-function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
-  img.className = 'item__image';
-  img.src = imageSource;
-  return img;
-}
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 function createCartItemElement(ObjetoParametro, elementoPaiLi) { // segundo parametro é o proprio elemento pai desse elemento, que sera usado para adicionar um addeventlistener 
   const { id: sku, title: name, price: salePrice } = ObjetoParametro;
   const li = document.createElement('li');
@@ -58,7 +28,7 @@ function createCartItemElement(ObjetoParametro, elementoPaiLi) { // segundo para
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', ((event) => { 
     elementoPaiLi.removeChild(event.target);
-    updatePriceTotalCart('Remover');
+    updatePriceTotalCart();
     updateCartStorage(elementoPaiLi);   
   }));
   return li;
@@ -70,7 +40,7 @@ async function fetchItemBySku(sku) { //
   const responseJson = await response.json();
   const elementOlCart = document.querySelector('.cart__items');
   elementOlCart.appendChild(createCartItemElement(responseJson, elementOlCart));
-  updatePriceTotalCart('add');
+  updatePriceTotalCart();
   updateCartStorage(elementOlCart);
 }
 
@@ -88,6 +58,20 @@ function createCustomElement(element, className, innerText) {
     e.addEventListener('click', ItemClickAddCart);
   }
   return e;
+}
+
+const renderLoanding = (startOrStop, elementAppend) => {
+  (startOrStop === 'start')?
+  elementAppend.appendChild(createCustomElement('h2', 'loading', 'Carregando...'))
+  :
+    elementAppend.removeChild(document.querySelector('.loading'));
+};
+
+function createProductImageElement(imageSource) {
+  const img = document.createElement('img');
+  img.className = 'item__image';
+  img.src = imageSource;
+  return img;
 }
 
 function createProductItemElement(sku, name, image) {
@@ -122,23 +106,26 @@ async function requestionApiMl(valorBusca) {
   });
 }
 
-function renderClearCartStorage(ItensCart, totalCart) { // essa função se nao for passado um parametro limpa o carrinho
-  const elementOlCart = document.querySelector('.cart__items');
-  const itensCart = localStorage.getItem(ItensCart);
-  const totalPrice = localStorage.getItem(totalCart);
-  elementOlCart.innerHTML = itensCart;
-  const elementsLiCart = document.querySelectorAll('.cart__item');
-  elementsLiCart.forEach((element) => {
-    element.addEventListener('click', (event) => {
-      elementOlCart.removeChild(event.target);
-      updateCartStorage(elementOlCart);
-      });
+const escutadorLiCarts = (elements, elementoPai) => { // função para atualizar escutador após carregar o carinho pelo storage.
+  elements.forEach((element) => { 
+    element.addEventListener('click', (event) => { 
+      elementoPai.removeChild(event.target);
+      updatePriceTotalCart();
+      updateCartStorage(elementoPai);
+    });
   });
-  updatePriceTotalCart(totalPrice);
-  updateCartStorage(elementOlCart);
+};
+
+function renderClearCartStorage(ItensCart) { // essa função se nao for passado um parametro limpa o carrinho, os parametros são as chaves que irá carregar
+  const elementsOlCart = document.querySelector('.cart__items');
+  elementsOlCart.innerHTML = localStorage.getItem(ItensCart);
+  const elementsLiCart = document.querySelectorAll('.cart__item');
+  escutadorLiCarts(elementsLiCart, elementsOlCart);
+  updatePriceTotalCart();
+  updateCartStorage(elementsOlCart);
 }
 
-function buttonClearCart() { 
+function buttonClearCart() {
   const button = document.querySelector('.empty-cart');
   button.addEventListener('click', () => {
     renderClearCartStorage();
@@ -146,7 +133,7 @@ function buttonClearCart() {
 }
 
 window.onload = () => {
-  renderClearCartStorage('olCart', 'totalPriceCart');
+  renderClearCartStorage('olCart');
   buttonClearCart();
   requestionApiMl('computador');
 };
