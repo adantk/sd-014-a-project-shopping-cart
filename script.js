@@ -35,21 +35,20 @@ function createProductItemElement({ sku, name, image }) {
 //   // coloque seu código aqui
 // }
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  // li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
 // Preparation:
 const URL = 'https://api.mercadolibre.com';
-
-const requestFormat = async (type, item) => {
+const requestFormat = async (type, item, callback) => {
   const url = await fetch(URL + type + item);
   const urlData = await url.json();
-  return urlData;
+  return (!callback) ? (urlData) : (callback(urlData));
 };
 
 // Requisito 01:
@@ -62,17 +61,29 @@ const itemsToHTML = (request) => {
 };
 
 // Requisitor 02:
+const itemsToCart = (request) => {
+  const cart = document.querySelector('.cart__items');
+  const { id, title, price } = request;
+  const c = createCartItemElement({ sku: id, name: title, salePrice: price });
+  cart.appendChild(c);
+};
+
 const btnClick = () => {
   const btn = document.querySelectorAll('.item__add');
+
   btn.forEach((b) => b.addEventListener('click', (event) => {
     const productID = event.target.parentElement.firstChild.innerText;
-    return requestFormat('/items/', productID);
+    requestFormat('/items/', productID, itemsToCart);
   }));
 };
 
 // -------------------------------------------------------------
 window.onload = async () => {
+  await requestFormat('/sites/MLB/search?q=', 'computador', itemsToHTML);
+  await btnClick();
+  /*
   const fetchAPI = await requestFormat('/sites/MLB/search?q=', 'computador');
   await itemsToHTML(fetchAPI);
   await btnClick();
+  */
 };
