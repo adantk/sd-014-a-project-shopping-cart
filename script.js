@@ -20,12 +20,10 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
 
@@ -88,7 +86,12 @@ btnEmpty.addEventListener('click', () => {
   }
 });
 
+// Requisito 7:
+const loadClean = () => items.removeChild(items.firstChild);
+
 window.onload = async () => {
+  await items.appendChild(createCustomElement('span', 'loading', 'loading...')); // Requisito 7
   await requestFormat('/sites/MLB/search?q=', 'computador', itemsToHTML);
+  await loadClean();
   await btnClick();
 };
