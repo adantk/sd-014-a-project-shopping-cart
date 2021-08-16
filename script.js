@@ -1,6 +1,7 @@
 const itens = document.querySelector('.items');
 const preco = document.querySelector('.total-price');
 const removeBtn = document.querySelector('.empty-cart');
+const loading = document.querySelector('.loading');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -20,10 +21,8 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.appendChild(createCustomElement('span', 'price', salePrice));
   li.setAttribute('value', salePrice);
-  /* soma += salePrice;
-  preco.innerText = soma; */
+
   return li;
 }
 
@@ -67,9 +66,9 @@ const cart = () => {
 };
 
 const fetchCart = async (id) => {
+  loading.innerHTML = 'loading...';
   const respRaw = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const respJson = await respRaw.json();
-  // console.log(respJson);
   cartItems.appendChild(createCartItemElement({
     sku: respJson.id,
     name: respJson.title,
@@ -79,6 +78,8 @@ const fetchCart = async (id) => {
   sumValue();
   removeBtn.addEventListener('click', removeAll);
   saveCart();
+  loading.remove();
+
 };
 
 function createProductItemElement({ sku, name, image, price }) {
@@ -98,6 +99,7 @@ const btnAdd = () => document.querySelectorAll('.item__add').forEach((btn) =>
   btn.addEventListener('click', (e) => fetchCart(e.target.parentElement.firstChild.innerText)));
 
 const fecthLista = async () => {
+  loading.innerHTML = 'loading...';
   const respRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const respJson = await respRaw.json();
   respJson.results.forEach((arrays) => {
@@ -108,15 +110,11 @@ const fecthLista = async () => {
       price: arrays.price,
     }));
   });
+  
   btnAdd();
   cart();
   sumValue();
+  loading.remove();
 };
-
-/* function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-} */
-
-// const url = 'https://api.mercadolibre.com/items/';
 
 window.onload = () => { fecthLista(); };
