@@ -107,5 +107,5 @@ window.onload = () => {
     cartList.appendChild(addedItem);
     saveItem({ sku, name, salePrice });
   });
-  fetchData('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  fetchData('https://api.mercadolibre.com/sites/MLB/search?q=computador');
 };
