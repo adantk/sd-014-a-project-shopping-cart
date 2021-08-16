@@ -1,3 +1,7 @@
+const items = document.querySelector('.items');
+const btnEmpty = document.querySelector('.empty-cart');
+const list = document.querySelector('.cart__items');
+
 // Dadas Funções para o projeto:
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -32,7 +36,6 @@ function createProductItemElement({ sku, name, image }) {
 // Requisito 03:
 function cartItemClickListener(event) {
   event.target.classList.add('selected');
-  const list = document.querySelector('.cart__items');
   const selected = document.querySelector('.selected');
   list.removeChild(selected);
 }
@@ -54,8 +57,6 @@ const requestFormat = async (type, item, callback) => {
 };
 
 // Requisito 01:
-const items = document.querySelector('.items');
-
 const itemsToHTML = (request) => {
   const { results } = request;
   results.forEach((data) => {
@@ -66,10 +67,9 @@ const itemsToHTML = (request) => {
 
 // Requisitor 02:
 const itemsToCart = (request) => {
-  const cart = document.querySelector('.cart__items');
   const { id, title, price } = request;
   const c = createCartItemElement({ sku: id, name: title, salePrice: price });
-  cart.appendChild(c);
+  list.appendChild(c);
 };
 
 const btnClick = () => {
@@ -82,16 +82,12 @@ const btnClick = () => {
 };
 
 // Requisito 6:
-const btnEmpty = document.querySelector('.empty-cart');
-const list = document.querySelector('.cart__items');
-
 btnEmpty.addEventListener('click', () => {
   while (list.firstChild) {
     list.removeChild(list.firstChild);
   }
 });
 
-// -------------------------------------------------------------
 window.onload = async () => {
   await requestFormat('/sites/MLB/search?q=', 'computador', itemsToHTML);
   await btnClick();
