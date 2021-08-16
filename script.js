@@ -36,8 +36,10 @@ function createProductImageElement(imageSource) {
 
 function guardaPreco2(price, op) {
   let total = parseFloat(localStorage.getItem('total'));
-  if (op === 'soma') total += price;
-  if (op === 'sub') total -= price;
+  Math.round(total *= 1000);
+  if (op === 'soma') total += (price * 1000);
+  if (op === 'sub') total -= (price * 1000);
+  Math.round(total /= 1000);
   localStorage.setItem('total', total);
   //  console.log(lista);
 }
@@ -154,7 +156,7 @@ function verificacaoInicial() {
 }
 
 function limpar() {
-  console.log('limpa');
+  //  console.log('limpa');
   localStorage.clear();
   localValor.innerText = 0;
   listaCompras.innerHTML = '';
