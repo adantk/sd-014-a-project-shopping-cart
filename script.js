@@ -23,12 +23,49 @@ function createProductItemElement({ sku, name, image }) {
   itemPai.appendChild(section);
   return section;
 }
-
-//  função requisito 2;
-function cartItemClickListener(event) {
-  // coloque seu código aqui
+// requisito storage
+const setStorage = () => {
+  localStorage.clear()
+  const getCartList = document.querySelector('.cart__items');
+  localStorage.setItem('ol_cart', getCartList.innerHTML);
 }
 
+const loadStorage = () =>{
+  const getCartList = document.querySelector('.cart__items');
+  getCartList.innerHTML = localStorage.getItem('ol_cart')
+  getCartList.addEventListener('click', cartItemClickListener)
+  setStorage();
+}
+
+// requisito somar;
+const somar =  async () => {
+  const pegaLista = document.querySelector('.cart__items')
+  console.log(pegaLista.children);
+  let soma; 
+  soma = pegaLista.children.reduce((acc, item) => {
+  num =  item.split('$')[1];
+  console.log(num);
+  acc += num;
+  !acc ? acc: acc = 0; 
+  });
+}
+
+// Requisito 6, btn pra limpar carrinho;
+const btnClear = () => {
+  const getBtn = document.querySelector('.empty-cart')
+  const getList = document.querySelector('.cart__items')
+  getBtn.addEventListener('click', () =>{
+    getList.innerHTML = "";
+    setStorage();
+  });  
+}
+//  função requisito 3;
+function cartItemClickListener(event) {
+  event.target.remove();
+  setStorage();
+}
+
+//  funções requisito 2
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -46,7 +83,8 @@ const fetchId = async (ids) => {
     sku: id,
     name: title,
     salePrice: price,
-  }));    
+  }));   
+  setStorage(); 
 };
 
 const lerBotao = () => {
@@ -64,6 +102,7 @@ const prodFetch = async () => {
     createProductItemElement({ sku, name, image });
   }));
   lerBotao();
+  btnClear();
 };
 
 function getSkuFromProductItem(item) {
@@ -72,4 +111,5 @@ function getSkuFromProductItem(item) {
 
 window.onload = () => {
   prodFetch();
+  loadStorage();
 };
