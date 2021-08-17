@@ -1,7 +1,7 @@
 const cartItemsDuplicate = '.cart__items';
 
 const mercadolivreAPI = () => {
-  const api = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
+  const api = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   return new Promise((resolve) => {
     fetch(api).then((response) => {
       response.json().then((data) => {
