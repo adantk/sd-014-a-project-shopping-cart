@@ -81,9 +81,9 @@ const emptyCart = () => {
  cartItem.forEach((item) => item.remove());
 };
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 window.onload = () => {
   convertJson();
