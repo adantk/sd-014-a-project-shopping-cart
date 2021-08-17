@@ -12,10 +12,20 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-const localStorage = () => {
+const localSSave = () => {
   const ol = document.querySelector('.cart__items');
+  // console.log(ol.innerHTML);
+  localStorage.setItem('itensDeProdutos', ol.innerHTML);
+};
 
-  localStorage.setItem('itensDeProduto', ol.innerText);
+const resLocalS = () => {
+  const ol = document.querySelector('.cart__items');
+  ol.innerHTML = localStorage.getItem('itensDeProdutos'); 
+  // ol.forEach((itemDelet) => {
+  //   itemDelet.addEventListener('click', (event) => {
+  //   event.target.remove();
+  //   });
+  // });
 };
 
 function createProductItemElement({ sku, name, image }) {
@@ -37,6 +47,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  localSSave(); // toda vez que eu remover algo, salva no localStorage
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -76,13 +87,13 @@ const btnAddCarAsync = () => {
         sku: responseJson.id,
         name: responseJson.title,
         salePrice: responseJson.price }));
+      localSSave(); // salva no localStorage
     });
   });
-  localStorage();
-
 };
 
 window.onload = async () => { 
   await fetchFreeMarketAsync('computador');
+  resLocalS();
   btnAddCarAsync();
 };
