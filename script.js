@@ -1,4 +1,3 @@
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -31,7 +30,8 @@ const clearProductList = () => {
 };
 
 function showLoading() {
-  document.getElementsByClassName('items')[0].appendChild(createCustomElement('span', 'loading', 'Loading'));
+  document.getElementsByClassName('items')[0]
+  .appendChild(createCustomElement('span', 'loading', 'Loading'));
 }
 
 function hideLoading() {
@@ -40,7 +40,7 @@ function hideLoading() {
 const showProductList = async () => {
   clearProductList();
   showLoading(); 
-  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const responseJson = await responseRaw.json();
   hideLoading();
   responseJson.results.forEach((element) => {
@@ -82,22 +82,19 @@ const buttonAddCart = () => { // função para buscar add os items quando clicad
   }));
 };
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function cartItemClickListener(event) { // Função que remove o item do carrinho quando clicado
   // console.log(event.target.id);
-  cartList = cartList.filter((item) => { // filter está retirando do Array o ID que eu estou querendo remover do array.
-    return item.id !== event.target.id;
-  });
+  // filter está retirando do Array o ID que eu estou querendo remover do array.
+  cartList = cartList.filter((item) => item.id !== event.target.id);
   showCartList();
 }
 
 function showCartTotal() {
-  const total = cartList.reduce((acc, item) => {
-    return acc + item.price;
-  }, 0);
+  const total = cartList.reduce((acc, item) => acc + item.price, 0);
   document.getElementsByClassName('total-price')[0].innerText = total;
 }
 
