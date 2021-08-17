@@ -50,15 +50,13 @@ function criarBtn(){
       const carrinho = document.querySelector('.cart__items');
       const produtos = event.target.parentElement;
       const id = produtos.firstChild.innerText;
-
-      const productApi = await fetch(`https://api.mercadolibre.com/items/${id}`)
+      const productApi = await fetch(`https://api.mercadolibre.com/items/${id}`);
       const retornoJson = await productApi.json();
       carrinho.appendChild(createCartItemElement(retornoJson));
       totalSoma();
       localStorage.setItem('stored', carrinho.innerHTML);
     }));
 };
-
 
 //Resolvendo a questão 1.....
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
