@@ -1,5 +1,3 @@
-const carrinho = document.querySelector('.cart__items');
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -14,24 +12,26 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 // Questão 5
-// function totalSomado() {
-//   const totalSomados = document.createElement('span');
-//   let somatorio = 0;
-//   if (document.querySelector('.total-price')) {
-//     document.querySelector('.total-price').remove();
-//   }
-//   cartItems.forEach((i) => {
-//     const itemPrice = i.innerText.split('$')[1];
-//     somatorio += parseFloat(itemPrice);
-//   });
-//   totalSomados.innerText = `${somatorio}`;
-//   totalSomados.className = 'total-price';
-//   document.querySelector('.cart').appendChild(totalSomados);
-// }
-
+function totalSoma (){
+  const totalPrices = document.createElement('li');
+  const carrinho = document.querySelectorAll('.cart__item');
+  let soma = 0;
+  if (document.querySelector('.total-price')) {
+    document.querySelector('.total-price').remove();
+  }
+  carrinho.forEach((item) => {
+    const itemPrice = item.innerText.split('$')[1];
+    soma += parseFloat(itemPrice);
+  });
+  totalPrices.className = 'total-price';
+  totalPrices.innerText = `${soma}`;
+  document.querySelector('.cart').appendChild(totalPrices);
+};
 // requisito 3
-function cartItemClickListener(event) { // coloque seu código aqui
+function cartItemClickListener(event) {
   event.target.remove();
+  totalSoma();
+  localStorage.clear();
 }
 
 // Questao 2. resolvida.....
@@ -43,19 +43,22 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-const criarBtn = () => {
+function criarBtn(){
   const botao = document.querySelectorAll('.item__add');
   botao.forEach((element) =>
     element.addEventListener('click', async (event) => {
+      const carrinho = document.querySelector('.cart__items');
       const produtos = event.target.parentElement;
       const id = produtos.firstChild.innerText;
 
       const productApi = await fetch(`https://api.mercadolibre.com/items/${id}`)
       const retornoJson = await productApi.json();
       carrinho.appendChild(createCartItemElement(retornoJson));
+      totalSoma();
       localStorage.setItem('stored', carrinho.innerHTML);
     }));
 };
+
 
 //Resolvendo a questão 1.....
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -74,10 +77,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 
 const transJson = async () => {
+  // resolvendo a 7
   const loading = createCustomElement('h1', 'loading', 'loading');
   loading.className = 'loading';
   document.body.appendChild(loading);
-  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador',)
   const responseJson = await responseRaw.json();
   const arrayRates = responseJson.results;
 
@@ -87,23 +91,27 @@ const transJson = async () => {
   criarBtn();
   loading.remove();
 };
-// 
 
 // requisito 4.
-const localstorage = () => {
+function localstorage (){
   if (localStorage.getItem('stored')) {
-    carrinho.innerHTML
+    document.querySelector('.cart__items').innerHTML
       += localStorage.getItem('stored');
+    totalSoma();
   }
 };
 // Requisito 6....
-document.getElementById('empty-cart').addEventListener('click', () => {
-  carrinho.innerText = '';
-  document.getElementById('total-price').innerText = 0;
-  localStorage.clear();
-});
+function limpaCarrinho() {
+  const carrinho = document.querySelectorAll('.cart__item');
+  for (let index of carrinho) {
+    index.remove();
+    localStorage.clear();
+  }
+  totalSoma();
+};
 
 window.onload = async () => {
   transJson();
   localstorage();
+  document.querySelector('.empty-cart').addEventListener('click', limpaCarrinho);
 };
