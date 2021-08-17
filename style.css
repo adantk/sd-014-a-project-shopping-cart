@@ -1,3 +1,7 @@
+.loading {
+  font-size: 3.6rem;
+}
+
 .container {
   display: flex;
   justify-content: space-around;

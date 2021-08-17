@@ -45,18 +45,23 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 async function appendFetch() {
   try {
+    const title = document.createElement('p');
+    const items = document.querySelector('.items');
+    title.className = 'loading';
+    title.innerText = 'Loading';
+    items.appendChild(title);
     const responseRaw = await fetch(baseURL);
+    title.remove();
     const responseJSON = await responseRaw.json();
     const responseTotal = responseJSON.results;
+
     responseTotal.forEach((obj) => {
       const section = document.querySelector('.items');
       section.appendChild(createProductItemElement({
          sku: obj.id, name: obj.title, image: obj.thumbnail,
         }));
     });
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) { console.log(error); }
 } 
 
 const addCart = async () => {
