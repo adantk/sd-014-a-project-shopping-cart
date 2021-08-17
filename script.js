@@ -39,7 +39,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.appendChild(createCustomElement(
+    'button',
+    'item__add button is-success is-focused',
+    'Adicionar ao carrinho!',
+    ));
 
   return section;
 }
@@ -54,7 +58,7 @@ const totalPrice = () => {
   cartItems.childNodes.forEach((item) => {
     getTotal += parseFloat(item.innerText.split('$')[1]);
   });
-  total.innerText = `${getTotal}`;
+  total.innerText = getTotal;
   localStorage.setItem('price', total.innerHTML);
 };
 // referência https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/parseFloat
