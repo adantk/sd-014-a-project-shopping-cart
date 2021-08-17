@@ -12,20 +12,11 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// Requisito 4 - parte 1
 const localSSave = () => {
   const ol = document.querySelector('.cart__items');
   // console.log(ol.innerHTML);
   localStorage.setItem('itensDeProdutos', ol.innerHTML);
-};
-
-const resLocalS = () => {
-  const ol = document.querySelector('.cart__items');
-  ol.innerHTML = localStorage.getItem('itensDeProdutos'); 
-  // ol.forEach((itemDelet) => {
-  //   itemDelet.addEventListener('click', (event) => {
-  //   event.target.remove();
-  //   });
-  // });
 };
 
 function createProductItemElement({ sku, name, image }) {
@@ -89,6 +80,15 @@ const btnAddCarAsync = () => {
         salePrice: responseJson.price }));
       localSSave(); // salva no localStorage
     });
+  });
+};
+
+// tem aver com o requisito 4 - parte 2
+const resLocalS = () => {
+  const ol = document.querySelector('.cart__items');
+  ol.innerHTML = localStorage.getItem('itensDeProdutos'); 
+  document.querySelectorAll('.cart__item').forEach((itemDelet) => {
+    itemDelet.addEventListener('click', cartItemClickListener);
   });
 };
 
