@@ -29,6 +29,7 @@
 
 .cart__items {
   list-style-type: square;
+
 }
 
 .item .item__sku {
@@ -116,9 +117,9 @@ header {
 }
 
 .cep {
-  position: absolute;
-  bottom: 210px;
-  left: 40px;
+  position: relative;
+  bottom: 10px;
+  right: 850px;
   font-weight: 600;
 }
 
