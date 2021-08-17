@@ -32,11 +32,10 @@ function createProductItemElement({ sku, name, image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-// Requisito 05 (SUBTRAINDO):
+// Requisito 05 (SUBTRAINDO)  - Entra na Funcção do requisito 03:
 const subtracPrice = (request) => {
   const total = document.querySelector('.total-price');
   const arraySub = request.innerText.split('$'); 
-
   const result = total.innerText - arraySub[1];
   total.innerText = Math.round((result + Number.EPSILON) * 100) / 100;
 };
@@ -74,7 +73,7 @@ const itemsToHTML = (request) => {
   });
 };
 
-// Requisito 05 (SOMANDO):
+// Requisito 05 (SOMANDO) - Entra na Funcção do requisito 02:
 const arrayPrice = [];
 const sumPrice = (request) => {
   const { price } = request;
@@ -103,6 +102,8 @@ const btnClick = () => {
 
 // Requisito 6:
 btnEmpty.addEventListener('click', () => {
+  const total = document.querySelector('.total-price');
+  total.innerText = '0';
   while (list.firstChild) {
     list.removeChild(list.firstChild);
   }
