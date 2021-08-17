@@ -68,8 +68,7 @@ const getResultsForCart = async (product) => {
 const buttonAddCart = () => {
   const btn = document.querySelectorAll('.item__add');
   btn.forEach((ele) => ele.addEventListener('click', (event) => {
-    getResultsForCart(event.target.parentElement.firstChild.innerText);
-    // getResultsForCart(getSkuFromProductItem(event.target.parentElement));
+    getResultsForCart(getSkuFromProductItem(event.target.parentElement));
   }));
 };
 
