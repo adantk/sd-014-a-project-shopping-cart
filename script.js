@@ -58,7 +58,7 @@ function criarBtn() {
     }));
 }
 
-//Resolvendo a questão 1.....
+// Resolvendo a questão 1
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const sectionItem = document.querySelector('.items');
   const section = document.createElement('section');
@@ -79,7 +79,7 @@ const transJson = async () => {
   const loading = createCustomElement('h1', 'loading', 'loading');
   loading.className = 'loading';
   document.body.appendChild(loading);
-  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const responseJson = await responseRaw.json();
   const arrayRates = responseJson.results;
 
@@ -101,10 +101,7 @@ function localstorage() {
 // Requisito 6....
 function limpaCarrinho() {
   const carrinho = document.querySelectorAll('.cart__item');
-  for (const index of carrinho) {
-    index.remove();
-    localStorage.clear();
-  }
+  carrinho.forEach((i) => i.remove(), localStorage.clear())
   totalSoma();
 }
 
