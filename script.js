@@ -29,7 +29,8 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  console.log('ML');
+  const elementToRemove = event.target; // no evento de click remove o item do carrinho
+  elementToRemove.parentElement.removeChild(elementToRemove);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -71,8 +72,8 @@ function addItemToCart() {
     if (event.target.classList.contains('item__add')) { // //  se identificar o elemento ao qual o evento ocorreu
       const parent = event.target.parentElement; // retorna o elemento pai do evento que ocorreu
       const sku = getSkuFromProductItem(parent); // chama a função( que puxa o primeiro elemento item com parametros passados)
-      const idURL = `https://api.mercadolibre.com/items/${sku}`; // url API com busca de sku/id
-      fetch(idURL)
+      const skuUrl = `https://api.mercadolibre.com/items/${sku}`; // url API com busca de sku/id
+      fetch(skuUrl)
         .then(response => response.json()) // retorna a response da fetch em JSON
         .then((data) => {
           const obj = { // aramazena com os itens com dados em JSON 
@@ -89,4 +90,5 @@ function addItemToCart() {
 window.onload = () => {
   apiMercadoLivre(); 
   addItemToCart();
+  // cartItemClickListener();
 };
