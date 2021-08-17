@@ -59,3 +59,9 @@
 .cart__item {
   cursor: pointer;
 }
+
+.total-price {
+  font-weight: bold;
+  color: rgba(22, 20, 20, 0.774);
+  font-size: 1.2em;
+}
