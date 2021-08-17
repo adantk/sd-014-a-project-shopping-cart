@@ -95,8 +95,6 @@ const getApi = async (searchItem) => {
     .catch((error) => console.log(error));
 };
 
-const cartDeleter = () => document.querySelector('.cart__itens').forEach((value) => value.addEventListener('click', () => window.localStorage.removeItem(key))); // apaga o item correspondente no storage.)
-
 window.onload = () => { 
  getApi('computador');
  loadCart();
