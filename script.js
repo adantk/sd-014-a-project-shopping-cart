@@ -13,9 +13,9 @@ function createCustomElement(element, className, innerText) {
 }
 
 function subtraiCart(product) {
-  const total = document.querySelector('.total-price');
-  const totalPrice = Number(total.innerText);
-  const removed = Number(product.innerText.split('$')[1]);
+  const total = document.getElementsByClassName('total-price')[0];
+  const totalPrice = parseFloat((Number(total.innerText)).toFixed(2));
+  const removed = parseFloat((Number(product.innerText.split('$')[1])).toFixed(2));
 
   total.innerText = `${totalPrice - removed}`;
   
@@ -42,7 +42,7 @@ function sumCart(price) {
   const sum = document.querySelector('.total-price');
   const liCart = document.querySelectorAll('.cart__item');
   liCart.forEach((item) => {
-    total += Number(item.innerText.split('PRICE: $')[1]);
+    total += parseFloat((Number(item.innerText.split('PRICE: $')[1])).toFixed(2));
     sum.innerText = `${total}`;
   });
   
@@ -111,7 +111,7 @@ function clearCart() {
   const clearBtn = document.querySelector('.empty-cart');
   clearBtn.addEventListener('click', () => {
     cart.innerHTML = '';
-    document.querySelector('#total').innerText = 'Total: $0';
+    document.querySelector('.total-price').innerText = '0';
   });
 }
 
