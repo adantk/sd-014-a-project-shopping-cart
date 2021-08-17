@@ -26,21 +26,24 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+async function cartItemClickListener() {
+  // Coloque seu código aqui 
+}
 
-// function createCartItemElement({ id: sku, title: name, base_price: salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+async function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  console.log(salePrice);
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+
+  const ol = document.querySelector('.cart__items');
+  ol.appendChild(li);
+}
 
 async function consultApi() {
   const response = await fetch(`${url}computador`);
@@ -52,13 +55,21 @@ async function consultApi() {
   }); 
 }
 
-async function consultaItem() {
-  const response = await fetch('https://api.mercadolibre.com/items/MLB1341706310');
+async function consultaItem(product) {
+  const response = await fetch(`https://api.mercadolibre.com/items/${product}`);
   const dados = await response.json();
-  return dados;
+  await createCartItemElement(dados);
+}
+
+async function objetoSelecionado() {
+  const todosItems = document.querySelector('.items');
+  todosItems.addEventListener('click', (event) => {
+    const product = getSkuFromProductItem(event.target.parentElement);
+    consultaItem(product); 
+  });
 }
 
 window.onload = async () => {
   await consultApi();
-  await consultaItem();  
+  await objetoSelecionado();
 };
