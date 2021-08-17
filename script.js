@@ -1,5 +1,5 @@
 const cartItem = document.getElementsByClassName('items');
-const priceEl = document.getElementsByClassName('price');
+const priceEl = document.getElementsByClassName('total-price');
 let total = 0;
 
 function createProductImageElement(imageSource) {
@@ -47,6 +47,15 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
+  const itemEvent = event.target.innerText;
+  const idItem = itemEvent.slice(5, 18);
+  fetch(`https://api.mercadolibre.com/items/${idItem}`)
+  .then((response) => {
+    response.json().then((itemPrice) => {
+      total -= itemPrice.price;
+      priceEl[0].innerText = total;
+    });
+  });
   event.target.remove();
 }
 
@@ -72,7 +81,7 @@ function getItemApi() {
         const getList = document.getElementsByClassName('cart__items');
         getList[0].appendChild(createCartItemElement(itemInfo));
         total += itemInfo.salePrice;
-        priceEl[0].innerText = `Preço total: $ ${total}`;
+        priceEl[0].innerText = total;
       });
     });
   });
