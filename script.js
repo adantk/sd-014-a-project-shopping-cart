@@ -112,7 +112,9 @@ const fecthLista = async () => {
   
   btnAdd();
   cart();
+  
   sumValue();
+  removeBtn.addEventListener('click', removeAll);
   loading.remove();
 };
 

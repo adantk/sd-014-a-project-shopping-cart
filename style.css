@@ -12,6 +12,7 @@
   border: 8px solid rgb(255, 241, 89);
   border-radius: 10px;
   margin-top: 10px;
+  background-color: rgb(255, 241, 89);
 }
 
 .item {
@@ -23,6 +24,7 @@
   height: auto;
   margin: 5px;
   width: 200px;
+  background-color: white;
 }
 
 .cart__items {
@@ -70,6 +72,30 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+  margin-top: 10px;
+}
+
+.cart .cart__item {
+  margin-bottom: 10px;
+}
+
+.cart .empty-cart {
+  margin-top: 5px;
+  width: 150px;
+  margin-left: 100px;
+  font-size: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+  height: 30px;
+  border-width: 1px;
+  color: black;
+  border-color: rgb(24, 171, 41);
+  font-weight: 600;
+  border-radius: 28px;
+  background: rgb(255, 241, 89);
+}
+
+.cart .empty-cart:hover {
+  background-color: rgb(238, 222, 49);
 }
 
 #logo {
@@ -79,15 +105,26 @@
 }
 
 header {
-
-  /* background-image: url(mercadolivre.jpg); */
-
-  /* height: 110px;
-  width: 482px; */
   background-repeat: no-repeat;
   background-color: rgb(238, 222, 49);
+}
 
-  /* position: relative;
-  margin-left: 30%;
-  font-size: 50px; */
+.divPrice {
+  margin-left: 100px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.cep {
+  position: absolute;
+  bottom: 210px;
+  left: 40px;
+  font-weight: 600;
+}
+
+footer {
+  position: relative;
+  height: 40px;
+  text-align: center;
+  margin-top: 10px;
 }
