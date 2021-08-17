@@ -30,37 +30,35 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
+// function cartItemClickListener(event) {
+//   // coloque seu código aqui
+// }
 
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
+// function createCartItemElement({ id: sku, title: name, base_price: salePrice }) {
+//   const li = document.createElement('li');
+//   li.className = 'cart__item';
+//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+//   li.addEventListener('click', cartItemClickListener);
+//   return li;
+// }
 
 async function consultApi() {
   const response = await fetch(`${url}computador`);
   const dados = await response.json();
   dados.results.forEach((dado) => {
-    const section_item = document.querySelector('.items')
+    const sectionItem = document.querySelector('.items');
     const element = createProductItemElement(dado);
-    section_item.appendChild(element);
-    
-  }) 
+    sectionItem.appendChild(element);    
+  }); 
 }
 
 async function consultaItem() {
-  const response = await fetch("https://api.mercadolibre.com/items/MLB1341706310");
+  const response = await fetch('https://api.mercadolibre.com/items/MLB1341706310');
   const dados = await response.json();
   return dados;
 }
 
 window.onload = async () => {
   await consultApi();
-  await consultaItem();
-  
+  await consultaItem();  
 };
