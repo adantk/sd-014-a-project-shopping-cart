@@ -1,5 +1,6 @@
 // inicializando projeto
 const olItens = document.querySelector('.cart__items');
+// const liItens = document.querySelectorAll('.cart__item');
 const sectionItens = document.querySelector('.items');
 
 function createProductImageElement(imageSource) {
@@ -67,8 +68,8 @@ const getResultsForCart = async (product) => {
 const buttonAddCart = () => {
   const btn = document.querySelectorAll('.item__add');
   btn.forEach((ele) => ele.addEventListener('click', (event) => {
-    // getResultsForCart(event.target.parentElement.firstChild.innerText);
-    getResultsForCart(getSkuFromProductItem(event.target.parentElement));
+    getResultsForCart(event.target.parentElement.firstChild.innerText);
+    // getResultsForCart(getSkuFromProductItem(event.target.parentElement));
   }));
 };
 
@@ -92,12 +93,21 @@ const getResultsFromAPI = async (search) => {
 
 function loadStorage() {
   olItens.innerHTML = localStorage.getItem('item_cart');
-  // olItens.addEventListener('click', cartItemClickListener);
   // pega cada li da ol e adciona o evento para excluir o item salvo no local storage.
   olItens.childNodes.forEach((li) => li.addEventListener('click', cartItemClickListener));
+  // liItens.forEach((li) => li.addEventListener('click', cartItemClickListener));
 }
+
+const clearCart = () => {
+  const btnCart = document.querySelector('.empty-cart');
+   btnCart.addEventListener('click', () => {
+    olItens.innerHTML = '';
+    saveStorage();
+  });
+};
 
 window.onload = () => { 
   getResultsFromAPI('computador');
   loadStorage();
+  clearCart();
 };
