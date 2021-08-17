@@ -1,3 +1,19 @@
+
+function fetchMercadoAPI(product) {
+  const itemClass = document.querySelector('.items');
+  const endpoint = `https://api.mercadolibre.com/sites/MLB/search?q=${product}`;
+  fetch(endpoint)
+  .then((response) => {
+    response.json()
+    .then((dataML) => {
+      dataML.results.forEach((resultsML) => {
+        const { id: sku, title: name, thumbnail: image } = resultsML;
+        itemClass.appendChild(createProductItemElement({sku, name, image}));
+      })
+    })
+  })
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -40,4 +56,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+window.onload = () => {
+  fetchMercadoAPI('computador');
+};
