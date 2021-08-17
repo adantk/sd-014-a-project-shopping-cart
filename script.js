@@ -52,7 +52,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   if (event.target.classList.contains('cart__item')) {
     event.target.remove();
-    const carrinhoInfo = document.querySelector('.cart__items');
+    const carrinhoInfo = document.getElementsByClassName('cart__items')[0];
     localStorage.setItem('infoCart', JSON.stringify(carrinhoInfo.innerHTML));
   }
 }
