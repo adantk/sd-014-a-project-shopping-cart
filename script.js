@@ -32,7 +32,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-
+  return event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -79,9 +79,17 @@ const addCart = async () => {
 }
 };
 
-
+const removeAll = () => {
+  const getAllItems = document.querySelector('.cart__items');
+  const removeBtn = document.querySelector('.empty-cart');
+  function removeAllItems() {
+    getAllItems.innerHTML = '';
+  }
+  removeBtn.addEventListener('click', removeAllItems);
+};
 
 window.onload = async () => {
   await appendFetch();
   await addCart();
+  await removeAll();
  };
