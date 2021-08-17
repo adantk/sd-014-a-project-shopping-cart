@@ -23,10 +23,9 @@ function createProductItemElement({ sku, name, image }) {
 
   const addItems = document.querySelector('.items');
   addItems.appendChild(section);
-  
+
   return section;
 }
-
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
