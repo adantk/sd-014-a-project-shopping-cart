@@ -101,7 +101,7 @@ function localstorage() {
 // Requisito 6....
 function limpaCarrinho() {
   const carrinho = document.querySelectorAll('.cart__item');
-  carrinho.forEach((i) => i.remove(), localStorage.clear())
+  carrinho.forEach((i) => i.remove(), localStorage.clear());
   totalSoma();
 }
 
