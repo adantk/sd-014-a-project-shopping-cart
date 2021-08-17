@@ -39,12 +39,18 @@ function cartItemClickListener(event) {
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const cartList = document.querySelector('.cart__items');
-  const li = document.createElement('li');
+  const cart = document.querySelector('.cart__items'); // destino do item a ser criado.
+  
+  const li = document.createElement('li'); 
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener.bind(this, li));
-  cartList.appendChild(li);
+  
+  cart.appendChild(li); // afixa o item no carrinho
+
+  window.localStorage.setItem(name, li.innerText); // armazena os dados do item no localStorage.
+
+  li.addEventListener('click', cartItemClickListener.bind(this, li)); // referencia para o .bind: https://stackoverflow.com/questions/35667267/addeventlistenerclick-firing-immediately.
+  li.addEventListener('click', () => window.localStorage.removeItem(name)); // apaga o item correspondente no storage.
   return li;
 }
 
@@ -58,7 +64,20 @@ const addListenerToButtons = () => {
   const buttonArr = Array.from(document.getElementsByClassName('item__add'));
   const skuArr = Array.from(document.getElementsByClassName('item__sku'));
   buttonArr.forEach((el, i) => el.addEventListener('click',
-  addToCart.bind(this, skuArr[i].innerHTML))); // referencia para o .bind: https://stackoverflow.com/questions/35667267/addeventlistenerclick-firing-immediately
+  addToCart.bind(this, skuArr[i].innerHTML.toString()))); // referencia para o .bind: https://stackoverflow.com/questions/35667267/addeventlistenerclick-firing-immediately
+};
+
+const loadCart = () => { // carrega os itens do carrinho ao iniciar a pág.
+  const storage = Object.keys(window.localStorage).sort(); // referência: https://trybecourse.slack.com/archives/C023YHXAEGM/p1628892824387200.
+
+  storage.forEach((key) => { // para cada item no storage será criado um correspondente no carrinho.
+    const listItem = document.createElement('li'); // cria o item da lista...
+    listItem.innerText = window.localStorage.getItem(key); // ...atribui o valor armazenado no storage... 
+    document.querySelector('.cart__items').appendChild(listItem); // ... e afixa o li no carrinho.
+    
+    listItem.addEventListener('click', cartItemClickListener.bind(this, listItem)); // adiciona a opção de apagar o item recém-criado...
+    listItem.addEventListener('click', () => window.localStorage.removeItem(key)); // ... e o par chave-valor correspondente no storage. 
+  });
 };
 
 const getApi = async (searchItem) => {
@@ -75,7 +94,10 @@ const getApi = async (searchItem) => {
   })
     .catch((error) => console.log(error));
 };
- 
+
+const cartDeleter = () => document.querySelector('.cart__itens').forEach((value) => value.addEventListener('click', () => window.localStorage.removeItem(key))); // apaga o item correspondente no storage.)
+
 window.onload = () => { 
  getApi('computador');
+ loadCart();
 };
