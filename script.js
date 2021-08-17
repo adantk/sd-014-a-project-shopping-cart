@@ -26,7 +26,7 @@ function totalSoma() {
   totalPrices.className = 'total-price';
   totalPrices.innerText = `${soma}`;
   document.querySelector('.cart').appendChild(totalPrices);
-};
+}
 // requisito 3
 function cartItemClickListener(event) {
   event.target.remove();
@@ -56,7 +56,7 @@ function criarBtn() {
       totalSoma();
       localStorage.setItem('stored', carrinho.innerHTML);
     }));
-};
+}
 
 //Resolvendo a questão 1.....
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -79,7 +79,7 @@ const transJson = async () => {
   const loading = createCustomElement('h1', 'loading', 'loading');
   loading.className = 'loading';
   document.body.appendChild(loading);
-  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador',)
+  const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   const responseJson = await responseRaw.json();
   const arrayRates = responseJson.results;
 
@@ -97,16 +97,16 @@ function localstorage() {
       += localStorage.getItem('stored');
     totalSoma();
   }
-};
+}
 // Requisito 6....
 function limpaCarrinho() {
   const carrinho = document.querySelectorAll('.cart__item');
-  for (let index of carrinho) {
+  for (const index of carrinho) {
     index.remove();
     localStorage.clear();
   }
   totalSoma();
-};
+}
 
 window.onload = async () => {
   transJson();
