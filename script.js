@@ -67,15 +67,18 @@ const getResultsForCart = async (product) => {
 const buttonAddCart = () => {
   const btn = document.querySelectorAll('.item__add');
   btn.forEach((ele) => ele.addEventListener('click', (event) => {
-    getResultsForCart(event.target.parentElement.firstChild.innerText);
+    // getResultsForCart(event.target.parentElement.firstChild.innerText);
+    getResultsForCart(getSkuFromProductItem(event.target.parentElement));
   }));
 };
 
 // função assincrona para conectar com a API e pegar os resultados desejados
 const getResultsFromAPI = async (search) => {
+  sectionItens.appendChild(createCustomElement('span', 'loading', 'Loading...'));
   const itemsAPI = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`);
   // pega uma chave específica.
   const responseItemsAPI = await itemsAPI.json();
+ 
   // passar por cada elemento retonado do responseItemsAPI
   responseItemsAPI.results.forEach((element) => {
     // guardando o retono do forEach e chamando a função para criar a estrutura dos itens na pagina
@@ -84,6 +87,7 @@ const getResultsFromAPI = async (search) => {
     sectionItens.appendChild(returnEle);
   });
   buttonAddCart();
+  sectionItens.removeChild(document.querySelector('.loading'));  
 };
 
 function loadStorage() {
