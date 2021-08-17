@@ -32,7 +32,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
   return section;
 }
-// Requisito 2 parte 1
+// Requisito 2
 const addProductToCart = () => {
   // Armazena os botões
   const addBtn = document.querySelectorAll('.item__add');
@@ -52,6 +52,10 @@ const addProductToCart = () => {
 
 // Requisito 1
 const convertJson = async () => {
+  // Requisito 7
+  const loadingText = createCustomElement('span', 'loading', 'Loading...');
+  document.body.appendChild(loadingText);
+  // Fim do requisito 7, retoma requisito 1
   const endpoint = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   const request = await fetch(endpoint)
   // Converte em json
@@ -63,6 +67,7 @@ const convertJson = async () => {
     document.querySelector('.items').appendChild(createProductItemElement(computer));
   }); 
   addProductToCart();
+  loadingText.remove();
 };
 
 // Requisito 6
