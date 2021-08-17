@@ -54,8 +54,8 @@ const addProductToCart = () => {
 const convertJson = async () => {
   // Requisito 7
   const loadingText = createCustomElement('span', 'loading', 'Loading...');
-  document.body.appendChild(loadingText);
-  // Fim do requisito 7, retoma requisito 1
+  // console.log(loadingText);
+  document.body.appendChild(loadingText); // Fim do requisito 7
   const endpoint = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   const request = await fetch(endpoint)
   // Converte em json
