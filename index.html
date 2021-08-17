@@ -1,23 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
+    <title>N3rd Sh0p</title>
+    <script src="https://kit.fontawesome.com/1631e6d5c5.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
   </head>
   
   <body>
-    <section class="container">
-      <section class="items"></section>
-      <section class="cart">
-        <span class="cart__title">Carrinho de compras</span>
-        <button class="empty-cart">Esvaziar carrinho</button>
-        <ol class="cart__items"></ol>
-        <span>Preço Total: $<p class="total-price" style="display: inline;"></p></span>
+    <header class="header container">
+      <h1 id="logo">N3rd Shop</h1>
+      <div class="search-bar">
+        <input class="search-bar__input"placeholder="O que você está procurando?" type="text">
+        <i class="fas fa-search fa-2x"></i>
+      </div>
+      <nav class="navigation">
+        <ul class="navigation__list">
+          <li class="navigation__item">
+            <a class="navigation__link" href="#"><i class="far fa-heart fa-lg"></i> Lista de Desejos </a>
+          </li>
+          <li class="navigation__item">
+            <a class="navigation__link" href="#"><i class="fas fa-user fa-lg"></i> Entrar</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <section class="container">
+        <section class="items"></section>
+        <section class="cart">
+          <span class="cart__title"><i class="fas fa-shopping-cart"></i>Carrinho de compras</span>
+          <button class="empty-cart"><i class="fas fa-trash-alt fa-lg"></i>Esvaziar carrinho</button>
+          <ol class="cart__items"></ol>
+          <div class="price">
+            <span>Valor Total:</span>
+            <span>$<p class="total-price" style="display: inline;"></p></span>
+          </div>
+        </section>
       </section>
-    </section>
+    </main>
+    <footer>
+      <p>Copyright <i class="far fa-copyright"></i>2021, Lucas Duarte. Todos os direitos reservados.</p>
+    </footer>
     <script src="script.js"></script>
   </body>
 </html>
+
+<!-- Lucas Duarte -->

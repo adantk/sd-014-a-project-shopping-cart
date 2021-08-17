@@ -24,6 +24,7 @@ const sumOfProducts = () => {
   const itemsCart = document.querySelectorAll('.cart__item');
   const pElement = document.querySelector('.total-price');
   let sum = 0;
+  /* Porque não dá certo com o reduce?? */
   itemsCart.forEach((item) => {
     const value = parseFloat(item.innerText.split('$')[1]);
     sum += value;
@@ -152,3 +153,5 @@ window.onload = async () => {
   await loadLocalStorage();
   sumOfProducts();
 };
+
+/* Lucas Duarte */
