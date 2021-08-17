@@ -17,12 +17,12 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
+  
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  
   return section;
 }
 // requisição API para obter os produtos, e dar um json neles!
@@ -74,15 +74,20 @@ const infoProdutoSelecionado = async (idProduto) => {
 
 // Adiciona o elemento retornado da função createCartItemElement(product) como filho do elemento <ol class="cart__items">.
 const adicionaProdutoNoCarrinho = async (event) => {
-if (event.target.classList.contains('item__add')) {
-  const idProduto = event.target.parentElement.firstChild.innerText;
-  const infoProduct = await infoProdutoSelecionado(idProduto);
-  document.querySelector('.cart__items').appendChild(createCartItemElement(infoProduct));
+  if (event.target.classList.contains('item__add')) {
+    const idProduto = event.target.parentElement.firstChild.innerText;
+    const infoProduct = await infoProdutoSelecionado(idProduto);
+    const carrinho = document.querySelector('.cart__items'); 
+    carrinho.appendChild(createCartItemElement(infoProduct));
+  const innerInfo = carrinho.innerHTML;
+  localStorage.setItem('infoCart', JSON.stringify(innerInfo));
 }
 };
 
 window.onload = async () => {
- await listOfProducts();
+  await listOfProducts();
   document.querySelector('.items').addEventListener('click', adicionaProdutoNoCarrinho);
-  document.querySelector('.cart__items').addEventListener('click', cartItemClickListener);
+  const carrinho1 = document.querySelector('.cart__items');
+  carrinho1.addEventListener('click', cartItemClickListener);
+  carrinho1.innerHTML = JSON.parse(localStorage.getItem('infoCart'));
 };
