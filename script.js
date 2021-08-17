@@ -26,9 +26,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
@@ -53,7 +53,14 @@ async function consultApi() {
   }) 
 }
 
+async function consultaItem() {
+  const response = await fetch("https://api.mercadolibre.com/items/MLB1341706310");
+  const dados = await response.json();
+  return dados;
+}
+
 window.onload = async () => {
   await consultApi();
+  await consultaItem();
   
 };
