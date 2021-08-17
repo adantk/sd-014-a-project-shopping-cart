@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 // Questão 5
-function totalSoma (){
+function totalSoma() {
   const totalPrices = document.createElement('li');
   const carrinho = document.querySelectorAll('.cart__item');
   let soma = 0;
@@ -43,7 +43,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-function criarBtn(){
+function criarBtn() {
   const botao = document.querySelectorAll('.item__add');
   botao.forEach((element) =>
     element.addEventListener('click', async (event) => {
@@ -91,7 +91,7 @@ const transJson = async () => {
 };
 
 // requisito 4.
-function localstorage (){
+function localstorage() {
   if (localStorage.getItem('stored')) {
     document.querySelector('.cart__items').innerHTML
       += localStorage.getItem('stored');
