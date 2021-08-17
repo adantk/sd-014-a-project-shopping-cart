@@ -28,8 +28,12 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const ol = document.querySelector('.cart__items');
+
 function cartItemClickListener(event) { 
+  // Requisito 3
   event.target.remove();
+  localStorage.lista = ol.innerHTML;
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -40,9 +44,18 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// Requisito 6
+function esvaziarCarrinho() {
+  const btnEsvaziar = document.querySelector('.empty-cart');
+  btnEsvaziar.addEventListener('click', () => {
+    document.querySelectorAll('li.cart__item').forEach((li) => li.remove());
+  });
+}
+
 // Requisito 2
 function adicionarAoCarrinho() {
   const buttonsAdd = document.querySelectorAll('.item__add');
+  if (localStorage.lista) ol.innerHTML = localStorage.lista; 
   buttonsAdd.forEach((button) => {
     button.addEventListener('click', (event) => {
       const sku = getSkuFromProductItem(event.target.parentElement);
@@ -50,8 +63,8 @@ function adicionarAoCarrinho() {
       .then((response) => response.json()
       .then((objeto) => {
         const informacoes = { sku: objeto.id, name: objeto.title, salePrice: objeto.price };
-        const ol = document.querySelector('.cart__items');
         ol.appendChild(createCartItemElement(informacoes));
+        localStorage.lista = ol.innerHTML;
       }));
     });
   });
@@ -63,15 +76,32 @@ function adicionarInfos() {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json()
     .then((objeto) => {
+      // carregamentoPagina();
       objeto.results.forEach((elemento) => {
         const informacoes = { sku: elemento.id, name: elemento.title, image: elemento.thumbnail };
         itemSection.appendChild(createProductItemElement(informacoes));
       });
     }))
-    .then(() => adicionarAoCarrinho());
+    .then(() => adicionarAoCarrinho())
+    .then(() => esvaziarCarrinho());
 }
 
-window.onload = async () => { 
+function adicionaListenerAoCarrinho() {
+  ol.addEventListener('click', cartItemClickListener);
+}
+
+function carregamentoPagina() {
+  const container = document.querySelector('.container');
+  const loading = document.createElement('p');
+  loading.classList('loading');
+  loading.innerText = 'Loading...';
+  container.appendChild(loading);
+}
+
+// carregamentoPagina();
+
+window.onload = async () => {
   await adicionarInfos();
   await adicionarAoCarrinho();
+  adicionaListenerAoCarrinho();
 };
