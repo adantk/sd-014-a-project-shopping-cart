@@ -34,11 +34,11 @@ function createProductItemElement({ sku, name, image }) {
 
 // Requisito 05 (SUBTRAINDO):
 const subtracPrice = (request) => {
-  console.log(request.id);
-  // const { price } = request;
-  // const total = document.querySelector('.total-price');
-  // const sum = arrayPrice.reduce(((acc, cur) => acc + cur), 0);
-  // total.innerText = Math.round((sum + Number.EPSILON) * 100) / 100;
+  const total = document.querySelector('.total-price');
+  const arraySub = request.innerText.split('$'); 
+
+  const result = total.innerText - arraySub[1];
+  total.innerText = Math.round((result + Number.EPSILON) * 100) / 100;
 };
 
 // Requisito 03:
@@ -53,7 +53,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -115,7 +114,7 @@ const loadClean = () => items.removeChild(items.firstChild);
 window.onload = async () => {
   await items.appendChild(createCustomElement('span', 'loading', 'loading...')); // Requisito 7
   await requestFormat('/sites/MLB/search?q=', 'computador', itemsToHTML);
-  await pagCart.appendChild(createCustomElement('span', 'total-price', ''));
+  await pagCart.appendChild(createCustomElement('span', 'total-price', '0'));
   await loadClean();
   await btnClick();
 };
