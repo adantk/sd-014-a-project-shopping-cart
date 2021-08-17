@@ -1,4 +1,5 @@
 const salvaListaLS = () => {
+  localStorage.clear();
   const getOl2 = document.getElementsByClassName('cart__items')[0];
   if (getOl2.childElementCount > 0) {
     for (let index = 0; index < getOl2.children.length; index += 1) {
@@ -8,8 +9,6 @@ const salvaListaLS = () => {
     localStorage.clear();
   }  
 };
-
-const clearLocalStorage = () => localStorage.clear();
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -40,11 +39,21 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const soma = async () => {
+  const getItemsCarrinho = document.querySelectorAll('.cart__item');
+  const arr = [];
+  await getItemsCarrinho.forEach((item) => {
+    arr.push(parseFloat(item.innerText.split('| PRICE: $')[1]));
+  });
+  const precoT = await arr.reduce((acc, numero) => acc + numero, 0);
+  document.querySelector('.total-price').innerText = `${precoT}`;
+};
+
   function cartItemClickListener(event) {
     // coloque seu código aqui
     event.target.remove();
-    clearLocalStorage();
     salvaListaLS();
+    soma();
   }
   
   function createCartItemElement({ sku, name, salePrice }) {
@@ -54,6 +63,7 @@ function getSkuFromProductItem(item) {
     li.addEventListener('click', cartItemClickListener);
     return li;
   }
+
   const fetchId = (id) => 
   fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((resposta) => resposta.json());
@@ -65,6 +75,7 @@ const chamaFetchId = async (id) => {
     const lista = createCartItemElement({ sku, name, salePrice });
     const getOl = document.getElementsByClassName('cart__items')[0];
     getOl.appendChild(lista);
+    soma();
     });
   };
   
@@ -85,8 +96,7 @@ const chamafetchMl = async (pesquisa) => {
     Botao.addEventListener('click', async (event) => {
       const getIdProduct = getSkuFromProductItem(event.target.parentNode);
       await chamaFetchId(getIdProduct);
-      clearLocalStorage();
-      salvaListaLS();
+      await salvaListaLS();
     });
     const items = document.getElementsByClassName('items')[0];
     items.appendChild(item);
@@ -104,7 +114,22 @@ const recriaLi = () => {
   }
 };
 
-window.onload = () => {
-  chamafetchMl('computador');
+const apagaLi = () => {
+  const botaoClear = document.getElementsByClassName('empty-cart');
+  botaoClear[0].addEventListener('click', () => {
+    const getLista = document.querySelectorAll('.cart__item');
+    getLista.forEach((item) => item.remove());
+    soma();
+  });
+};
+
+window.onload = async () => {
+  const createLoading = document.createElement('p');
+  createLoading.classList.add('loading');
+  createLoading.innerHTML = 'loading';
+  document.body.append(createLoading);
+  await chamafetchMl('computador');
+  document.getElementsByClassName('loading')[0].remove();
   recriaLi();
+  apagaLi();
 };
