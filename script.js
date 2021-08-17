@@ -1,6 +1,7 @@
 const items = document.querySelector('.items');
 const btnEmpty = document.querySelector('.empty-cart');
 const list = document.querySelector('.cart__items');
+const pagCart = document.querySelector('.cart');
 
 // Dadas Funções para o projeto:
 function createProductImageElement(imageSource) {
@@ -31,10 +32,20 @@ function createProductItemElement({ sku, name, image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+// Requisito 05 (SUBTRAINDO):
+const subtracPrice = (request) => {
+  console.log(request.id);
+  // const { price } = request;
+  // const total = document.querySelector('.total-price');
+  // const sum = arrayPrice.reduce(((acc, cur) => acc + cur), 0);
+  // total.innerText = Math.round((sum + Number.EPSILON) * 100) / 100;
+};
+
 // Requisito 03:
 function cartItemClickListener(event) {
   event.target.classList.add('selected');
   const selected = document.querySelector('.selected');
+  subtracPrice(selected);
   list.removeChild(selected);
 }
 
@@ -42,6 +53,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -63,6 +75,16 @@ const itemsToHTML = (request) => {
   });
 };
 
+// Requisito 05 (SOMANDO):
+const arrayPrice = [];
+const sumPrice = (request) => {
+  const { price } = request;
+  const total = document.querySelector('.total-price');
+  arrayPrice.push(price);
+  const sum = arrayPrice.reduce(((acc, cur) => acc + cur), 0);
+  total.innerText = Math.round((sum + Number.EPSILON) * 100) / 100;
+};
+
 // Requisitor 02:
 const itemsToCart = (request) => {
   const { id, title, price } = request;
@@ -76,6 +98,7 @@ const btnClick = () => {
   btn.forEach((b) => b.addEventListener('click', (event) => {
     const productID = event.target.parentElement.firstChild.innerText;
     requestFormat('/items/', productID, itemsToCart);
+    requestFormat('/items/', productID, sumPrice);
   }));
 };
 
@@ -92,6 +115,7 @@ const loadClean = () => items.removeChild(items.firstChild);
 window.onload = async () => {
   await items.appendChild(createCustomElement('span', 'loading', 'loading...')); // Requisito 7
   await requestFormat('/sites/MLB/search?q=', 'computador', itemsToHTML);
+  await pagCart.appendChild(createCustomElement('span', 'total-price', ''));
   await loadClean();
   await btnClick();
 };
