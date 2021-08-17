@@ -67,7 +67,7 @@ const convertJson = async () => {
     document.querySelector('.items').appendChild(createProductItemElement(computer));
   }); 
   addProductToCart();
-  loadingText.remove();
+  loadingText.remove(); // Chamada dentro do escopo do async e remoção chamada após o carregamento da request à API. 
 };
 
 // Requisito 6
