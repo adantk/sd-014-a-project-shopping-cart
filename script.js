@@ -1,6 +1,7 @@
 // inicializando projeto
 const olItens = document.querySelector('.cart__items');
 const sectionItens = document.querySelector('.items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -31,8 +32,15 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function saveStorage() {
+  localStorage.setItem('item_cart', olItens.innerHTML);
+}
+
 function cartItemClickListener(event) {
+  // console.log(event.target);
+  // console.log(event.currentTarget);
   olItens.removeChild(event.target);
+  saveStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -53,9 +61,9 @@ const getResultsForCart = async (product) => {
     name: resultCpmplete.title,
     salePrice: resultCpmplete.price,
   }));
-  cartItemClickListener();
+  saveStorage();
 };
-
+ 
 const buttonAddCart = () => {
   const btn = document.querySelectorAll('.item__add');
   btn.forEach((ele) => ele.addEventListener('click', (event) => {
@@ -73,11 +81,19 @@ const getResultsFromAPI = async (search) => {
     // guardando o retono do forEach e chamando a função para criar a estrutura dos itens na pagina
     const returnEle = createProductItemElement(element);
     // criando dimanicamente os elementos na página dentro da section items
-    sectionItens.appendChild(returnEle);    
+    sectionItens.appendChild(returnEle);
   });
   buttonAddCart();
 };
 
+function loadStorage() {
+  olItens.innerHTML = localStorage.getItem('item_cart');
+  // olItens.addEventListener('click', cartItemClickListener);
+  // pega cada li da ol e adciona o evento para excluir o item salvo no local storage.
+  olItens.childNodes.forEach((li) => li.addEventListener('click', cartItemClickListener));
+}
+
 window.onload = () => { 
   getResultsFromAPI('computador');
+  loadStorage();
 };
