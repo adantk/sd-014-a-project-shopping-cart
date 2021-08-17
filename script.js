@@ -1,3 +1,5 @@
+const cartItem = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -25,45 +27,46 @@ function createProductItemElement({ sku, name, image }) {
 }
 // requisito storage
 const setStorage = () => {
-  localStorage.clear()
-  const getCartList = document.querySelector('.cart__items');
+  localStorage.clear();
+  const getCartList = document.querySelector(cartItem);
   localStorage.setItem('ol_cart', getCartList.innerHTML);
-}
+};
 
-const loadStorage = () =>{
-  const getCartList = document.querySelector('.cart__items');
-  getCartList.innerHTML = localStorage.getItem('ol_cart')
-  getCartList.addEventListener('click', cartItemClickListener)
-  setStorage();
-}
-
-// requisito somar;
-const somar =  async () => {
-  const pegaLista = document.querySelector('.cart__items')
-  console.log(pegaLista.children);
-  let soma; 
-  soma = pegaLista.children.reduce((acc, item) => {
-  num =  item.split('$')[1];
-  console.log(num);
-  acc += num;
-  !acc ? acc: acc = 0; 
-  });
-}
-
-// Requisito 6, btn pra limpar carrinho;
-const btnClear = () => {
-  const getBtn = document.querySelector('.empty-cart')
-  const getList = document.querySelector('.cart__items')
-  getBtn.addEventListener('click', () =>{
-    getList.innerHTML = "";
-    setStorage();
-  });  
-}
 //  função requisito 3;
 function cartItemClickListener(event) {
   event.target.remove();
   setStorage();
 }
+//  requisito storage;
+const loadStorage = () => {
+  const getCartList = document.querySelector(cartItem);
+  getCartList.innerHTML = localStorage.getItem('ol_cart');
+  getCartList.addEventListener('click', cartItemClickListener);
+  setStorage();
+};
+
+// requisito somar;
+// const somar =  async () => {
+//   const pegaLista = document.querySelector('.cart__items')
+//   console.log(pegaLista.children);
+//   let soma; 
+//   soma = pegaLista.children.reduce((acc, item) => {
+//   let num =  item.split('$')[1];
+//   console.log(num);
+//   acc += num;
+//   !acc ? acc: acc = 0; 
+//   });
+// }
+
+// Requisito 6, btn pra limpar carrinho;
+const btnClear = () => {
+  const getBtn = document.querySelector('.empty-cart');
+  const getList = document.querySelector(cartItem);
+  getBtn.addEventListener('click', () => {
+    getList.innerHTML = '';
+    setStorage();
+  });  
+};
 
 //  funções requisito 2
 function createCartItemElement({ sku, name, salePrice }) {
@@ -78,7 +81,7 @@ const fetchId = async (ids) => {
   const pegarIdRaw = await fetch(`https://api.mercadolibre.com/items/${ids}`);
   const IdTrat = await pegarIdRaw.json();
   const { id, title, price } = IdTrat;
-  const getCartList = document.querySelector('.cart__items');
+  const getCartList = document.querySelector(cartItem);
   getCartList.appendChild(createCartItemElement({
     sku: id,
     name: title,
