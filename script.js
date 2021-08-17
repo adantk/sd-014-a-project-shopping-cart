@@ -1,4 +1,5 @@
 let cartItems;
+let totalCart;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,11 +15,24 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// req 5
+function cartSum() {
+  const productsLi = document.querySelectorAll('.cart__item');
+  let sumTotal = 0;
+  productsLi.forEach((product) => {
+    sumTotal += Number(product.innerHTML.split('$')[1]);
+  });
+  sumTotal = Math.round(sumTotal * 100) / 100;
+  return sumTotal;
+}
+// end req 5
+
 // req 3
 function cartItemClickListener(clickDelete) {
   // coloque seu código aqui
   document.querySelector('.cart__items').removeChild(clickDelete.target);
   localStorage.setItem('localStorageItems', cartItems.innerHTML);
+  totalCart.innerText = cartSum();
 }
 // end req 3
 
@@ -31,6 +45,7 @@ function createCartItemElement({
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  totalCart.innerText = cartSum();
   return li;
 }
 
@@ -47,11 +62,10 @@ const addToCart = (ItemId) => {
           } = result;
           const cartSection = document.querySelector('.cart__items');
           cartSection.appendChild(createCartItemElement({
-            sku,
-            name,
-            salePrice,
+            sku, name, salePrice,
           }));
           localStorage.setItem('localStorageItems', cartItems.innerHTML);
+          totalCart.innerText = cartSum();
         });
     });
 };
@@ -101,6 +115,7 @@ const fetchInit = async () => {
 function loadCart() {
   const getCart = localStorage.getItem('localStorageItems');
   if (getCart) cartItems.innerHTML = getCart;
+  totalCart.innerText = cartSum();
 }
 
 // req 4
@@ -113,8 +128,10 @@ function addEvents() {
 // end req 4
 
 window.onload = () => {
+  totalCart = document.querySelector('.total-price');
   cartItems = document.querySelector('ol');
   fetchInit();
   loadCart();
   addEvents();
+  totalCart.innerText = cartSum();
 };
