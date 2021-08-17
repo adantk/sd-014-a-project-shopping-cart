@@ -24,6 +24,15 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+function fetchApiProduct() {
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+    .then((Response) => Response.json()
+      .then((computadores) => computadores.results.forEach((comput) => {
+        createProductItemElement({ sky: comput.id, name: comput.title, image: comput.thumbnail });
+      })));
+}
+fetchApiProduct();
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
