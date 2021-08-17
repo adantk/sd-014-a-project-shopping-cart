@@ -1,3 +1,4 @@
+const cartItemss = '.cart__items';
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -11,10 +12,22 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+// requisito 5
+const sumPrices = () => { 
+  const cartItem = document.querySelectorAll('.cart__item'); 
+  const totalPrice = document.querySelector('.total-price'); 
+  let sum = 0; 
+  cartItem.forEach((item) => { 
+    const price = (item.innerText).split('$')[1]; 
+    sum += parseFloat(price); 
+  }); 
+  totalPrice.innerText = sum; 
+  // console.log(totalPrice); 
+}; 
 
 // Requisito 4 - parte 1
 const localSSave = () => {
-  const ol = document.querySelector('.cart__items');
+  const ol = document.querySelector(cartItemss);
   // console.log(ol.innerHTML);
   localStorage.setItem('itensDeProdutos', ol.innerHTML);
 };
@@ -39,6 +52,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
   localSSave(); // toda vez que eu remover algo, salva no localStorage
+  sumPrices();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -73,19 +87,20 @@ const btnAddCarAsync = () => {
       const responseRaw = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
       // console.log(responseRaw);
       const responseJson = await responseRaw.json();
-      const productSelect = document.querySelector('.cart__items');
+      const productSelect = document.querySelector(cartItemss);
       productSelect.appendChild(createCartItemElement({ 
         sku: responseJson.id,
         name: responseJson.title,
         salePrice: responseJson.price }));
       localSSave(); // salva no localStorage
+      sumPrices();
     });
   });
 };
 
 // tem aver com o requisito 4 - parte 2
 const resLocalS = () => {
-  const ol = document.querySelector('.cart__items');
+  const ol = document.querySelector(cartItemss);
   ol.innerHTML = localStorage.getItem('itensDeProdutos'); 
   document.querySelectorAll('.cart__item').forEach((itemDelet) => {
     itemDelet.addEventListener('click', cartItemClickListener);
@@ -96,4 +111,5 @@ window.onload = async () => {
   await fetchFreeMarketAsync('computador');
   resLocalS();
   btnAddCarAsync();
+  sumPrices();
 };
