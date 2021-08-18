@@ -34,7 +34,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -75,10 +75,8 @@ const createItemsList = async (api, search) => {
 
 const itemIntoCart = (api) => {
   listOfItems.addEventListener('click', async (event) => {    
-    const select = event.target.parentElement.firstElementChild.innerText;
-
+    const select = getSkuFromProductItem(event.target.parentElement);    
     const response = await fetchItemsPromise(`${api}`, `${select}`);
-    console.log(response);
       
     const itemCart = createCartItemElement(
       { sku: response.id, name: response.title, salePrice: response.price },
@@ -87,5 +85,15 @@ const itemIntoCart = (api) => {
   });
 };
 
+const clearCart = () => {
+  const clearButton = document.querySelector('.empty-cart');
+  clearButton.addEventListener('click', () => {
+    cartItemsList.querySelectorAll('*').forEach((item) => item.remove());
+  });
+};
+
 createItemsList(apiML, 'skate');
 itemIntoCart(requisition);
+// clearCart(event);
+cartItemClickListener();
+clearCart();
