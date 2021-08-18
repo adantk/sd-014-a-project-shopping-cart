@@ -113,12 +113,11 @@ function setStorage() {
 function getStorage() {
   const listOl = document.querySelector('.cart__items');
   listOl.innerHTML = localStorage.getItem('carrinho');
-  const li = document.getElementsByClassName('cart__item'); // TRANSFORMAR PARA UM ARRAY
- // li.forEach((item) => item.addEventListener('click', cartItemClickListener));
+  const li = document.querySelectorAll('.cart__item'); // TRANSFORMAR PARA UM ARRAY
+ li.forEach((item) => item.addEventListener('click', cartItemClickListener));
 }
 
 // somando o valor total do carrinho - verificar a logica depois.
-
 function valorTotalCarrinho() {
   let soma = 0;
   const li = document.querySelectorAll('.cart__item');
@@ -138,6 +137,9 @@ function btnClear() {
   btnClearCarrinho.addEventListener('click', () => {
     const ol = document.querySelector('.cart__items');
     ol.innerText = '';
+    localStorage.clear();
+    const totalPrice = document.getElementsByClassName('total-price')[0];
+    totalPrice.innerText = '$: 0';
   });
 }
 
