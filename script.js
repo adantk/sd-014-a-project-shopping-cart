@@ -1,3 +1,14 @@
+// Requisito 7
+const loading = () => {
+  const loading = document.querySelector('.loading');
+  loading.innerText = 'Loading...';
+  document.body.appendChild(loading);
+};
+
+const removeLoading = () => {
+  document.getElementsByClassName('loading')[0].remove();
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -60,12 +71,14 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// Requisito 1s
+// Requisito 1
 const criaProdutos = async () => {
+  loading();
   await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
     .then((result) => result.results)
     .then((dados) => {
+      removeLoading();
       const items = document.querySelector('.items');
       dados.map(({ id: sku, title: name, thumbnail: image }) =>
         items.appendChild(createProductItemElement({ sku, name, image })));
@@ -78,6 +91,7 @@ const criaCarrinho = (id) => {
     .then((response) => response.json())
     .then((object) => {
       createCartItemElement({ sku: object.id, name: object.title, salePrice: object.price });
+      // somaProdutos({ price: object.price });
   });
 };
 
@@ -90,6 +104,16 @@ const btnCarrinho = () => {
     });
   });
 };
+
+// // Requisito 5
+// const somaProdutos = ({ price }) => {
+//   const cartItems  = document.querySelector(itemsCar);
+//   const priceItems = document.createElement('section');
+//   priceItems.className = 'total-price';
+//   const soma = price + price;
+//   priceItems.innerText = `Preço Total: R$${soma}`;
+//   cartItems.appendChild(priceItems);
+// };
 
 // Requisito 6
 const btnLImpar = () => {
