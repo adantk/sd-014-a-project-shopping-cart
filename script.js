@@ -32,7 +32,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -44,11 +44,30 @@ const getProducts = async (QUERY) => {
   const sectionItem = document.querySelector('.items');
   const responseRaw = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`);
   const responseJson = await responseRaw.json();
-  console.log(sectionItem);
-  responseJson.results.forEach((elemento) => sectionItem.appendChild(createProductItemElement(elemento)));
-  console.log(responseJson.results);
+  responseJson.results.forEach((eleme) => sectionItem.appendChild(createProductItemElement(eleme)));
 };
 
-window.onload = () => { 
-  getProducts('computador');
+// console.log(botao);
+
+const getAPIItem = async (itemID) => {
+  const responseRaw = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
+  const responseJson = await responseRaw.json();
+  return responseJson;
+};
+
+const adicionaItem = () => {
+  const botoes = document.querySelectorAll('.item__add');
+  botoes.forEach((botao) => botao.addEventListener('click', async (event) => {
+  const itemID = getSkuFromProductItem(event.target.parentElement);
+  const dadosApi = await getAPIItem(itemID);
+  const resultado = createCartItemElement(dadosApi);
+  const ol = document.querySelector('.cart__items');
+  ol.appendChild(resultado);
+  }));
+};
+
+window.onload = async () => { 
+  await getProducts('computador');
+  
+  adicionaItem();
 };
