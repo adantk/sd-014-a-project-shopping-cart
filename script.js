@@ -56,7 +56,7 @@ const addProductToCart = () => {
   });
 };
 
-// Requisito 1
+// Requisito 1 - Ajuda do colega de turma Rodolfo Pinheiro para entender como acessar o .results do objeto retornado.
 const convertJson = async () => {
   // Requisito 7
   const loadingText = createCustomElement('span', 'loading', 'Loading...');
@@ -76,7 +76,7 @@ const convertJson = async () => {
   loadingText.remove(); // Chamada dentro do escopo do async e remoção chamada após o carregamento da request à API. 
 };
 
-// Requisito 4
+// Requisito 4 - Ajuda do Lucas Farias e da Gisele Santin para entender onde inserir o setItem.
 const storedItems = () => {
   const ol = document.querySelector('.cart__items');
   ol.innerHTML = localStorage.getItem('stored');
