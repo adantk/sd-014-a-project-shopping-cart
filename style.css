@@ -12,7 +12,7 @@
 }
 
 .item {
-  border: 2px solid blue;
+  border: 2px solid green;
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
@@ -37,6 +37,7 @@
 }
 
 .item .item__add {
+  color: white;
   background-color: green;
   border: 0;
   cursor: pointer;
