@@ -1,8 +1,8 @@
 // Requisito 7
 const loading = () => {
-  const loading = document.querySelector('.loading');
-  loading.innerText = 'Loading...';
-  document.body.appendChild(loading);
+  const txt = document.querySelector('.loading');
+  txt.innerText = 'Loading...';
+  document.body.appendChild(txt);
 };
 
 const removeLoading = () => {
