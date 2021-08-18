@@ -51,6 +51,7 @@ const addProductToCart = () => {
       // Acessa elemento cart__items e faz um filho do resultado da função createCartItemElement
       const ol = document.querySelector('.cart__items');
       ol.appendChild(createCartItemElement(request));
+      localStorage.setItem('stored', ol.innerHTML);
     });
   });
 };
@@ -70,15 +71,22 @@ const convertJson = async () => {
   request.forEach((computer) => {
     // Acessa elemento items e faz um filho do resultado da função createProductItemElement
     document.querySelector('.items').appendChild(createProductItemElement(computer));
-  }); 
+  });
   addProductToCart();
   loadingText.remove(); // Chamada dentro do escopo do async e remoção chamada após o carregamento da request à API. 
 };
 
+// Requisito 4
+const storedItems = () => {
+  const ol = document.querySelector('.cart__items');
+  ol.innerHTML = localStorage.getItem('stored');
+  ol.childNodes.forEach((li) => li.addEventListener('click', cartItemClickListener));
+};
+
 // Requisito 6
 const emptyCart = () => {
- const cartItem = document.querySelectorAll('.cart__item');
- cartItem.forEach((item) => item.remove());
+  const cartItem = document.querySelectorAll('.cart__item');
+  cartItem.forEach((item) => item.remove());
 };
 
 // function getSkuFromProductItem(item) {
@@ -87,6 +95,7 @@ const emptyCart = () => {
 
 window.onload = () => {
   convertJson();
-  // Inserido no window.onload pois o script se encontra do head e o botão esvaziar carrinho ainda não foi criado.
+  // Inserido no window.onload pois o script se encontra no head e o botão esvaziar carrinho ainda não foi criado.
   document.querySelector('.empty-cart').addEventListener('click', emptyCart);
+  storedItems();
 };
