@@ -1,14 +1,14 @@
 const classList = document.querySelector('.items');
+const body = document.querySelector('body');
 const cartList = document.querySelector('.cart__items');
 const btnCleanCart = document.querySelector('.empty-cart');
-const nam = 'Sum-prices';
-// const cartSection = document.querySelector('.cart');
+const nam = 'Sum-prices'; // coloquei em uma const, pq repetiu mais de 3x e o lint reclamou
 const span = document.createElement('span');
 const p = document.querySelector('.p');
 span.className = 'total-price';
-span.innerText = 0;
+span.innerText = 0; // O texto inicial p/ aparecer com 0
 p.appendChild(span);
-let somaValues = Number(localStorage.getItem('Sum-prices'));
+let somaValues = Number(localStorage.getItem('Sum-prices')); // Transformei em number pois o localStorage retorna uma string
 
  function createSumElement(valor) {
   somaValues += valor;
@@ -27,15 +27,14 @@ function cartItemClickListener(event) {
 function saveLocalStorage() {
   localStorage.clear();
   localStorage.setItem('list_products', cartList.innerHTML);
-  // localStorage.setItem(nam, somaValues.toFixed(2));
 }
 // Pego essas informações salvas e adciono no innerHTML do elemento pai e dps salvo novamente com as mudanças
 function getLocalStorage() {
   cartList.innerHTML = localStorage.getItem('list_products');
-  if (localStorage.getItem(nam)) {
+  if (localStorage.getItem(nam)) { // se o localStorage tiver salvo, retorna o valor dele
     span.innerText = localStorage.getItem(nam);
   } else {
-    span.innerText = 0;
+    span.innerText = 0; // caso não retorna 0
   }
   cartList.childNodes.forEach((li) => {
     li.addEventListener('click', cartItemClickListener);  
@@ -100,7 +99,7 @@ const cartClick = () => {
   const buyButton = document.querySelectorAll('.item__add');
   buyButton.forEach((btn) => {
     btn.addEventListener('click', (event) => {
-      const sku = event.target.previousSibling.previousSibling.previousSibling.innerText;
+      const sku = getSkuFromProductItem(event.target.parentNode);
       fecthID(sku).then((response) => {
         const appendCart = createCartItemElement({ 
           sku: response.id,
@@ -126,12 +125,21 @@ const listJsonMercadoLivre = async (endpoint) => {
       image: list.thumbnail });
     return classList.appendChild(store);
   });
+  const h = document.querySelector('h1');
+  body.removeChild(h);
   cartClick();
 };
 
+function textLoading() {
+  const h = document.createElement('h1');
+  h.className = 'loading';
+  h.innerText = 'Loading...';
+  body.appendChild(h);
+}
+
 window.onload = async () => {
+  textLoading();
   await listJsonMercadoLivre('computador');
   cleanCartAll();
   getLocalStorage();
-  // span.innerText = 0;
 };
