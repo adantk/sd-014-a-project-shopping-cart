@@ -2,6 +2,7 @@ const items = document.querySelector('.items');
 const btnEmpty = document.querySelector('.empty-cart');
 const list = document.querySelector('.cart__items');
 const pagCart = document.querySelector('.cart');
+let globalPrices = [];
 
 // Dadas Funções para o projeto:
 function createProductImageElement(imageSource) {
@@ -36,8 +37,21 @@ function createProductItemElement({ sku, name, image }) {
 const subtracPrice = (request) => {
   const total = document.querySelector('.total-price');
   const arraySub = request.innerText.split('$'); 
-  const result = total.innerText - arraySub[1];
-  total.innerText = Math.round((result + Number.EPSILON) * 100) / 100;
+  const num = parseFloat(arraySub[1]);
+  const indice = globalPrices.indexOf(num);
+  switch (indice) {
+    case indice === 0:
+      globalPrices = globalPrices.shift();
+      break;
+    case indice === globalPrices.length - 1:
+      globalPrices = globalPrices.pop();
+      break;
+    default:
+      globalPrices.splice((indice), 1);
+      break;
+  }
+  const sum = globalPrices.reduce(((acc, cur) => acc + cur), 0);
+  total.innerText = Math.round((sum + Number.EPSILON) * 100) / 100;
 };
 
 // Requisito 03:
@@ -74,12 +88,12 @@ const itemsToHTML = (request) => {
 };
 
 // Requisito 05 (SOMANDO) - Entra na Funcção do requisito 02:
-const arrayPrice = [];
+
 const sumPrice = (request) => {
   const { price } = request;
   const total = document.querySelector('.total-price');
-  arrayPrice.push(price);
-  const sum = arrayPrice.reduce(((acc, cur) => acc + cur), 0);
+  globalPrices.push(price);
+  const sum = globalPrices.reduce(((acc, cur) => acc + cur), 0);
   total.innerText = Math.round((sum + Number.EPSILON) * 100) / 100;
 };
 
@@ -102,11 +116,8 @@ const btnClick = () => {
 
 // Requisito 6:
 btnEmpty.addEventListener('click', () => {
-  const total = document.querySelector('.total-price');
-  total.innerText = '0';
-  while (list.firstChild) {
-    list.removeChild(list.firstChild);
-  }
+  globalPrices = [];
+  while (list.firstChild) list.removeChild(list.firstChild);
 });
 
 // Requisito 7:
