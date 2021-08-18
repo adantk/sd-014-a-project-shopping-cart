@@ -1,5 +1,6 @@
 let list = [];
 const prices = [];
+const cartItems = '.cart__items';
 // const sum = () => {
 //   const totalPrice = document.querySelector('.total-price');
 //   const number = prices.reduce((acc, price) => acc + price, 0);
@@ -36,16 +37,18 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return itemsList;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// não usei a função abaixo:
+
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function cartItemClickListener(event) {
   event.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const cart = document.querySelector('.cart__items'); // destino do item a ser criado.
+  const cart = document.querySelector(cartItems); // destino do item a ser criado.
   
   const li = document.createElement('li'); 
   li.className = 'cart__item';
@@ -86,7 +89,7 @@ const loadCart = () => { // carrega os itens do carrinho ao iniciar a pág.
   storage.forEach((key) => { // para cada item no storage será criado um correspondente no carrinho.
     const listItem = document.createElement('li'); // cria o item da lista...
     listItem.innerText = window.localStorage.getItem(key); // ...atribui o valor armazenado no storage... 
-    document.querySelector('.cart__items').appendChild(listItem); // ... e afixa o li no carrinho.
+    document.querySelector(cartItems).appendChild(listItem); // ... e afixa o li no carrinho.
     
     listItem.addEventListener('click', cartItemClickListener.bind(this, listItem)); // adiciona a opção de apagar o item recém-criado...
     listItem.addEventListener('click', () => window.localStorage.removeItem(key)); // ... e o par chave-valor correspondente no storage. 
@@ -114,7 +117,7 @@ const getApi = async (searchItem) => {
 const emptyCart = () => {
   const button = document.querySelector('.empty-cart');
   button.addEventListener('click', () => {
-    document.querySelector('.cart__items').innerHTML = '';
+    document.querySelector(cartItems).innerHTML = '';
     localStorage.clear();
     });
 };
