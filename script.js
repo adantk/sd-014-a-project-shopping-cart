@@ -1,3 +1,11 @@
+const salvaDados = () => {
+  const ols = document.querySelector('.cart__items').innerHTML; // conteudo da tag li
+  console.log(ols);
+  // localStorage.clear();
+  localStorage.setItem('lista', ols);
+  // localStorage.getItem('lista');
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,8 +37,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  const ol = document.querySelector('.cart__items');
-  ol.removeChild(event.target);  
+  event.target.remove();
+  salvaDados();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -48,8 +56,6 @@ const getProducts = async (QUERY) => {
   responseJson.results.forEach((eleme) => sectionItem.appendChild(createProductItemElement(eleme)));
 };
 
-// console.log(botao);
-
 const getAPIItem = async (itemID) => {
   const responseRaw = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
   const responseJson = await responseRaw.json();
@@ -59,16 +65,23 @@ const getAPIItem = async (itemID) => {
 const adicionaItem = () => {
   const botoes = document.querySelectorAll('.item__add');
   botoes.forEach((botao) => botao.addEventListener('click', async (event) => {
-  const itemID = getSkuFromProductItem(event.target.parentElement);
+  const itemID = await getSkuFromProductItem(event.target.parentElement);
   const dadosApi = await getAPIItem(itemID);
   const resultado = createCartItemElement(dadosApi);
   const ol = document.querySelector('.cart__items');
-  console.log(resultado);
+  console.log(ol);
   ol.appendChild(resultado);
+  salvaDados();
   }));
 };
 
 window.onload = async () => { 
   await getProducts('computador');
   adicionaItem();
+  // Agrec
+  const lista = document.getElementsByClassName('cart__items')[0]; // estrutura da tag 
+  // console.log(lista);
+  lista.innerHTML = localStorage.getItem('lista');
+  const cartItem = document.querySelectorAll('.cart__item');
+  cartItem.forEach((elemento) => elemento.addEventListener('click', cartItemClickListener));
 };
