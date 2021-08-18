@@ -49,7 +49,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   // valorTotalCarrinho(salePrice); // enviando o valor para o total do carrinho
-  valorTotalCarrinho();
+  
   return li;
 }
 
@@ -93,6 +93,7 @@ function addCarrinho(idItem) {
     const itemCarrinho = document.querySelector('.cart__items');
     itemCarrinho.appendChild(itemId);
     setStorage();
+    valorTotalCarrinho();
 }
 // 2
 const fetchItens = async (itemId) => {
@@ -124,7 +125,6 @@ function valorTotalCarrinho() {
   li.forEach((item) => {
     const valorItem = item.innerText.split('$')[1];
     soma += parseFloat(valorItem);
-    return soma;
   });
   console.log(soma);
   const totalPrice = document.getElementsByClassName('total-price')[0];
