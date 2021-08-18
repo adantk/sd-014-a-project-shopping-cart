@@ -22,11 +22,10 @@ function createProductItemElement({ sku, name, image }) {
  const btnAdd = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
  // btnAdd.addEventListener('click', addCarrinho);
   btnAdd.addEventListener('click', () => {
+    fetchItens(sku);
     // console.log(event.target);
     // console.log(sku);
-    fetchItens(sku);
   });
-  
   section.appendChild(btnAdd);
 
   return section;
@@ -46,7 +45,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  addLocalStorage()
+  valorTotalCarrinho(salePrice); // enviando o valor para o total do carrinho
   return li;
 }
 
@@ -67,7 +66,6 @@ const getProduto = async () => {
   const produtos = await fetchApi();
   const item = document.querySelector('.items'); 
   // pegando a classe e criando nossos elementos (produtos) com o forEach de baixo
-
   produtos.forEach((resul) => {
     item.appendChild(createProductItemElement(
       { 
@@ -90,7 +88,6 @@ function addCarrinho(idItem) {
   );
     const itemCarrinho = document.querySelector('.cart__items');
     itemCarrinho.appendChild(itemId);
-    
 }
 // 2
 const fetchItens = async (itemId) => {
@@ -102,21 +99,38 @@ const fetchItens = async (itemId) => {
   return responseItem;
 };
 
-// 4 - Adicionando no LocalStorage
-function addLocalStorage() {
-  console.log('add');
-  const listaItem = document.getElementsByClassName('cart__items');
-  // if (listaItems.length > 0) {
-    console.log('estamos aqui'); 
-    localStorage.setItem('carrinho', listaItem.innerHTML);
-  
+// 4 - Adicionando no LocalStorage Verificar que nao esta funcionando
+
+// somando o valor total do carrinho - verificar a logica depois.
+let inicial = 0;
+function valorTotalCarrinho(valor) {
+  console.log(valor); // pegando o valor
+  inicial += valor;
+  console.log(inicial);
 }
 
-function valorTotalCarrinho() {
-  const listaItem = document.getElementsByClassName('cart__items');
-  console.log(listaItem.price);
-}
-valorTotalCarrinho();
+// 6
+// function btnClear() {
+//   const btnClearCarrinho = document.getElementsByClassName('empty-cart')[0];
+//   btnClearCarrinho.addEventListener('click', () => {
+  //   const li = document.getElementsByClassName('cart__item');
+    
+  //   console.log(li);
+  //   li.forEach((item) => item.remove());
+    
+  //   // const ol = document.getElementsByClassName('cart__items');
+  //   // while (ol.lastElementChild) { // se tiver nó remova.
+  //   //   ol.removeChild(ol.lastElementChild);
+  //   //   console.log('aqui1');
+  //   // }
+  //   const cart = document.getElementsByClassName('cart__item');
+  //   while (cart.lastElementChild) {
+  //     cart.removeChild(cart.lastElementChild);
+  //   }
+  //   console.log('nofdjso');
+  // });
+// }
+
 window.onload = () => { 
   fetchApi();
   getProduto();
