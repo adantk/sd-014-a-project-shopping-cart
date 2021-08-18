@@ -6,7 +6,7 @@ const sectionItens = document.querySelector('.items');
 function sum() {
   // const items = [...liItens];
   const itemPrice = [...document.querySelectorAll('li.cart__item')]
-  .reduce((acc, curr) => Number(curr.innerText.split('$')[1]) + acc, 0);
+  .reduce((acc, curr) => acc + Number(curr.innerText.split('$')[1]), 0);
   const total = document.querySelector('.total-price');
   total.innerText = itemPrice;
 }
