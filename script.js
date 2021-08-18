@@ -36,6 +36,7 @@ const setStorage = () => {
 function cartItemClickListener(event) {
   event.target.remove();
   setStorage();
+  somar();
 }
 //  requisito storage;
 const loadStorage = () => {
@@ -43,20 +44,30 @@ const loadStorage = () => {
   getCartList.innerHTML = localStorage.getItem('ol_cart');
   getCartList.addEventListener('click', cartItemClickListener);
   setStorage();
+  somar();
 };
 
 // requisito somar;
-// const somar =  async () => {
-//   const pegaLista = document.querySelector('.cart__items')
-//   console.log(pegaLista.children);
-//   let soma; 
-//   soma = pegaLista.children.reduce((acc, item) => {
-//   let num =  item.split('$')[1];
-//   console.log(num);
-//   acc += num;
-//   !acc ? acc: acc = 0; 
-//   });
-// }
+const createPriceSpan = () => {
+  const spanPrice = document.createElement('span')
+  const getCartSec = document.querySelector('.cart')
+  spanPrice.className = 'total-price'
+  getCartSec.appendChild(spanPrice);
+  spanPrice.innerText = '$'
+}
+
+const somar = async () => {
+  const pegaLista = document.querySelectorAll('.cart__item')
+  console.log(pegaLista);
+  let cont = 0;
+  pegaLista.forEach((item) => {
+  let num = item.innerText.split('$')[1]
+  cont += parseFloat(num);
+  });
+  const price = document.querySelector('.total-price');
+  price.innerText = cont
+}
+
 
 // Requisito 6, btn pra limpar carrinho;
 const btnClear = () => {
@@ -65,6 +76,7 @@ const btnClear = () => {
   getBtn.addEventListener('click', () => {
     getList.innerHTML = '';
     setStorage();
+    somar()
   });  
 };
 
@@ -88,6 +100,7 @@ const fetchId = async (ids) => {
     salePrice: price,
   }));   
   setStorage(); 
+  somar();
 };
 
 const lerBotao = () => {
@@ -114,5 +127,6 @@ function getSkuFromProductItem(item) {
 
 window.onload = () => {
   prodFetch();
+  createPriceSpan();
   loadStorage();
 };
