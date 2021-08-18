@@ -12,6 +12,69 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// 4 - Adicionando no LocalStorage Verificar que nao esta funcionando
+function setStorage() {
+  const listaLi = document.querySelector('.cart__items');
+  const listOl = listaLi;
+  JSON.stringify(localStorage.setItem('carrinho', listOl.innerHTML));
+}
+
+
+// somando o valor total do carrinho - verificar a logica depois.
+function valorTotalCarrinho() {
+  let soma = 0;
+  const li = document.querySelectorAll('.cart__item');
+  li.forEach((item) => {
+    const valorItem = item.innerText.split('$')[1];
+    soma += parseFloat(valorItem);
+  });
+  console.log(soma);
+  const totalPrice = document.getElementsByClassName('total-price')[0];
+  totalPrice.innerText = `$:${soma}`;
+}
+
+function cartItemClickListener(event) {
+  const itemRemover = event.target;
+  // console.log(event.target.innerText);
+  itemRemover.remove();
+  setStorage();
+  valorTotalCarrinho();
+ }
+
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  // valorTotalCarrinho(salePrice); // enviando o valor para o total do carrinho
+  
+  return li;
+}
+
+function addCarrinho(idItem) {
+  // console.log(idItem);
+  const itemId = createCartItemElement( // envia os parametros do id do item recebido para a função createCartItemElement
+    { sku: idItem.id, 
+      name: idItem.title, 
+      salePrice: idItem.price,
+    },
+  );
+  const listaLi = document.querySelector('.cart__items');
+    const itemCarrinho = listaLi;
+    itemCarrinho.appendChild(itemId);
+    setStorage();
+    valorTotalCarrinho();
+}
+// 2
+const fetchItens = async (itemId) => {
+  // console.log(itemId);
+  const fetchItem = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
+  const responseItem = await fetchItem.json();
+  // console.log(responseItem);
+  addCarrinho(responseItem);
+  return responseItem;
+};
+
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -33,24 +96,6 @@ function createProductItemElement({ sku, name, image }) {
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
- const itemRemover = event.target;
- // console.log(event.target.innerText);
- itemRemover.remove();
- setStorage();
- valorTotalCarrinho();
-}
-
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  // valorTotalCarrinho(salePrice); // enviando o valor para o total do carrinho
-  
-  return li;
 }
 
 const fetchApi = async () => {
@@ -82,55 +127,6 @@ const getProduto = async () => {
   // console.log(produtos.results);
 };
 
-function addCarrinho(idItem) {
-  // console.log(idItem);
-  const itemId = createCartItemElement( // envia os parametros do id do item recebido para a função createCartItemElement
-    { sku: idItem.id, 
-      name: idItem.title, 
-      salePrice: idItem.price,
-    },
-  );
-    const itemCarrinho = document.querySelector('.cart__items');
-    itemCarrinho.appendChild(itemId);
-    setStorage();
-    valorTotalCarrinho();
-}
-// 2
-const fetchItens = async (itemId) => {
-  // console.log(itemId);
-  const fetchItem = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
-  const responseItem = await fetchItem.json();
-  // console.log(responseItem);
-  addCarrinho(responseItem);
-  return responseItem;
-};
-
-// 4 - Adicionando no LocalStorage Verificar que nao esta funcionando
-function setStorage() {
-  const listOl = document.querySelector('.cart__items');
-  JSON.stringify(localStorage.setItem('carrinho', listOl.innerHTML));
-}
-
-function getStorage() {
-  const listOl = document.querySelector('.cart__items');
-  listOl.innerHTML = localStorage.getItem('carrinho');
-  const li = document.querySelectorAll('.cart__item'); // TRANSFORMAR PARA UM ARRAY
- li.forEach((item) => item.addEventListener('click', cartItemClickListener));
-}
-
-// somando o valor total do carrinho - verificar a logica depois.
-function valorTotalCarrinho() {
-  let soma = 0;
-  const li = document.querySelectorAll('.cart__item');
-  li.forEach((item) => {
-    const valorItem = item.innerText.split('$')[1];
-    soma += parseFloat(valorItem);
-  });
-  console.log(soma);
-  const totalPrice = document.getElementsByClassName('total-price')[0];
-  totalPrice.innerText = `$:${soma}`;
-}
-
 // 6
 function btnClear() {
   const btnClearCarrinho = document.getElementsByClassName('empty-cart')[0];
@@ -141,6 +137,13 @@ function btnClear() {
     const totalPrice = document.getElementsByClassName('total-price')[0];
     totalPrice.innerText = '$: 0';
   });
+}
+
+function getStorage() {
+  const listOl = document.querySelector('.cart__items');
+  listOl.innerHTML = localStorage.getItem('carrinho');
+  const li = document.querySelectorAll('.cart__item'); // TRANSFORMAR PARA UM ARRAY
+ li.forEach((item) => item.addEventListener('click', cartItemClickListener));
 }
 
 window.onload = () => { 
