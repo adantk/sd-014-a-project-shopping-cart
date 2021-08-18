@@ -1,19 +1,42 @@
 const classList = document.querySelector('.items');
 const cartList = document.querySelector('.cart__items');
 const btnCleanCart = document.querySelector('.empty-cart');
+const nam = 'Sum-prices';
+// const cartSection = document.querySelector('.cart');
+const span = document.createElement('span');
+const p = document.querySelector('.p');
+span.className = 'total-price';
+span.innerText = 0;
+p.appendChild(span);
+let somaValues = Number(localStorage.getItem('Sum-prices'));
 
+ function createSumElement(valor) {
+  somaValues += valor;
+  span.innerText = Math.round(somaValues * 100) / 100;
+  localStorage.setItem(nam, Math.round(somaValues * 100) / 100);
+} 
 // Função para remover o elemento clicavel da lista, 1 a 1.
 function cartItemClickListener(event) {
+  const justValueLi = event.target.innerHTML.split('$')[1];
+  somaValues -= justValueLi;
+  span.innerText = Math.round(somaValues * 100) / 100;
+  localStorage.setItem(nam, Math.round(somaValues * 100) / 100);
   return cartList.removeChild(event.target);
 }
 // Salvo no localStorage todos os li's dentro do carrinho através do innerHTML do elemento pai
 function saveLocalStorage() {
   localStorage.clear();
   localStorage.setItem('list_products', cartList.innerHTML);
+  // localStorage.setItem(nam, somaValues.toFixed(2));
 }
 // Pego essas informações salvas e adciono no innerHTML do elemento pai e dps salvo novamente com as mudanças
 function getLocalStorage() {
   cartList.innerHTML = localStorage.getItem('list_products');
+  if (localStorage.getItem(nam)) {
+    span.innerText = localStorage.getItem(nam);
+  } else {
+    span.innerText = 0;
+  }
   cartList.childNodes.forEach((li) => {
     li.addEventListener('click', cartItemClickListener);  
   });
@@ -60,8 +83,10 @@ function createCartItemElement({ sku, name, salePrice }) {
 // Quando clica no botão esvaziar carrinho ele limpa todos os li's passando um vazio para o elemento pai e limpa todo o localStorage salvo.
 const cleanCartAll = () => {
     btnCleanCart.addEventListener('click', () => {
-      cartList.innerHTML = '';
+      somaValues = 0;
       localStorage.clear();
+      cartList.innerHTML = '';
+      span.innerHTML = 0;
  });
 };
 // Cria uma função que serve pra acessar o endpoint do ID do elemento passado como parametro
@@ -83,6 +108,7 @@ const cartClick = () => {
           salePrice: response.price });
          cartList.appendChild(appendCart); 
          saveLocalStorage();
+         createSumElement(response.price);
       });
     });
   });
@@ -100,12 +126,12 @@ const listJsonMercadoLivre = async (endpoint) => {
       image: list.thumbnail });
     return classList.appendChild(store);
   });
-  saveLocalStorage();
   cartClick();
 };
 
-window.onload = () => {
-  listJsonMercadoLivre('computador');
+window.onload = async () => {
+  await listJsonMercadoLivre('computador');
   cleanCartAll();
   getLocalStorage();
+  // span.innerText = 0;
 };
