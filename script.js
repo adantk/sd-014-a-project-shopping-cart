@@ -37,6 +37,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
  const itemRemover = event.target;
+ console.log(event.target.innerText);
  itemRemover.remove();
 }
 
@@ -110,28 +111,18 @@ function valorTotalCarrinho(valor) {
 }
 
 // 6
-// function btnClear() {
-//   const btnClearCarrinho = document.getElementsByClassName('empty-cart')[0];
-//   btnClearCarrinho.addEventListener('click', () => {
-  //   const li = document.getElementsByClassName('cart__item');
+function btnClear() {
+  const btnClearCarrinho = document.getElementsByClassName('empty-cart')[0];
+  btnClearCarrinho.addEventListener('click', () => {
+    console.log('teste');
+    const ol = document.querySelector('.cart__items');
+    ol.innerText = '';
+  });
     
-  //   console.log(li);
-  //   li.forEach((item) => item.remove());
-    
-  //   // const ol = document.getElementsByClassName('cart__items');
-  //   // while (ol.lastElementChild) { // se tiver nó remova.
-  //   //   ol.removeChild(ol.lastElementChild);
-  //   //   console.log('aqui1');
-  //   // }
-  //   const cart = document.getElementsByClassName('cart__item');
-  //   while (cart.lastElementChild) {
-  //     cart.removeChild(cart.lastElementChild);
-  //   }
-  //   console.log('nofdjso');
-  // });
-// }
+}
 
 window.onload = () => { 
   fetchApi();
   getProduto();
+  btnClear();
 };
