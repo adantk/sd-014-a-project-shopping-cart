@@ -37,8 +37,10 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
  const itemRemover = event.target;
- console.log(event.target.innerText);
+ // console.log(event.target.innerText);
  itemRemover.remove();
+ setStorage();
+ valorTotalCarrinho();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -46,7 +48,8 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  valorTotalCarrinho(salePrice); // enviando o valor para o total do carrinho
+  // valorTotalCarrinho(salePrice); // enviando o valor para o total do carrinho
+  valorTotalCarrinho();
   return li;
 }
 
@@ -89,6 +92,7 @@ function addCarrinho(idItem) {
   );
     const itemCarrinho = document.querySelector('.cart__items');
     itemCarrinho.appendChild(itemId);
+    setStorage();
 }
 // 2
 const fetchItens = async (itemId) => {
@@ -101,28 +105,45 @@ const fetchItens = async (itemId) => {
 };
 
 // 4 - Adicionando no LocalStorage Verificar que nao esta funcionando
+function setStorage() {
+  const listOl = document.querySelector('.cart__items');
+  JSON.stringify(localStorage.setItem('carrinho', listOl.innerHTML));
+}
+
+function getStorage() {
+  const listOl = document.querySelector('.cart__items');
+  listOl.innerHTML = localStorage.getItem('carrinho');
+  const li = document.getElementsByClassName('cart__item'); // TRANSFORMAR PARA UM ARRAY
+ // li.forEach((item) => item.addEventListener('click', cartItemClickListener));
+}
 
 // somando o valor total do carrinho - verificar a logica depois.
-let inicial = 0;
-function valorTotalCarrinho(valor) {
-  console.log(valor); // pegando o valor
-  inicial += valor;
-  console.log(inicial);
+
+function valorTotalCarrinho() {
+  let soma = 0;
+  const li = document.querySelectorAll('.cart__item');
+  li.forEach((item) => {
+    const valorItem = item.innerText.split('$')[1];
+    soma += parseFloat(valorItem);
+    return soma;
+  });
+  console.log(soma);
+  const totalPrice = document.getElementsByClassName('total-price')[0];
+  totalPrice.innerText = `$:${soma}`;
 }
 
 // 6
 function btnClear() {
   const btnClearCarrinho = document.getElementsByClassName('empty-cart')[0];
   btnClearCarrinho.addEventListener('click', () => {
-    console.log('teste');
     const ol = document.querySelector('.cart__items');
     ol.innerText = '';
   });
-    
 }
 
 window.onload = () => { 
   fetchApi();
   getProduto();
   btnClear();
+  getStorage();
 };
