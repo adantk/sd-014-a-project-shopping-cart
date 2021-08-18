@@ -33,7 +33,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener() {
+function cartItemClickListener(event) {
   const select = document.querySelector('ol').addEventListener('click', (event) => {
     event.target.remove();
   });
@@ -43,7 +43,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener); // essa linha tá me deixando louco
   return li;
 }
 
@@ -96,6 +96,5 @@ const clearCart = () => {
 
 createItemsList(apiML, 'skate');
 itemIntoCart(requisition);
-// clearCart(event);
 cartItemClickListener();
 clearCart();
