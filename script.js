@@ -1,4 +1,10 @@
 let list = [];
+const prices = [];
+// const sum = () => {
+//   const totalPrice = document.querySelector('.total-price');
+//   const number = prices.reduce((acc, price) => acc + price, 0);
+//   totalPrice.innerHTML = `Total: ${number.toFixed(2)}`;
+// };
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -51,13 +57,20 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
   li.addEventListener('click', cartItemClickListener.bind(this, li)); // referencia para o .bind: https://stackoverflow.com/questions/35667267/addeventlistenerclick-firing-immediately.
   li.addEventListener('click', () => window.localStorage.removeItem(name)); // apaga o item correspondente no storage.
+
   return li;
 }
 
 const addToCart = async (id) => { // puxa a API com dados do item a ser adicionado ao cart
   fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((response) => response.json())
-  .then((product) => createCartItemElement(product)); // chama a função createCartItemElement passando os dados do item a ser adicionado
+  .then((product) => { 
+    createCartItemElement(product); // chama a função createCartItemElement passando os dados do item a ser adicionado
+    prices.push(parseFloat(product.price));
+    const totalPrice = document.querySelector('.total-price');
+    const number = prices.reduce((acc, price) => acc + price, 0);
+  totalPrice.innerText = number; // referencia: https://stackoverflow.com/questions/3612744/remove-insignificant-trailing-zeros-from-a-number
+});
 };
 
 const addListenerToButtons = () => {
@@ -81,21 +94,33 @@ const loadCart = () => { // carrega os itens do carrinho ao iniciar a pág.
 };
 
 const getApi = async (searchItem) => {
+    const loading = document.createElement('h1');
+    loading.classList.add('loading');
+    loading.innerHTML = 'LOADING';
+    document.querySelector('.items').appendChild(loading);
     fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${searchItem}`)
     .then((response) => response.json())
     .then(function (obj) {
       list = obj.results;
     })
     .then(function () {
-      list.forEach((item) => {
-        createProductItemElement(item);
-    });
+      list.forEach((item) => createProductItemElement(item));
     addListenerToButtons();
+    document.querySelector('.items').removeChild(loading);
   })
     .catch((error) => console.log(error));
+};
+
+const emptyCart = () => {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    document.querySelector('.cart__items').innerHTML = '';
+    localStorage.clear();
+    });
 };
 
 window.onload = () => { 
  getApi('computador');
  loadCart();
+ emptyCart();
 };
