@@ -1,3 +1,8 @@
+const listOfItems = document.querySelector('.items');
+const cartItemsList = document.querySelector('.cart__items');
+const apiML = 'https://api.mercadolibre.com/sites/MLB/search?q=';
+const requisition = 'https://api.mercadolibre.com/items/';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -39,25 +44,48 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-// const fetch = require('node-fetch');
 
-const fetchItemsPromise = async (search) => {
-  const responseFetch = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`);
-  const responseJson = await responseFetch.json();
-  const objArray = Object.values(responseJson.results);
+const fetchItemsPromise = (api, search) => new Promise((resolve, reject) => {
+  fetch(`${api}${search}`)
+    .then((response) => {
+      if (response.ok) {
+      response.json()
+        .then((dados) => {            
+            // console.log(dados.results);
+            resolve(dados);
+        });
+      } else {
+          reject(new Error('fetch dont work'));
+        }
+    });
+});
 
-  const listOfItems = document.querySelector('.items');
+const createItemsList = async (api, search) => {
+  const jsonResponse = await fetchItemsPromise(`${api}`, `${search}`);
+  const resultResponse = jsonResponse.results;
+  const objArray = Object.values(resultResponse);
 
-  objArray.forEach((item) => {
-    const b = createProductItemElement({ sku: item.id, name: item.title, image: item.thumbnail })
-    listOfItems.appendChild(b);
+  objArray.forEach((element) => {
+    const item = createProductItemElement(
+      { sku: element.id, name: element.title, image: element.thumbnail },
+    );
+    listOfItems.appendChild(item);
   });
 };
 
-// function createItem(search) {
-//   const listOfItems = document.querySelector('.items');
+const itemIntoCart = (api) => {
+  listOfItems.addEventListener('click', async (event) => {    
+    const select = event.target.parentElement.firstElementChild.innerText;
 
-//   const fetch = fetchItemsPromise(search);
-// }
+    const response = await fetchItemsPromise(`${api}`, `${select}`);
+    console.log(response);
+      
+    const itemCart = createCartItemElement(
+      { sku: response.id, name: response.title, salePrice: response.price },
+    );
+    cartItemsList.appendChild(itemCart);
+  });
+};
 
-fetchItemsPromise('skate');
+createItemsList(apiML, 'skate');
+itemIntoCart(requisition);
