@@ -107,9 +107,18 @@ const resLocalS = () => {
   });
 };
 
+const clearBtn = () => {
+  document.querySelector('.empty-cart').addEventListener('click', () => {
+  document.querySelector(cartItemss).innerText = '';
+  localStorage.clear();
+  sumPrices();
+});
+};
+
 window.onload = async () => { 
   await fetchFreeMarketAsync('computador');
   resLocalS();
   btnAddCarAsync();
   sumPrices();
+  clearBtn();
 };
