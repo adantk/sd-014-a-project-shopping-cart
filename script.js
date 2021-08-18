@@ -36,10 +36,10 @@ function getPriceFromProductItem(item) {
 // https://develproder.mozilla.org/es/docs/Web/API/Storage/getItem
 function LocalS() {
   const local = localStorage.getItem('cartitems') || [];
-  if (typeof (local) === 'string') {
+  if (typeof local === 'string') {
     if (local.includes(',')) return local.split(',');
     return [local];
-  } 
+  }
   localStorage.setItem('cartitems', '');
   return local;
 }
@@ -89,7 +89,11 @@ function cartItemClickListener() {
   reloadLS();
 }
 
-function createCartItemElementPrice({ id: sku, title: name, price: salePrice }) {
+function createCartItemElementPrice({
+  id: sku,
+  title: name,
+  price: salePrice,
+}) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.sku = sku;
@@ -131,14 +135,21 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ id: sku, title: name, thumbnail: image, price: salePrice }) {
+function createProductItemElement({
+  id: sku,
+  title: name,
+  thumbnail: image,
+  price: salePrice,
+}) {
   const section = document.createElement('section');
   section.className = 'item';
   section.price = salePrice;
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.appendChild(
+    createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'),
+);
 
   return section;
 }
@@ -146,8 +157,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image, pric
 function loadLocalStor() {
   const itens = LocalS();
   if (itens[0] === undefined) return;
-  itens.forEach(async (item) => createCartItemElementPrice(await ProductSeku(item)));
-}
+  itens.forEach(async (item) =>
+    createCartItemElementPrice(await ProductSeku(item)));
+} 
 
 window.onload = async () => {
   loadLocalStor();
