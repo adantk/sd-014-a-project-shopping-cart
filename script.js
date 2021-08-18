@@ -43,16 +43,41 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+const getApiToInsertItemsOnCart = (id) => {
+  const cartOl = document.querySelector('.cart__items');
+  fetch(`https://api.mercadolibre.com/items/${id}`)
+    .then((response) => response.json())
+    .then((product) => {
+      cartOl.appendChild(createCartItemElement({
+        sku: product.id,
+        name: product.title,
+        salePrice: product.price,
+      }));
+    });
+};
+
+function addButton() {
+  const addBtn = document.querySelectorAll('.item__add');
+  addBtn.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      getApiToInsertItemsOnCart(getSkuFromProductItem(event.target.parentElement));
+    });
+  });
+}
+
 function fetchApiProducts(item) {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`)
     .then((response) => response.json()
-      .then((products) => products.results.forEach((product) => createProductItemElement({
-        sku: product.id,
-        name: product.title,
-        image: product.thumbnail,
-      }))));
+      .then((products) => products.results.forEach((product) => {
+        createProductItemElement({
+          sku: product.id,
+          name: product.title,
+          image: product.thumbnail,
+        });
+      }))
+      .then(() => addButton()));
 }
 
 window.onload = () => {
-  fetchApiProducts('computador');
+  fetchApiProducts('computador'); // para alterar o produto buscado da API basta modificar o parâmetro desta function
 };
