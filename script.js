@@ -1,3 +1,8 @@
+// Requisito 4
+function saveInLocalStorage() { // salva os itens aramzenados no carrinho
+  const cartItems = document.querySelector('.cart__items').innerHTML;
+  localStorage.setItem('cart', cartItems);
+}
 function createProductImageElement(imageSource) { 
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -27,10 +32,11 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito 3 - Remove o item do carrinho de compras ao clicar
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  const elementToRemove = event.target; // no evento de click remove o item do carrinho
-  elementToRemove.parentElement.removeChild(elementToRemove);
+  event.target.remove(); // remove os itens ao clicar
+  saveInLocalStorage(); // adiciona os itens ao clicar
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -38,8 +44,8 @@ function createCartItemElement({ sku, name, salePrice }) {
 
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-
+  // li.addEventListener('click', cartItemClickListener);
+  
   return li;
 }
 
@@ -50,7 +56,7 @@ function addElement(item) { // adicionando elemento
   itemsElement.appendChild(itemElement); // 'items' para filho da section 'item'
 }
 // Requisito 1.1
-const apiMercadoLivre = async () => { // função assíncrona
+const getItem = async () => { // função assíncrona
   const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador'); // URL Mercado Livre Brasil com a busca'computador' já definida
   const responseJson = await responseRaw.json(); // retorna a consulta JSON
   
@@ -63,13 +69,14 @@ const apiMercadoLivre = async () => { // função assíncrona
       name: elemento[1].title,
       image: elemento[1].thumbnail,
     };
-    addElement(item); // adiciona elemento retornado da função 'createProductItemElement' como filho do elemento section 'items'
+    addElement(item); 
   });
 };
 
+// Requisito 2 - Adiciona o produto no carrinho de compras 
 function addItemToCart() {
   document.querySelector('.items').addEventListener('click', (event) => { // retorna o primeiro elemento de 'items' e add o evento de click
-    if (event.target.classList.contains('item__add')) { // //  se identificar o elemento ao qual o evento ocorreu
+    if (event.target.classList.contains('item__add')) { // //  se identificar o elemento ao qual o evento ocorreu/ se houver o click add item
       const parent = event.target.parentElement; // retorna o elemento pai do evento que ocorreu
       const sku = getSkuFromProductItem(parent); // chama a função( que puxa o primeiro elemento item com parametros passados)
       const skuUrl = `https://api.mercadolibre.com/items/${sku}`; // url API com busca de sku/id
@@ -81,14 +88,25 @@ function addItemToCart() {
             name: data.title,
             salePrice: data.price,
           };
-          document.querySelector('.cart__items').appendChild(createCartItemElement(obj)); // transforma o retorna da função como filho do elemento '.cart__items'
+          document.querySelector('.cart__items').appendChild(createCartItemElement(obj));
+          saveInLocalStorage();
         });
     }
   });
 }
+// Requisito 4 
+function loadFromLocalStorage() { // o estado atual do carrinho de compras é carregado 
+  const cartList = document.querySelector('.cart__items');
+  cartList.innerHTML = localStorage.getItem('cart');
+  cartList.addEventListener('click', ((event) => {
+    if (event.target.classList.contains('cart__item')) {
+      cartItemClickListener(event);
+    }
+  }));
+}
 
 window.onload = () => {
-  apiMercadoLivre(); 
+  getItem();
   addItemToCart();
-  // cartItemClickListener();
+  loadFromLocalStorage();
 };
