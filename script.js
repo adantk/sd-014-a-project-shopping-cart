@@ -12,6 +12,23 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+
+function createProductItemElement({ sku, name, image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+
+  return section;
+}
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
 // requisito 5
 const sumPrices = () => { 
   const cartItem = document.querySelectorAll('.cart__item'); 
@@ -32,28 +49,21 @@ const localSSave = () => {
   localStorage.setItem('itensDeProdutos', ol.innerHTML);
 };
 
-function createProductItemElement({ sku, name, image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  return section;
-}
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
   localSSave(); // toda vez que eu remover algo, salva no localStorage
   sumPrices();
 }
+
+// tem aver com o requisito 4 - parte 2
+const resLocalS = () => {
+  const ol = document.querySelector(cartItemss);
+  ol.innerHTML = localStorage.getItem('itensDeProdutos'); 
+  document.querySelectorAll('.cart__item').forEach((itemDelet) => {
+    itemDelet.addEventListener('click', cartItemClickListener);
+  });
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -64,28 +74,28 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 const fetchFreeMarketAsync = async (QUERY) => {
+  const itemsSection = document.querySelector('.items');
+  itemsSection.appendChild(createCustomElement('span', 'loading', 'Loading...'));
   const responseRaw = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`);
   const responseJson = await responseRaw.json(); // my object
-  const arrayResults = responseJson.results; // produtos
-  const listItens = document.querySelector('.items');
+  itemsSection.removeChild(document.querySelector('.loading'));
+   const arrayResults = responseJson.results; // produtos
   arrayResults.forEach((product) => {
     const infosOfObject = {
       sku: product.id,
       name: product.title,
       image: product.thumbnail,
     };
-  listItens.appendChild(createProductItemElement(infosOfObject));
+    itemsSection.appendChild(createProductItemElement(infosOfObject));
 });
 };
 
 const btnAddCarAsync = () => {
   const btns = document.querySelectorAll('.item__add');
-  // console.log(btns);
   btns.forEach((btn) => {
     btn.addEventListener('click', async (event) => {
       const itemID = getSkuFromProductItem(event.target.parentElement);
       const responseRaw = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
-      // console.log(responseRaw);
       const responseJson = await responseRaw.json();
       const productSelect = document.querySelector(cartItemss);
       productSelect.appendChild(createCartItemElement({ 
@@ -95,15 +105,6 @@ const btnAddCarAsync = () => {
       localSSave(); // salva no localStorage
       sumPrices();
     });
-  });
-};
-
-// tem aver com o requisito 4 - parte 2
-const resLocalS = () => {
-  const ol = document.querySelector(cartItemss);
-  ol.innerHTML = localStorage.getItem('itensDeProdutos'); 
-  document.querySelectorAll('.cart__item').forEach((itemDelet) => {
-    itemDelet.addEventListener('click', cartItemClickListener);
   });
 };
 
