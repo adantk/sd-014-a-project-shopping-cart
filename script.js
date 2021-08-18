@@ -25,6 +25,26 @@ function createProductItemElement({ sku, name, image }) {
   itemPai.appendChild(section);
   return section;
 }
+//  requisito 5
+const createPriceSpan = () => {
+  const spanPrice = document.createElement('span');
+  const getCartSec = document.querySelector('.cart');
+  spanPrice.className = 'total-price';
+  getCartSec.appendChild(spanPrice);
+  spanPrice.innerText = '$';
+};
+
+const somar = async () => {
+  const pegaLista = document.querySelectorAll('.cart__item');
+  let cont = 0;
+  pegaLista.forEach((item) => {
+  const num = item.innerText.split('$')[1];
+  cont += parseFloat(num);
+  });
+  const price = document.querySelector('.total-price');
+  price.innerText = cont;
+};
+
 // requisito storage
 const setStorage = () => {
   localStorage.clear();
@@ -47,28 +67,6 @@ const loadStorage = () => {
   somar();
 };
 
-// requisito somar;
-const createPriceSpan = () => {
-  const spanPrice = document.createElement('span')
-  const getCartSec = document.querySelector('.cart')
-  spanPrice.className = 'total-price'
-  getCartSec.appendChild(spanPrice);
-  spanPrice.innerText = '$'
-}
-
-const somar = async () => {
-  const pegaLista = document.querySelectorAll('.cart__item')
-  console.log(pegaLista);
-  let cont = 0;
-  pegaLista.forEach((item) => {
-  let num = item.innerText.split('$')[1]
-  cont += parseFloat(num);
-  });
-  const price = document.querySelector('.total-price');
-  price.innerText = cont
-}
-
-
 // Requisito 6, btn pra limpar carrinho;
 const btnClear = () => {
   const getBtn = document.querySelector('.empty-cart');
@@ -76,7 +74,7 @@ const btnClear = () => {
   getBtn.addEventListener('click', () => {
     getList.innerHTML = '';
     setStorage();
-    somar()
+    somar();
   });  
 };
 
