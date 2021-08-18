@@ -1,7 +1,15 @@
 // inicializando projeto
 const olItens = document.querySelector('.cart__items');
-// const liItens = document.querySelectorAll('.cart__item');
+// const liItens = document.querySelectorAll('li.cart__item');
 const sectionItens = document.querySelector('.items');
+
+function sum() {
+  // const items = [...liItens];
+  const itemPrice = [...document.querySelectorAll('li.cart__item')]
+  .reduce((acc, curr) => Number(curr.innerText.split('$')[1]) + acc, 0);
+  const total = document.querySelector('.total-price');
+  total.innerText = itemPrice;
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -38,9 +46,8 @@ function saveStorage() {
 }
 
 function cartItemClickListener(event) {
-  // console.log(event.target);
-  // console.log(event.currentTarget);
   olItens.removeChild(event.target);
+  sum();
   saveStorage();
 }
 
@@ -62,6 +69,7 @@ const getResultsForCart = async (product) => {
     name: resultCpmplete.title,
     salePrice: resultCpmplete.price,
   }));
+  sum();
   saveStorage();
 };
  
@@ -95,12 +103,14 @@ function loadStorage() {
   // pega cada li da ol e adciona o evento para excluir o item salvo no local storage.
   olItens.childNodes.forEach((li) => li.addEventListener('click', cartItemClickListener));
   // liItens.forEach((li) => li.addEventListener('click', cartItemClickListener));
+  sum();
 }
 
 const clearCart = () => {
   const btnCart = document.querySelector('.empty-cart');
    btnCart.addEventListener('click', () => {
     olItens.innerHTML = '';
+    sum();
     saveStorage();
   });
 };
@@ -108,5 +118,5 @@ const clearCart = () => {
 window.onload = () => { 
   getResultsFromAPI('computador');
   loadStorage();
-  clearCart();
+  clearCart();  
 };
