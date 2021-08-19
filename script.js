@@ -1,6 +1,9 @@
-// Requisito 4
-function saveInLocalStorage() { // salva os itens aramzenados no carrinho
-  const cartItems = document.querySelector('.cart__items').innerHTML;
+// Requisito 4 - Carrega o carrinho de compras através do LocalStorage ao iniciar a página
+
+const itemCart = '.cart__items'; // repete essa const em vários lugares
+
+function saveInLocalStorage() { // salva os itens add no carrinho
+  const cartItems = document.querySelector(itemCart).innerHTML;
   localStorage.setItem('cart', cartItems);
 }
 function createProductImageElement(imageSource) { 
@@ -31,31 +34,41 @@ function createProductItemElement({ sku, name, image }) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
+// Requisito 5 - Soma o valor total dos itens do carrinho de compras 
 
-// Requisito 3 - Remove o item do carrinho de compras ao clicar
+function cartTotal() { // Soma todos os itens do carrinho
+  const listItems = document.querySelectorAll('.cart__item');
+  let total = 0;
+  listItems.forEach((item) => {
+    total += parseFloat(item.innerHTML.split('$')[1]); // parseFloat analisa um argumento string e retorna um número de ponto flutuante
+  });
+  document.querySelector('.total-price').innerHTML = total; // puxa a classe no HTML (requisito 5)
+}
+
+// Requisito 3 - Remova o item do carrinho de compras ao clicar nele
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove(); // remove os itens ao clicar
+  cartTotal(); // soma dos itens total do carrinho
   saveInLocalStorage(); // adiciona os itens ao clicar
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
-
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener);
   
   return li;
 }
 
-// Requisito 1.2
+// Requisito 1.2 - Adiciona o elemento retornado da função createProductItemElement(product) como filho do elemento <section class="items">.
 function addElement(item) { // adicionando elemento 
   const itemElement = createProductItemElement(item); // cria elemento item
   const itemsElement = document.querySelector('.items'); // chamando a class 'items'
   itemsElement.appendChild(itemElement); // 'items' para filho da section 'item'
 }
-// Requisito 1.1
+// Requisito 1.1 - Crie uma listagem de produtos
 const getItem = async () => { // função assíncrona
   const responseRaw = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador'); // URL Mercado Livre Brasil com a busca'computador' já definida
   const responseJson = await responseRaw.json(); // retorna a consulta JSON
@@ -72,7 +85,6 @@ const getItem = async () => { // função assíncrona
     addElement(item); 
   });
 };
-
 // Requisito 2 - Adiciona o produto no carrinho de compras 
 function addItemToCart() {
   document.querySelector('.items').addEventListener('click', (event) => { // retorna o primeiro elemento de 'items' e add o evento de click
@@ -81,32 +93,40 @@ function addItemToCart() {
       const sku = getSkuFromProductItem(parent); // chama a função( que puxa o primeiro elemento item com parametros passados)
       const skuUrl = `https://api.mercadolibre.com/items/${sku}`; // url API com busca de sku/id
       fetch(skuUrl)
-        .then(response => response.json()) // retorna a response da fetch em JSON
-        .then((data) => {
-          const obj = { // aramazena com os itens com dados em JSON 
-            sku,
-            name: data.title,
-            salePrice: data.price,
-          };
-          document.querySelector('.cart__items').appendChild(createCartItemElement(obj));
-          saveInLocalStorage();
+      .then((response) => response.json()).then((data) => { // então transforma a promisse em JSON
+          const obj = { sku, name: data.title, salePrice: data.price }; // traz os dados do JSON 
+          document.querySelector(itemCart).appendChild(createCartItemElement(obj)); // transforma o retorno da function (obj) em filho so elemento
+          cartTotal(); // soma dos itens total do carrinho
+          saveInLocalStorage(); // salva os itens que foram add no carrinho
+          // cartTotal(); // soma dos itens total do carrinho
         });
     }
   });
 }
-// Requisito 4 
+
+// Requisito 4 - Carrega o carrinho de compras através do LocalStorage ao iniciar a página
 function loadFromLocalStorage() { // o estado atual do carrinho de compras é carregado 
-  const cartList = document.querySelector('.cart__items');
+  const cartList = document.querySelector(itemCart);
   cartList.innerHTML = localStorage.getItem('cart');
   cartList.addEventListener('click', ((event) => {
-    if (event.target.classList.contains('cart__item')) {
+    if (event.target.classList.contains(itemCart)) {
       cartItemClickListener(event);
     }
   }));
+}
+
+// Requisito 6 - Cria o botão que limpa o carrinho
+function clearCart() { // Cria o botão que limpa o carrinho
+  document.querySelector('.empty-cart').addEventListener('click', () => {
+    document.querySelector(itemCart).innerHTML = '';
+    cartTotal();
+    saveInLocalStorage();
+  });
 }
 
 window.onload = () => {
   getItem();
   addItemToCart();
   loadFromLocalStorage();
+  clearCart();
 };
