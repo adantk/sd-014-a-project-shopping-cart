@@ -14,11 +14,9 @@ function createCustomElement(element, className, innerText) {
 
 // 4 - Adicionando no LocalStorage Verificar que nao esta funcionando
 function setStorage() {
-  const listaLi = document.querySelector('.cart__items');
-  const listOl = listaLi;
+  const listOl = document.querySelector('.cart__items');
   JSON.stringify(localStorage.setItem('carrinho', listOl.innerHTML));
 }
-
 
 // somando o valor total do carrinho - verificar a logica depois.
 function valorTotalCarrinho() {
@@ -30,7 +28,7 @@ function valorTotalCarrinho() {
   });
   console.log(soma);
   const totalPrice = document.getElementsByClassName('total-price')[0];
-  totalPrice.innerText = `$:${soma}`;
+  totalPrice.innerText = `${soma}`;
 }
 
 function cartItemClickListener(event) {
