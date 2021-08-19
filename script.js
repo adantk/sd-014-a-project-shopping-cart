@@ -1,10 +1,15 @@
 const salvaDados = () => {
   const ols = document.querySelector('.cart__items').innerHTML; // conteudo da tag li
-  // console.log(ols);
-  // localStorage.clear();
   localStorage.setItem('lista', ols);
-  // localStorage.getItem('lista');
 };
+
+// const savePrice = () => {
+//   localStorage.setItem('Price', totalPrice.innerHTML);
+// };
+
+// const loadPrice = () => {
+//   totalPrice.innerHTML = localStorage.getItem('Price');
+// };
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -65,6 +70,8 @@ const getProducts = async (QUERY) => {
   const responseRaw = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`);
   const responseJson = await responseRaw.json();
   responseJson.results.forEach((eleme) => sectionItem.appendChild(createProductItemElement(eleme)));
+  const load = document.querySelector('.loading');
+  load.remove();
 };
 
 const getAPIItem = async (itemID) => {
@@ -90,9 +97,6 @@ const adicionaItem = () => {
 const esvaziaCarrinho = () => {
   const botaoEsvazia = document.querySelector('.empty-cart');
   botaoEsvazia.addEventListener('click', () => {
-    // const ol = document.getElementsByTagName('ol');
-    // console.log(ol);
-    // console.log(ol.children);
     const conjuntoLi = document.querySelectorAll('li');
     conjuntoLi.forEach((li) => li.remove());
     const span = document.querySelector('.total-price');

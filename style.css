@@ -17,6 +17,12 @@
   padding: 2px;
 }
 
+.loading {
+  font-size: 100px;
+  padding-left: 500px;
+  color: gray;
+}
+
 #outros-topicos {
   padding: 30px;
   justify-content: space-between;
