@@ -96,11 +96,23 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function loading() {
+  const container = document.querySelector('.container');
+  const span = document.createElement('span');
+  span.className = 'loading';
+  span.innerText = 'loading';
+  container.appendChild(span);
+  console.log('sendo chamado!');
+}
+const removeLoading = () => document.getElementsByClassName('loading')[0].remove();
+
 const fetchApi = async () => {
+  loading();
   const produto = 'computador';
   const endpoint = `https://api.mercadolibre.com/sites/MLB/search?q=${produto}`;
   const response = await fetch(endpoint); // retorna uma promise
   const responseJson = await response.json(); // json retorna uma promise
+  removeLoading();
   return responseJson.results;
     /* Estudo realizado junto com o Gustavo Dias - forma de explicar direfente de como verificar se a Promise esta tendo o retorno desejado. */
     // if (response.ok) { 
