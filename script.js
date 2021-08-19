@@ -29,6 +29,10 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function cartItemClickListener(event) {
+  const btnRemove = document.querySelector('.cart__items');
+  btnRemove.removeChild(event.target);
+}
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -36,7 +40,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
+// Requisito #2 
 function addCarrinho() {
   const lista = document.querySelectorAll('.item__add');
   const buscaOl = document.querySelector('.cart__items');
@@ -67,11 +71,7 @@ function fetchApiProduct() {
       .then(() => addCarrinho()));
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
-
 window.onload = () => {
-  fetchApiProduct('computador');
+  fetchApiProduct();
   addCarrinho();
 };
