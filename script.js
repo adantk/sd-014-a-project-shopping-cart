@@ -1,3 +1,5 @@
+const cartItems = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -14,8 +16,8 @@ function createCustomElement(element, className, innerText) {
 
 // 4 - Adicionando no LocalStorage Verificar que nao esta funcionando
 function setStorage() {
-  const listOl = document.querySelector('.cart__items');
-  JSON.stringify(localStorage.setItem('carrinho', listOl.innerHTML));
+  const listOl = document.querySelector(cartItems);
+ localStorage.setItem('carrinho', JSON.stringify(listOl.innerHTML));
 }
 
 // somando o valor total do carrinho - verificar a logica depois.
@@ -29,6 +31,7 @@ function valorTotalCarrinho() {
   console.log(soma);
   const totalPrice = document.getElementsByClassName('total-price')[0];
   totalPrice.innerText = `${soma}`;
+  localStorage.setItem('valor', JSON.stringify(soma));
 }
 
 function cartItemClickListener(event) {
@@ -57,8 +60,8 @@ function addCarrinho(idItem) {
       salePrice: idItem.price,
     },
   );
-  const listaLi = document.querySelector('.cart__items');
-    const itemCarrinho = listaLi;
+  const listaOl = document.querySelector(cartItems);
+    const itemCarrinho = listaOl;
     itemCarrinho.appendChild(itemId);
     setStorage();
     valorTotalCarrinho();
@@ -141,19 +144,22 @@ const getProduto = async () => {
 function btnClear() {
   const btnClearCarrinho = document.getElementsByClassName('empty-cart')[0];
   btnClearCarrinho.addEventListener('click', () => {
-    const ol = document.querySelector('.cart__items');
+    const ol = document.querySelector(cartItems);
     ol.innerText = '';
-    localStorage.clear();
+    localStorage.removeItem('carrinho');
     const totalPrice = document.getElementsByClassName('total-price')[0];
     totalPrice.innerText = '$: 0';
   });
 }
 
 function getStorage() {
-  const listOl = document.querySelector('.cart__items');
-  listOl.innerHTML = localStorage.getItem('carrinho');
-  const li = document.querySelectorAll('.cart__item'); // TRANSFORMAR PARA UM ARRAY
+  const listOl = document.querySelector(cartItems);
+  listOl.innerHTML = JSON.parse(localStorage.getItem('carrinho'));
+  const li = document.querySelectorAll('.cart__item');
  li.forEach((item) => item.addEventListener('click', cartItemClickListener));
+
+ const soma = document.querySelector('.total-price');
+ soma.innerHTML = JSON.parse(localStorage.getItem('valor'));
 }
 
 window.onload = () => { 
