@@ -38,14 +38,11 @@ function getSkuFromProductItem(item) {
 
 const precoTotal = () => {
   const span = document.querySelector('.total-price');
-  console.log(span);
   const conjuntoLi = document.querySelectorAll('.cart__item');
-  console.log(conjuntoLi);
   let soma = 0;
   conjuntoLi.forEach((li) => {
     soma += Number(li.innerText.split('$')[1]);
     span.innerHTML = Math.round(soma * 100) / 100;
-    console.log(soma);
   });
 };
 
@@ -84,11 +81,23 @@ const adicionaItem = () => {
   const dadosApi = await getAPIItem(itemID);
   const resultado = createCartItemElement(dadosApi);
   const ol = document.querySelector('.cart__items');
-  // console.log(ol);
   ol.appendChild(resultado);
   salvaDados();
   precoTotal();
   }));
+};
+
+const esvaziaCarrinho = () => {
+  const botaoEsvazia = document.querySelector('.empty-cart');
+  botaoEsvazia.addEventListener('click', () => {
+    // const ol = document.getElementsByTagName('ol');
+    // console.log(ol);
+    // console.log(ol.children);
+    const conjuntoLi = document.querySelectorAll('li');
+    conjuntoLi.forEach((li) => li.remove());
+    const span = document.querySelector('.total-price');
+    span.innerHTML = 0;
+  });
 };
 
 window.onload = async () => { 
@@ -96,8 +105,8 @@ window.onload = async () => {
   adicionaItem();
   // Recebi ajuda do Filipe Brochier no requisito 04!
   const lista = document.getElementsByClassName('cart__items')[0]; // estrutura da tag 
-  // console.log(lista);
   lista.innerHTML = localStorage.getItem('lista');
   const cartItem = document.querySelectorAll('.cart__item');
   cartItem.forEach((elemento) => elemento.addEventListener('click', cartItemClickListener));
+  esvaziaCarrinho();
 };
