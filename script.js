@@ -1,5 +1,8 @@
 const listOfItems = document.querySelector('.items');
 const cartItemsList = document.querySelector('.cart__items');
+const cartSection = document.querySelector('.cart');
+const container = document.querySelector('.container');
+
 const apiML = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 const requisition = 'https://api.mercadolibre.com/items/';
 
@@ -33,7 +36,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
   const select = document.querySelector('ol').addEventListener('click', (event) => {
     event.target.remove();
   });
@@ -47,16 +50,35 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+const showLoading = () => {
+  const loadingDiv = document.createElement('div');
+  loadingDiv.className = 'loading';
+  loadingDiv.innerText = 'loading';
+
+  listOfItems.appendChild(loadingDiv);
+};
+
+const removeLoading = () => {
+  const loadingDiv = document.querySelector('.loading');
+  loadingDiv.remove();
+};
+
 const fetchItemsPromise = (api, search) => new Promise((resolve, reject) => {
+  showLoading();
   fetch(`${api}${search}`)
     .then((response) => {
       if (response.ok) {
       response.json()
         .then((dados) => {            
-            // console.log(dados.results);
-            resolve(dados);
+          // document.querySelector('.loadingDiv').remove();
+          removeLoading();
+
+          resolve(dados);
+
         });
       } else {
+          // document.querySelector('.loadingDiv').remove();
+          removeLoading();
           reject(new Error('fetch dont work'));
         }
     });
@@ -94,7 +116,16 @@ const clearCart = () => {
   });
 };
 
+const totalValue = () => {
+  const loadingDiv = document.createElement('div');
+  loadingDiv.className = 'total-price';
+  loadingDiv.innerText = 'Valor total no carrinho de compras:  ';
+
+  cartSection.insertBefore(loadingDiv, cartSection.children[2]);
+};
+
 createItemsList(apiML, 'skate');
 itemIntoCart(requisition);
 cartItemClickListener();
 clearCart();
+totalValue();
