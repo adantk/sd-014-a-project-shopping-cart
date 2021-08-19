@@ -1,4 +1,4 @@
-const items = document.querySelector('.items');
+// const items = document.querySelector('.items');
 const cartItems = '.cart__items';
 
 // requisito 4, funcao salvar local storage
