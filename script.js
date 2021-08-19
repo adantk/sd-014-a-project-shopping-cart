@@ -1,5 +1,6 @@
 let cartItems;
 let totalCart;
+let buttonClearCart;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -26,6 +27,15 @@ function cartSum() {
   return sumTotal;
 }
 // end req 5
+
+// req 6
+const clearCart = () => {
+  buttonClearCart.addEventListener('click', () => {
+    cartItems.innerHTML = '';
+    totalCart.innerText = cartSum();
+  });
+};
+// end req 6
 
 // req 3
 function cartItemClickListener(clickDelete) {
@@ -128,10 +138,12 @@ function addEvents() {
 // end req 4
 
 window.onload = () => {
+  buttonClearCart = document.querySelector('.empty-cart');
   totalCart = document.querySelector('.total-price');
   cartItems = document.querySelector('ol');
+  totalCart.innerText = cartSum();
   fetchInit();
   loadCart();
   addEvents();
-  totalCart.innerText = cartSum();
+  clearCart();
 };
