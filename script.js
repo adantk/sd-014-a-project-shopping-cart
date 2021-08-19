@@ -72,9 +72,7 @@ const fetchItemsPromise = (api, search) => new Promise((resolve, reject) => {
         .then((dados) => {            
           // document.querySelector('.loadingDiv').remove();
           removeLoading();
-
           resolve(dados);
-
         });
       } else {
           // document.querySelector('.loadingDiv').remove();
