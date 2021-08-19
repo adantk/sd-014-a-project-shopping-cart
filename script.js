@@ -46,11 +46,13 @@ async function createCartItemElement({ id: sku, title: name, price: salePrice })
 
 async function consultApi() {
   const response = await fetch(`${url}computador`);
+  const loading = document.querySelector('.loading');
   const dados = await response.json();
   dados.results.forEach((dado) => {
     const sectionItem = document.querySelector('.items');
     const element = createProductItemElement(dado);
-    sectionItem.appendChild(element);    
+    sectionItem.appendChild(element);
+    loading.remove();
   }); 
 }
 
@@ -72,7 +74,7 @@ async function objetoSelecionado() {
 async function limparCarrinho() {
   const botaoDeLimpar = document.querySelector('.empty-cart');
   botaoDeLimpar.addEventListener('click', () => {
-    const listaOrdenada = document.querySelector('.cart__items');
+    const listaOrdenada = document.querySelector('#cart_it');
     listaOrdenada.innerText = '';
   });
 }

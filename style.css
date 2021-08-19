@@ -55,3 +55,22 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border: black solid;
+  border-left: chartreuse;
+  border-radius: 50%;
+  animation: load 1.2s linear infinite;
+}
+
+@keyframes load {
+
+  to {
+    transform: rotate(360deg);
+  }
+}
