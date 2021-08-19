@@ -424,7 +424,7 @@ Ao clicar nesse botão você deve realizar uma requisição para o _endpoint_:
 ```
 onde `$ItemID` deve ser o valor `id` do item selecionado.
 
-Quando colocado o id `MLB1341706310` retorno desse _endpoint_ será algo no formato:
+Quando colocado o id `(MLB1341706310)` retorno desse _endpoint_ será algo no formato:
 ```JSON
 {
     "id": "MLB1341706310",
