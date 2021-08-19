@@ -1,3 +1,32 @@
+#cabecalho {
+  display: flex;
+  width: 1600px;
+  height: 80px;
+  background-color: rgb(240, 240, 15);
+  align-items: center;
+}
+
+#house {
+  align-items: center;
+  height: 30px;
+  font-size: large;
+  background-color: rgb(202, 193, 193);
+}
+
+.opcoes {
+  padding: 2px;
+}
+
+#outros-topicos {
+  padding: 30px;
+  justify-content: space-between;
+  font-size: large;
+}
+
+.topicos {
+  padding: 30px;
+}
+
 .container {
   display: flex;
   justify-content: space-around;

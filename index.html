@@ -10,12 +10,32 @@
   </head>
 
   <body>
+    <header id='cabecalho'>
+      <img src="mercado-livre.jpg" width="200px">
+      <select name="" id="house">
+        <option disabled selected value>Categorias</option>
+        <option value="Veículos" class='opcoes'>Veículos</option>
+        <option value="Tecnologia" class='opcoes'>Tecnologia</option>
+        <option value="Eletrodomésticos" class='opcoes'>Eletrodomésticos</option>
+        <option value="Ferramentas" class='opcoes'>Ferramentas</option>
+        <option value="Construção" class='opcoes'>Construção</option>
+        <option value="Saúde" class='opcoes'>Saúde</option>
+        <option value="Beleza" class='opcoes'>Beleza</option>
+        <option value="Moda" class='opcoes'>Moda</option>
+      </select>
+      <section id='outros-topicos'>
+        <span class='topicos'>Ofertas do dia</span>
+        <span class='topicos'>Vender</span>
+        <span class='topicos'>Contato</span>
+      </section>
+    </header>
     <section class="container">
       <section class="items" id='123'></section>
       <section class="cart">
         <span class="cart__title">Carrinho de compras</span>
         <button class="empty-cart">Esvaziar carrinho</button>
         <ol class="cart__items"></ol>
+        <span>TOTAL: <span class="total-price">0</span>
       </section>
     </section>
   </body>

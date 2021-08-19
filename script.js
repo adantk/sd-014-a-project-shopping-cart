@@ -1,6 +1,6 @@
 const salvaDados = () => {
   const ols = document.querySelector('.cart__items').innerHTML; // conteudo da tag li
-  console.log(ols);
+  // console.log(ols);
   // localStorage.clear();
   localStorage.setItem('lista', ols);
   // localStorage.getItem('lista');
@@ -36,9 +36,23 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const precoTotal = () => {
+  const span = document.querySelector('.total-price');
+  console.log(span);
+  const conjuntoLi = document.querySelectorAll('.cart__item');
+  console.log(conjuntoLi);
+  let soma = 0;
+  conjuntoLi.forEach((li) => {
+    soma += Number(li.innerText.split('$')[1]);
+    span.innerHTML = Math.round(soma * 100) / 100;
+    console.log(soma);
+  });
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
   salvaDados();
+  precoTotal();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -62,6 +76,7 @@ const getAPIItem = async (itemID) => {
   return responseJson;
 };
 
+// Recebi ajuda da Mayu - Turma 15 no requisito 02!
 const adicionaItem = () => {
   const botoes = document.querySelectorAll('.item__add');
   botoes.forEach((botao) => botao.addEventListener('click', async (event) => {
@@ -69,16 +84,17 @@ const adicionaItem = () => {
   const dadosApi = await getAPIItem(itemID);
   const resultado = createCartItemElement(dadosApi);
   const ol = document.querySelector('.cart__items');
-  console.log(ol);
+  // console.log(ol);
   ol.appendChild(resultado);
   salvaDados();
+  precoTotal();
   }));
 };
 
 window.onload = async () => { 
   await getProducts('computador');
   adicionaItem();
-  // Agrec
+  // Recebi ajuda do Filipe Brochier no requisito 04!
   const lista = document.getElementsByClassName('cart__items')[0]; // estrutura da tag 
   // console.log(lista);
   lista.innerHTML = localStorage.getItem('lista');
