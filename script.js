@@ -1,5 +1,6 @@
 const baseURL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 // const cart = document.getElementsByClassName('cart');
+const phrase = '.cart__items';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -31,8 +32,14 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function saveTasks() {
+  const cart = document.querySelector(phrase);
+    localStorage.setItem('items', cart.innerHTML);
+}
+
 function cartItemClickListener(event) {
-  return event.target.remove();
+  event.target.remove();
+  saveTasks();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -40,6 +47,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  saveTasks();
   return li;
 }
 
@@ -66,7 +74,7 @@ async function appendFetch() {
 
 const addCart = async () => {
   const buttons = document.querySelectorAll('.item__add');
-  const cart = document.querySelector('.cart__items');
+  const cartSelect = document.querySelector(phrase);
   try {
   buttons.forEach((btn) => {
     btn.addEventListener('click', async (event) => {
@@ -74,9 +82,10 @@ const addCart = async () => {
       const responseRaw = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
     const responseJSON = await responseRaw.json();
     const obj = responseJSON;
-    await cart.appendChild(createCartItemElement({
+    await cartSelect.appendChild(createCartItemElement({
       sku: obj.id, name: obj.title, salePrice: obj.price,
     }));
+    saveTasks();
     });
   });
 } catch (error) {
@@ -85,16 +94,24 @@ const addCart = async () => {
 };
 
 const removeAll = () => {
-  const getAllItems = document.querySelector('.cart__items');
+  const getAllItems = document.querySelector(phrase);
   const removeBtn = document.querySelector('.empty-cart');
   function removeAllItems() {
     getAllItems.innerHTML = '';
+    saveTasks();
   }
   removeBtn.addEventListener('click', removeAllItems);
+};
+
+const getItems = () => {
+  const cartList = document.querySelector(phrase);
+  cartList.innerHTML = localStorage.getItem('items');
+  cartList.addEventListener('click', cartItemClickListener);
 };
 
 window.onload = async () => {
   await appendFetch();
   await addCart();
   await removeAll();
+  getItems();
  };
