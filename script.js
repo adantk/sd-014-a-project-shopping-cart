@@ -30,8 +30,19 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function totalPrice() {
+  const span = document.querySelector('.total-price');
+  const cartItems = document.querySelectorAll('.cart__item');
+  let sum = 0;
+  cartItems.forEach((li) => {
+    sum += Number(li.innerText.split('$')[1]);
+    span.innerHTML = Math.round(sum * 100) / 100;
+  });
+}
+
 function cartItemClickListener(event) {
   event.target.remove();
+  totalPrice();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -67,11 +78,13 @@ async function cartItemCreator(event) {
   const objectItem = await getItem(itemId);
   document.querySelector('.cart__items').appendChild(createCartItemElement(objectItem));
   setLocalStorage();
+  totalPrice();
 }
 
 function eraseList() {
   document.getElementsByClassName('cart__items')[0].innerHTML = '';
   setLocalStorage();
+  totalPrice();
 }
 
 function addListeners() {
@@ -112,3 +125,6 @@ window.onload = () => {
   1 - O HTML interno da lista deve ser adicionado ao local storage, na função setLocalStorage
   2 - Ao atualizar a página, o HTML interno da lista deve ser readicionado à lista de carrinho de compras
 */
+
+// MUITO OBRIGADO LYS PRESTES, ISAAC MATHEUS E PALLY OLIVEIRA POR ESTA GRANDE AJUDA!
+// AGRADEÇO TAMBÉM À CARLA POR TER AJUDANDO COM O REQUISITO 5!! MUITO OBRIGADO!!
