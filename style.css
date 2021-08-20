@@ -22,6 +22,11 @@
   width: 200px;
 }
 
+.item .loading {
+  height: 50%;
+  width: 50%;
+}
+
 .item .item__sku {
   display: none;
 }
