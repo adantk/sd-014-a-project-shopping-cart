@@ -40,16 +40,34 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+
   return li;
 }
 
 const pegaComputador = async () => {
   const resulComputador = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const jsonComputador = await resulComputador.json();
+  const pegaLoading = document.querySelector('.loading');
+  pegaLoading.remove();
   jsonComputador.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
     createProductItemElement({ sku, name, image });
   });
-  // console.log(jsonComputador);
 };
 
-window.onload = () => { pegaComputador(); };
+const fetchParaId = async (id) => {
+  const resultProduct = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const jsonProduct = await resultProduct.json();
+  const obj = { sku: jsonProduct.id, name: jsonProduct.title, salePrice: jsonProduct.price };
+  createCartItemElement(obj);
+};
+
+const clickButton = () => {
+  const pegaButton = document.querySelectorAll('.item_add');
+  pegaButton.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      const produtoId = event.target.parentElement.firstChild.innerText;
+      fetchParaId(produtoId);
+    });
+  });
+};
+window.onload = () => { pegaComputador(); clickButton(); };
