@@ -25,6 +25,15 @@ function createProductItemElement({ sku, name, image }) {
   itemPai.appendChild(section);
   return section;
 }
+
+//  requisito 7
+const loading = () => {
+  const load = document.createElement('span');
+  load.className = 'loading';
+  document.querySelector('body').appendChild(load);
+  load.innerText = 'loading...';
+};
+
 //  requisito 5
 const createPriceSpan = () => {
   const spanPrice = document.createElement('span');
@@ -88,6 +97,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 const fetchId = async (ids) => {
+  loading();
   const pegarIdRaw = await fetch(`https://api.mercadolibre.com/items/${ids}`);
   const IdTrat = await pegarIdRaw.json();
   const { id, title, price } = IdTrat;
@@ -99,6 +109,8 @@ const fetchId = async (ids) => {
   }));   
   setStorage(); 
   somar();
+  const load = document.querySelector('.loading');
+  load.remove();
 };
 
 const lerBotao = () => {
@@ -110,13 +122,15 @@ const lerBotao = () => {
 
 // função requisito 1;
 const prodFetch = async () => { 
-  await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+   await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json())
   .then((itemCarr) => itemCarr.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
     createProductItemElement({ sku, name, image });
   }));
   lerBotao();
   btnClear();
+  const load = document.querySelector('.loading');
+  load.remove();
 };
 
 function getSkuFromProductItem(item) {
@@ -125,6 +139,7 @@ function getSkuFromProductItem(item) {
 
 window.onload = () => {
   prodFetch();
+  loading();
   createPriceSpan();
   loadStorage();
 };
