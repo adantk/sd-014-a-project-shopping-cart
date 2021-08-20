@@ -29,7 +29,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const itemsCart = document.querySelector('.cart__items');
+  itemsCart.removeChild(event.target);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -58,7 +59,6 @@ const productsList = async (query) => {
 async function addCart() {
   const items = document.querySelector('.items');
   const cartItems = document.querySelector('.cart__items');
-  console.log(items);
   items.addEventListener('click', async (event) => {
     const itemID = event.path[1].childNodes[0].innerText;
     const requestAPI = await fetch(`https://api.mercadolibre.com/items/${itemID}`);
@@ -74,5 +74,5 @@ async function addCart() {
 
 window.onload = async () => { 
   await productsList('computador');
-  await addCart();
+  await addCart();  
 };
