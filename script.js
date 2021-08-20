@@ -57,5 +57,17 @@ const createLoad = () => {
 
 const removeLoad = () => document.body.removeChild(document.querySelector('.loading'));
 
+const getProducts = async () => {
+  createLoad();
+  const request = await fetch("https://api.mercadolibre.com/sites/MLB/search?q=computador");
+  const response = await request.json();
+  const results = response.results;
+  removeLoad();
+  return results;
+
+  console.log(results);
+}
+
 window.onload = () => {
+  getProducts();
 };
