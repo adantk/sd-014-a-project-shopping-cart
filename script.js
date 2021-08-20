@@ -12,17 +12,17 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function getSkuFromProductItem(item) {
+/* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
+} */
 
 function salvarCarrinho() {
   localStorage.clear();
-  localStorage.setItem('Produto', document.querySelector('.cart__items').innerHTML);
+  localStorage.setItem('Produto', document.querySelector('#Itenscarrinho').innerHTML);
 }
 
 function remover(event) {
-  document.querySelector('.cart__items').removeChild(event.target);
+  document.querySelector('#Itenscarrinho').removeChild(event.target);
   salvarCarrinho();
 }
 
