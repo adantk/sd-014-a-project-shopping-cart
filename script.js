@@ -28,6 +28,16 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const loading = () => {
+  const load = document.querySelector('.loading');
+  load.innerText = 'Loading...';
+};
+
+const removeLoading = () => {
+  const loadi = document.querySelector('.loading');
+  loadi.remove();
+};
+
 const saveCart = () => {
   const cartI = document.querySelector('.ol_cart');
   localStorage.setItem('savedItens', cartI.innerHTML);
@@ -74,6 +84,8 @@ const emptyCart = () => {
     const itens = document.querySelector('.ol_cart');
     itens.innerHTML = '';
     localStorage.clear();
+    const p = document.querySelector('.total-price');
+    p.innerHTML = '';
   });
 };
 
@@ -109,9 +121,10 @@ const buttonAdd = () => {
 
 const acessAPI = async (search) => {
   const responseRaw = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`);
+  loading();
   const responseJson = await responseRaw.json();
+  removeLoading();
   const { results } = responseJson;
-
   const itens = document.querySelector('.items');
   results.forEach(({ title, id, thumbnail }) => {
     itens.appendChild(createProductItemElement({
