@@ -15,18 +15,6 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-  const button = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
-  button.addEventListener('click', addProductToCart);
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(button);
-  return section;
-}
-
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -43,6 +31,29 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+async function addProductToCart(event) {
+  const ol = document.querySelector('.cart__items');
+  const skuID = getSkuFromProductItem(event.target.parentNode);
+  const endpoint = `${apiItensURL}${skuID}`;
+  const itemsResult = await (await fetch(endpoint)).json();
+  const { id: sku, title: name, price: salePrice } = itemsResult;
+  const result = createCartItemElement({ sku, name, salePrice });
+  ol.appendChild(result);
+}
+
+function createProductItemElement({ sku, name, image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+  const button = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  button.addEventListener('click', addProductToCart);
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  section.appendChild(button);
+  return section;
+}
+
 async function createProductList(element) {
   const itemsElements = document.querySelector('.items');
   const endpoint = `${apiURL}${element}`;
@@ -54,16 +65,6 @@ async function createProductList(element) {
     const productItem = createProductItemElement({ sku, name, image });
     itemsElements.appendChild(productItem);
   });
-}
-
-async function addProductToCart(event) {
-  const ol = document.querySelector('.cart__items');
-  const skuID = getSkuFromProductItem(event.target.parentNode);
-  const endpoint = `${apiItensURL}${skuID}`;
-  const itemsResult = await (await fetch(endpoint)).json();
-  const { id: sku, title: name, price: salePrice } = itemsResult;
-  const result = createCartItemElement({ sku, name, salePrice });
-  ol.appendChild(result);
 }
 
 window.onload = () => {
