@@ -16,15 +16,13 @@ function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
-  const parentItem = document.querySelector('.items');
-
+  const parentElmt = document.querySelector('.items');
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
-  parentItem.appendChild(section);
-
+  parentElmt.appendChild(section);
   return section;
 }
 
@@ -33,8 +31,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
-  // comentado para dar primeiro commit
+  event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -45,16 +42,41 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// endpoint = "https://api.mercadolibre.com/sites/MLB/search?q=computador"
-// Função do Req 1 
-const endpoint = async () => {
-  await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+// Requisito 2.1  - Chamada da API 
+
+const addProduct = async (id) => {
+  const dataRaw = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const respJson = await dataRaw.json();
+  const cartItems = document.querySelector('.cart__items');
+  cartItems.appendChild(createCartItemElement({
+    sku: respJson.id,
+    name: respJson.title,
+    salePrice: respJson.price,
+  }));
+  const loading = document.querySelector('.loading');
+  loading.remove();
+};
+
+// Requisito 2.2 - Cria o botão
+const buttonAdd = () => {
+  document.querySelectorAll('.item__add')
+  .forEach((button) => 
+  button.addEventListener('click', (ev) => 
+  addProduct(ev.target.parentElement.firstChild.innerText)));
+};
+
+// Requisito 1 - Chamada da API e criação da lista
+const endpointProducts = async () => {
+  await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
   .then((response) => response.json())
-  .then((itemCart) => itemCart.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
+  .then((product) => product.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
     createProductItemElement({ sku, name, image });
   }));
+  buttonAdd();
+  const loading = document.querySelector('.loading');
+  loading.remove();
 };
 
 window.onload = () => {
-  endpoint();
+  endpointProducts();
 };
