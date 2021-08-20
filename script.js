@@ -1,8 +1,9 @@
-function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
-  img.className = 'item__image';
-  img.src = imageSource;
-  return img;
+let TOTAL_PRICE = 0;
+
+function calculateResult(price = 0) {
+  const priceTable = document.querySelector('.total-price');
+  TOTAL_PRICE += price;
+  priceTable.innerHTML = `${TOTAL_PRICE}`;
 }
 
 function saveCart() {
@@ -12,12 +13,22 @@ function saveCart() {
   items.push(cart[index].innerText);
   }
   localStorage.cart = JSON.stringify(items);
+  localStorage.price = TOTAL_PRICE.toFixed(2);
 }
 
 function cartItemClickListener(event) {
+  const number = Number(event.target.innerText.split('PRICE: $')[1]);
   const wishList = (event.target).parentNode;
   wishList.removeChild(event.target);
+  calculateResult(-number);
   saveCart();
+}
+
+function createProductImageElement(imageSource) {
+  const img = document.createElement('img');
+  img.className = 'item__image';
+  img.src = imageSource;
+  return img;
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -25,6 +36,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  calculateResult(salePrice);
   return li;
 }
 
@@ -58,10 +70,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
 function recreateCartItemElement(string) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -83,6 +91,9 @@ function reloadCart() {
   (JSON.parse((list))).forEach((element) => {
     document.querySelector('.cart__items').appendChild(recreateCartItemElement(element));
   });
+  const localStoragePrice = localStorage.price;
+  TOTAL_PRICE = Number(localStoragePrice);
+  calculateResult();
 }
 
 window.onload = () => {
