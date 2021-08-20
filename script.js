@@ -29,8 +29,17 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const cart = document.querySelector('.cart__items');
+
+const cartSave = () => {
+  localStorage.clear();
+  localStorage.setItem('cartList', cart.innerHTML);
+};
+
+// remove o item do carrinho de compras ao ser clicado (o alvo do evento é removido) 
 function cartItemClickListener(event) {
   event.target.remove();
+  cartSave();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -58,6 +67,7 @@ const fetchApi = async (query) => {
 //  adiciona ao carrinho o produto usando createCartItemElement proposto pelo requisito
 const cartAddProduct = (product) => {
   document.querySelector('.cart__items').appendChild(createCartItemElement(product));
+  cartSave();
 };
 
 // usa o {target} para captar o id do produto selecionado, mesmo principio do fetchApi 
@@ -69,7 +79,7 @@ const itemId = async ({ target }) => {
   cartAddProduct(info);
 };
 
-// 
+// comando de ação para as duas funções auxiliares
 const addButtons = () => {
   const button = document.querySelectorAll('.item__add');
   button.forEach((addButton) => {
@@ -77,8 +87,13 @@ const addButtons = () => {
   });
 };
 
+const cartLoad = () => {
+  cart.innerHTML = localStorage.getItem('cartList');
+};
+
 // fetchApi seguindo padrao do requisito ('computador')
 window.onload = async () => { 
   await fetchApi('computador');
   addButtons();
+  cartLoad();
 };
