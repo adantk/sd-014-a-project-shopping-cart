@@ -60,10 +60,26 @@ async function fetchProdutos() { // como nao conseguia fazer o req 2, olhei o cÃ
   }
 }
 
+const mostraPreco = async (preco) => {
+  const carrinho = document.querySelector('.cart');
+  carrinho.className = 'cart total-price';
+  const valor = document.createElement('p');
+  if (document.getElementsByClassName('price')[0]) {
+    const anterior = document.getElementsByClassName('price')[0];
+    anterior.remove();
+  }
+  valor.className = 'price';
+  carrinho.lastElementChild = valor;
+  carrinho.appendChild(valor);
+
+  valor.innerHTML = `PreÃ§o total: $${preco}`;
+};
+
 function addItemCart() {
   // console.log("AAAAAAA");
   const botao = document.querySelectorAll('.item__add');
   const carrinho = document.querySelector('.cart__items');
+  let preco = 0;
   botao.forEach((item) => item.addEventListener('click', async (evento) => {
       const id = getSkuFromProductItem(evento.target.parentNode);
       fetch(`https://api.mercadolibre.com/items/${id}`).then((response) => {
@@ -74,12 +90,28 @@ function addItemCart() {
               salePrice: dados.price,
             };
             carrinho.appendChild(createCartItemElement(compras));
+            mostraPreco(preco += compras.salePrice);
         });
       });
     }));
 }
 
+const limpaCarrinho = () => { // src: https://stackoverflow.com/questions/62314568/remove-specific-list-item-from-dom-using-javascript
+  const lista = [...document.querySelectorAll('li')];
+
+  lista.forEach((item) => {
+    item.parentNode.removeChild(item);
+  });
+};
+
+const esvazia = () => {
+  const btn = document.querySelector('.empty-cart');
+
+  btn.addEventListener('click', limpaCarrinho);
+};
+
 window.onload = async () => {
   await fetchProdutos();
-  addItemCart();
+  await addItemCart();
+  esvazia();
 };
