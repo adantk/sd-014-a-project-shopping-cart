@@ -80,12 +80,14 @@ function getProducts() {
 
 function reloadCart() {
   const list = localStorage.cart;
-  (JSON.parse(list)).forEach((element) => {
+  (JSON.parse((list))).forEach((element) => {
     document.querySelector('.cart__items').appendChild(recreateCartItemElement(element));
   });
 }
 
 window.onload = () => {
   getProducts();
+  if (localStorage.cart) {
   reloadCart();
+  }
 };
