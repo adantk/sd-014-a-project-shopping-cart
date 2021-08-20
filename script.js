@@ -40,22 +40,46 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const fetchProdutos = () => {
+async function fetchProdutos() { // como nao conseguia fazer o req 2, olhei o código do filipe e troquei o uso de .then pelo try/catch src: https://github.com/tryber/sd-014-a-project-shopping-cart/tree/filipe-andrade-santiago-shopping-cart
   const itens = document.querySelector('.items');
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador').then((response) => {
-    response.json().then((dados) => {
-      for (let i = 0; i < dados.results.length; i += 1) {
-        const product = {
-          sku: dados.results[i].id,
-          name: dados.results[i].title,
-          image: dados.results[i].thumbnail,
-        };
-        itens.appendChild(createProductItemElement(product));
-      }
-    });
-  });
-};
+  try {
+    const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+    const apiJson = await api.json();
+    const dados = await apiJson.results;
+    for (let i = 0; i < dados.length; i += 1) {
+      const product = {
+        sku: dados[i].id,
+        name: dados[i].title,
+        image: dados[i].thumbnail,
+      };
+      const produto = createProductItemElement(product);
+      itens.appendChild(produto);
+    }
+  } catch (error) {
+      alert(`Erro ${error}`);
+  }
+}
 
-window.onload = () => {
-  fetchProdutos();
+function addItemCart() {
+  // console.log("AAAAAAA");
+  const botao = document.querySelectorAll('.item__add');
+  const carrinho = document.querySelector('.cart__items');
+  botao.forEach((item) => item.addEventListener('click', async (evento) => {
+      const id = getSkuFromProductItem(evento.target.parentNode);
+      fetch(`https://api.mercadolibre.com/items/${id}`).then((response) => {
+        response.json().then((dados) => {
+            const compras = {
+              sku: dados.id,
+              name: dados.title,
+              salePrice: dados.price,
+            };
+            carrinho.appendChild(createCartItemElement(compras));
+        });
+      });
+    }));
+}
+
+window.onload = async () => {
+  await fetchProdutos();
+  addItemCart();
 };
