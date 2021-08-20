@@ -47,6 +47,15 @@ const restoreCart = () => {
   cartItem.forEach((item) => item.addEventListener('click', cartItemClickListener));
 };
 
+const emptyCart = () => {
+  const emptyBtn = document.querySelector('.empty-cart');
+  emptyBtn.addEventListener('click', () => {
+    const itens = document.querySelector('.ol_cart');
+    itens.innerHTML = '';
+    localStorage.clear();
+  });
+};
+
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -95,4 +104,5 @@ const acessAPI = async (search) => {
 window.onload = () => { 
   acessAPI('computer');
   restoreCart();
+  emptyCart();
 };
