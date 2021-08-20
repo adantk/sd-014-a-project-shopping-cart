@@ -43,8 +43,10 @@ function createCartItemElement({ sku, name, salePrice }) {
 async function fetchProdutos() { // como nao conseguia fazer o req 2, olhei o c√≥digo do filipe e troquei o uso de .then pelo try/catch src: https://github.com/tryber/sd-014-a-project-shopping-cart/tree/filipe-andrade-santiago-shopping-cart
   const itens = document.querySelector('.items');
   try {
+    itens.innerHTML = '<p class="loading"> loading... </p>'; // req 7
     const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
     const apiJson = await api.json();
+    itens.innerHTML = null; // req 7
     const dados = await apiJson.results;
     for (let i = 0; i < dados.length; i += 1) {
       const product = {
@@ -52,8 +54,7 @@ async function fetchProdutos() { // como nao conseguia fazer o req 2, olhei o c√
         name: dados[i].title,
         image: dados[i].thumbnail,
       };
-      const produto = createProductItemElement(product);
-      itens.appendChild(produto);
+      itens.appendChild(createProductItemElement(product));
     }
   } catch (error) {
       alert(`Erro ${error}`);
