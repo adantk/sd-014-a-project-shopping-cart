@@ -1,3 +1,6 @@
+const apiURL = 'https://api.mercadolibre.com/sites/MLB/search?q=';
+const apiItensURL = 'https://api.mercadolibre.com/items/';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -15,12 +18,12 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
+  const button = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  button.addEventListener('click', addProductToCart);
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  section.appendChild(button);
   return section;
 }
 
@@ -29,7 +32,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -39,5 +42,29 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+async function createProductList(element) {
+  const itemsElements = document.querySelector('.items');
+  const endpoint = `${apiURL}${element}`;
+  const object = await (await fetch(endpoint)).json();
+  const { results } = object;
 
-window.onload = () => { };
+  results.forEach((result) => {
+    const { id: sku, title: name, thumbnail: image } = result;
+    const productItem = createProductItemElement({ sku, name, image });
+    itemsElements.appendChild(productItem);
+  });
+}
+
+async function addProductToCart(event) {
+  const ol = document.querySelector('.cart__items');
+  const skuID = getSkuFromProductItem(event.target.parentNode);
+  const endpoint = `${apiItensURL}${skuID}`;
+  const itemsResult = await (await fetch(endpoint)).json();
+  const { id: sku, title: name, price: salePrice } = itemsResult;
+  const result = createCartItemElement({ sku, name, salePrice });
+  ol.appendChild(result);
+}
+
+window.onload = () => {
+  createProductList('computador');
+};
