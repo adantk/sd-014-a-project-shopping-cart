@@ -30,9 +30,15 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function addItemLocalStorage() {
+  const itens = document.querySelector('.carti_t');
+  localStorage.setItem('item', itens.innerHTML);
+}
+
 async function cartItemClickListener(event) {
   const ol = document.querySelector('.cart__items');
-  ol.removeChild(event.target);
+  await ol.removeChild(event.target);
+  addItemLocalStorage();
 }
 
 async function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -60,7 +66,7 @@ async function consultaItem(product) {
   const response = await fetch(`https://api.mercadolibre.com/items/${product}`);
   const dados = await response.json();
   await createCartItemElement(dados);
-  // await somaItemsDoCarrinho(dados);
+  addItemLocalStorage();
 }
 
 async function objetoSelecionado() {
@@ -68,6 +74,7 @@ async function objetoSelecionado() {
   todosItems.addEventListener('click', (event) => {
     const product = getSkuFromProductItem(event.target.parentElement);
     consultaItem(product);
+    addItemLocalStorage();
   });
 }
 
@@ -79,30 +86,15 @@ async function limparCarrinho() {
   });
 }
 
-// async function somaItemsDoCarrinho({price: salePrice}) {
-//   console.log(salePrice);
-//   const localDaSoma = document.getElementsByTagName('input');
-//   lo
-// }
-// async function addItemLocalStorage() {
-//   const ol = document.querySelector('.cart__items');
-//   localStorage.setItem('item', ol.innerHTML);
-// }
-
-// async function removeLocalStorage() {
-//   const ol = document.querySelector('.cart__items');
-//   localStorage.clear()
-// }
-
-// function storage() {
-//   const ol = document.querySelector('.cart__items');
-//   if (localStorage !== null) {
-//     ol.innerText = localStorage.item;
-//   }
-// }
+function storage() {
+  const lo = document.querySelector('.carti_t');
+  lo.innerHTML = localStorage.getItem('item');
+  lo.childNodes.forEach((liAtual) => liAtual.addEventListener('click', cartItemClickListener));
+}
 
 window.onload = async () => {
   await consultApi();
   await objetoSelecionado();
   await limparCarrinho();
+  storage();
 };
