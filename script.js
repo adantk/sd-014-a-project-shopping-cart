@@ -30,7 +30,10 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {}
+function cartItemClickListener(event) {
+  const wishList = (event.target).parentNode;
+  wishList.removeChild(event.target);
+}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
