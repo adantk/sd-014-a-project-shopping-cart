@@ -12,7 +12,8 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+// adiciona id para que titulo, foto e id se tornem visiveis 
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -29,10 +30,10 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -54,7 +55,30 @@ const fetchApi = async (query) => {
   dataAdd(data.results);
 };
 
+//  adiciona ao carrinho o produto usando createCartItemElement proposto pelo requisito
+const cartAddProduct = (product) => {
+  document.querySelector('.cart__items').appendChild(createCartItemElement(product));
+};
+
+// usa o {target} para captar o id do produto selecionado, mesmo principio do fetchApi 
+// async pois é necessário que ela rode independente e pela boa pratica de um codigo mais limpo
+const itemId = async ({ target }) => {
+  const id = getSkuFromProductItem(target.parentNode);
+  const data = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const info = await data.json();
+  cartAddProduct(info);
+};
+
+// 
+const addButtons = () => {
+  const button = document.querySelectorAll('.item__add');
+  button.forEach((addButton) => {
+    addButton.addEventListener('click', itemId);
+  });
+};
+
 // fetchApi seguindo padrao do requisito ('computador')
-window.onload = () => { 
-  fetchApi('computador');
+window.onload = async () => { 
+  await fetchApi('computador');
+  addButtons();
 };
