@@ -1,3 +1,22 @@
+.top-bar {
+  align-items: center;
+  display: flex;
+  height: 100px;
+  justify-content: space-around;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.top-bar .input-name-group {
+  align-items: flex-start;
+  display: flex;
+}
+
+.top-bar .input-terms-group {
+  align-items: flex-start;
+  display: flex;
+}
+
 .container {
   display: flex;
   justify-content: space-around;
@@ -65,5 +84,4 @@
   height: 30px;
   width: 90%;
   border: 1px solid black;
-
 }
