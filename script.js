@@ -29,7 +29,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove(); // src: https://stackoverflow.com/questions/62427603/remove-one-item-from-an-array-when-clicked-by-only-js
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
