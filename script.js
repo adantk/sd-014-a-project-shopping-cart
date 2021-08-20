@@ -1,3 +1,4 @@
+// Constantes e variável global que eu declarei:
 const items = document.querySelector('.items');
 const btnEmpty = document.querySelector('.empty-cart');
 const list = document.querySelector('.cart__items');
@@ -29,10 +30,6 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
 // Requisito 05 (SUBTRAINDO)  - Entra na Funcção do requisito 03:
 const subtracPrice = (request) => {
   const total = document.querySelector('.total-price');
@@ -54,13 +51,31 @@ const subtracPrice = (request) => {
   total.innerText = Math.round((sum + Number.EPSILON) * 100) / 100;
 };
 
+// Requisito 04: Adicionado nas funções cartItemClickListener() e itemsToCart().
+const addAndRemoveLocalStorage = () => {
+  const info = Array.from(list.children).map((i) => i.innerHTML); // globalInfo.push(ItemInfo);
+  localStorage.setItem('items', JSON.stringify(info));
+};
+
+const localStorageLoad = () => {
+  const listOd = document.querySelector('#lista-items');
+  const info = JSON.parse(localStorage.getItem('items'));
+  info.forEach((text) => {
+    const toBeCreated = document.createElement('li');
+    toBeCreated.className = 'cart__item';
+    toBeCreated.innerText = text;
+    listOd.appendChild(toBeCreated);
+  });
+};
+
 // Requisito 03:
-function cartItemClickListener(event) {
+const cartItemClickListener = (event) => {
   event.target.classList.add('selected');
   const selected = document.querySelector('.selected');
   subtracPrice(selected);
   list.removeChild(selected);
-}
+  addAndRemoveLocalStorage();
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -88,7 +103,6 @@ const itemsToHTML = (request) => {
 };
 
 // Requisito 05 (SOMANDO) - Entra na Funcção do requisito 02:
-
 const sumPrice = (request) => {
   const { price } = request;
   const total = document.querySelector('.total-price');
@@ -102,6 +116,7 @@ const itemsToCart = (request) => {
   const { id, title, price } = request;
   const c = createCartItemElement({ sku: id, name: title, salePrice: price });
   list.appendChild(c);
+  addAndRemoveLocalStorage();
 };
 
 const btnClick = () => {
@@ -117,6 +132,7 @@ const btnClick = () => {
 // Requisito 6:
 btnEmpty.addEventListener('click', () => {
   globalPrices = [];
+  localStorage.clear();
   while (list.firstChild) list.removeChild(list.firstChild);
 });
 
@@ -124,9 +140,14 @@ btnEmpty.addEventListener('click', () => {
 const loadClean = () => items.removeChild(items.firstChild);
 
 window.onload = async () => {
-  await items.appendChild(createCustomElement('span', 'loading', 'loading...')); // Requisito 7
-  await requestFormat('/sites/MLB/search?q=', 'computador', itemsToHTML);
-  await pagCart.appendChild(createCustomElement('span', 'total-price', '0'));
-  await loadClean();
-  await btnClick();
+  try {
+    await items.appendChild(createCustomElement('span', 'loading', 'loading...')); // Requisito 7
+    await requestFormat('/sites/MLB/search?q=', 'computador', itemsToHTML);
+    await pagCart.appendChild(createCustomElement('span', 'total-price', '0'));
+    await loadClean();
+    await btnClick();
+    await localStorageLoad();
+  } catch (err) {
+    console.log(err);
+  }
 };
