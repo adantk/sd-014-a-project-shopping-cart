@@ -70,7 +70,17 @@ const pegaComputador = async () => {
   jsonComputador.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
     createProductItemElement({ sku, name, image });
   });
-clickButton();
+  clickButton();
 };
+
+function apaga() {
+  const itensCart = document.querySelector('.cart__items');
+  while (itensCart.hasChildNodes()) {
+    itensCart.removeChild(itensCart.firstChild);
+  }
+}
+const botaoEsvazia = document.querySelector('.empty-cart');
+botaoEsvazia.addEventListener('click', apaga);
+// seleciono o item do meu carrinho, que me retorna uma espécie de array. 78, utilizo o while que 'enquanto' o itensCart tiver filhos, eu quero que remova o primeiro filho. HasChildNodes não leva parametro, me retornando true ou false. RemoveChild, recebe um parametro, na qual um elemento que ele tem que receber.  
 
 window.onload = () => { pegaComputador(); };
