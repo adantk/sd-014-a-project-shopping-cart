@@ -33,11 +33,31 @@ const saveCart = () => {
   localStorage.setItem('savedItens', cartI.innerHTML);
 };
 
+const sumOfPrices = () => { 
+  let sum = 0;
+  const cart = document.querySelectorAll('.cart__item');
+  // console.log(cart);
+  cart.forEach((item) => {
+    const items = item.innerText;
+    const textI = items.indexOf('$') + 1;
+    const textLength = items.length;
+    const number = Number(items.substr(textI, textLength));
+    // Source: https://www.w3schools.com/jsref/jsref_number.asp
+    // Soucer: https://www.w3schools.com/jsref/jsref_substr.asp
+    // console.log(number);
+    sum += number;
+  });
+  sum = Math.round(sum * 100) / 100;
+  const p = document.querySelector('.total-price');
+  p.innerHTML = sum;
+};
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const cart = document.querySelector('.cart__items');
   cart.removeChild(event.target);
   saveCart();
+  sumOfPrices();
 }
 
 const restoreCart = () => {
@@ -45,6 +65,7 @@ const restoreCart = () => {
   cartI.innerHTML = localStorage.getItem('savedItens');
   const cartItem = document.querySelectorAll('.cart__item');
   cartItem.forEach((item) => item.addEventListener('click', cartItemClickListener));
+  sumOfPrices();
 };
 
 const emptyCart = () => {
@@ -74,6 +95,7 @@ const addCartItem = async (item) => {
     salePrice: responseJson.price,
   }));
   saveCart();
+  sumOfPrices();
 };
 
 const buttonAdd = () => {
