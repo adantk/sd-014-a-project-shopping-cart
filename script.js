@@ -40,4 +40,21 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+// adiciona os dados em json e criar a partir de um for each o conteudo ".items"
+// note to self: colocada antes da fetchApi para que a linha dataAdd(data.results) funcione
+const dataAdd = (results) => {
+  const itemContainer = document.querySelector('.items');
+  results.forEach((item) => itemContainer.appendChild(createProductItemElement(item)));
+};
+
+// faz a busca da API; conceito de async/await para evitar o uso de .then
+const fetchApi = async (query) => {
+  const endPoint = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`);
+  const data = await endPoint.json();
+  dataAdd(data.results);
+};
+
+// fetchApi seguindo padrao do requisito ('computador')
+window.onload = () => { 
+  fetchApi('computador');
+};
