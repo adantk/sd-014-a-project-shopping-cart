@@ -1,3 +1,10 @@
+const classe = '.cart__items';
+
+const lStorage = () => {
+  const carrinho = document.querySelector(classe);
+  localStorage.setItem('compras', carrinho.innerHTML);
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -30,6 +37,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.remove(); // src: https://stackoverflow.com/questions/62427603/remove-one-item-from-an-array-when-clicked-by-only-js
+  lStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -77,7 +85,6 @@ const mostraPreco = async (preco) => {
 };
 
 function addItemCart() {
-  // console.log("AAAAAAA");
   const botao = document.querySelectorAll('.item__add');
   const carrinho = document.querySelector('.cart__items');
   let preco = 0;
@@ -91,6 +98,7 @@ function addItemCart() {
               salePrice: dados.price,
             };
             carrinho.appendChild(createCartItemElement(compras));
+            lStorage();
             mostraPreco(preco += compras.salePrice);
         });
       });
@@ -111,7 +119,12 @@ const esvazia = () => {
   btn.addEventListener('click', limpaCarrinho);
 };
 
+const carrega = () => {
+  document.querySelector(classe).innerHTML = localStorage.getItem('compras');
+};
+
 window.onload = async () => {
+  await carrega();
   await fetchProdutos();
   await addItemCart();
   esvazia();
