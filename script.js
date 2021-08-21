@@ -112,10 +112,22 @@ const cartLocalStorage = () => {
   });
 };
 
+// Ao clicar no botao esvaziar carrinho ele altera o innerHTML para vazio
+// chama a funcao sumPrice para que o valor do antigo carrinho nao permaneça depois de esvaziado
+const clearAll = () => {
+  const buttonClear = document.querySelector('.empty-cart');
+  buttonClear.addEventListener('click', () => {
+    cart.innerHTML = '';
+    cartSave();
+    sumPrice();
+  });
+};
+
 // fetchApi seguindo padrao do requisito ('computador')
 window.onload = async () => { 
   await fetchApi('computador');
   await cartLocalStorage();
   await sumPrice();
   addButtons();
+  clearAll();
 };
