@@ -98,12 +98,9 @@ const addItemCarrinho = (objToCart) => {
   updateLocalStorage()
 }
 
-
-
 function updateLocalStorage() {
   localStorage.setItem('itemsCart', document.getElementById('lista').innerHTML)
-  // ou
-  // localStorage.setItem('itemsCart', document.querySelector('.cart__items').innerText)
+
 }
 
 const addEscutadorDnv = () => {
@@ -116,13 +113,18 @@ const addEscutadorDnv = () => {
 const carregarCarrinho = () => {
   if(localStorage.getItem('itemsCart') != null) {
   const carrinhoLocalStorage = localStorage.getItem('itemsCart')
-  // const ol = document.getElementsByClassName('cart__items')
-  // // ol.appendChild(carrinhoLocalStorage)
-  // console.log(carrinhoLocalStorage)
   let lista = document.getElementById('lista').innerHTML;
   lista = lista + carrinhoLocalStorage
   document.getElementById('lista').innerHTML = lista
   addEscutadorDnv();
+  }
+}
+
+const somaTotal = () => {
+  const itemsLista = document.getElementsByClassName('cart__item')
+  let total = 0
+  for (let i = 0; i < itemsLista.length; i += 1){
+    itemsLista[i]
   }
 }
 
