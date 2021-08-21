@@ -1,3 +1,6 @@
+const cart = document.querySelector('.cart__items');
+const sum = document.querySelector('.total-price');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,17 +32,27 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-const cart = document.querySelector('.cart__items');
-
+// salva o keyvalue cartList e o conteudo relevante para o localStorage
+// o .clear serve para não existir um acumulo de informações
 const cartSave = () => {
   localStorage.clear();
   localStorage.setItem('cartList', cart.innerHTML);
 };
 
-// remove o item do carrinho de compras ao ser clicado (o alvo do evento é removido) 
-function cartItemClickListener(event) {
+// utiliza o conceitto de reduce para fazer a contagem com valores Number, usando o split para captar somenet o valor numerico
+function sumPrice() {
+  const price = [...document.querySelectorAll('li.cart__item')]
+  .reduce((acc, curr) => Number(curr.innerText.split('$')[1]) + acc, 0);
+  // Math.round(price * 100) / 100; faz com que o valor seja arrendondo com duas casas decimais
+  sum.innerText = Math.round(price * 100) / 100;
+}
+
+// remove o item do carrinho de compras ao ser clicado.
+// funciona para todos os items colocados na seção atual, ou seja items salvos do LocalStorage não são deletados.
+async function cartItemClickListener(event) {
   event.target.remove();
   cartSave();
+  sumPrice();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -66,8 +79,9 @@ const fetchApi = async (query) => {
 
 //  adiciona ao carrinho o produto usando createCartItemElement proposto pelo requisito
 const cartAddProduct = (product) => {
-  document.querySelector('.cart__items').appendChild(createCartItemElement(product));
+  cart.appendChild(createCartItemElement(product));
   cartSave();
+  sumPrice();
 };
 
 // usa o {target} para captar o id do produto selecionado, mesmo principio do fetchApi 
@@ -87,13 +101,21 @@ const addButtons = () => {
   });
 };
 
-const cartLoad = () => {
+// cria o localStorage dos produtos já adicionados
+// adiciona eventListener ao clicar,
+// tornando a cartItemClickListener operante nos produtos salvos no localStorage
+const cartLocalStorage = () => {
   cart.innerHTML = localStorage.getItem('cartList');
+  const cartProducts = document.querySelectorAll('.cart__item');
+  cartProducts.forEach((product) => {
+    product.addEventListener('click', cartItemClickListener);
+  });
 };
 
 // fetchApi seguindo padrao do requisito ('computador')
 window.onload = async () => { 
   await fetchApi('computador');
+  await cartLocalStorage();
+  await sumPrice();
   addButtons();
-  cartLoad();
 };
