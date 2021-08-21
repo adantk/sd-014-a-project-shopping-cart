@@ -30,8 +30,19 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify([]));
+  const listCart = JSON.parse(localStorage.getItem('cart'));
+  const elementsCart = Array.from(document.getElementsByClassName('cart__item')); // a função Array.from() transforma um HTMLCollection em um Array
+  elementsCart.forEach((element) => {
+    listCart.push(element.innerText);
+  });
+  localStorage.setItem('cart', JSON.stringify(listCart));
+}
+
 function cartItemClickListener(event) {
   itemsCart.removeChild(event.target);
+  saveCart();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -70,6 +81,7 @@ async function addCart() {
       salePrice: responseJSON.price,
     };
     cartItems.appendChild(createCartItemElement(itemObject));
+    saveCart();
   });
 }
 
@@ -80,11 +92,28 @@ function emptyCart() {
     listItemsCart.forEach((item) => {
       itemsCart.removeChild(item);
     });
+    saveCart();
   });
+}
+
+function loadCart() {
+  if (localStorage.getItem('cart') === null || localStorage.getItem('cart') === 'null') {
+    localStorage.setItem('cart', JSON.stringify([]));
+  } else {
+    const listCart = JSON.parse(localStorage.getItem('cart'));
+    listCart.forEach((element) => {
+      const itemList = document.createElement('li');
+      itemList.className = 'cart__item';
+      itemList.innerText = element;
+      itemList.addEventListener('click', cartItemClickListener);
+      itemsCart.appendChild(itemList);
+    });
+  }
 }
 
 window.onload = async () => { 
   await productsList('computador');
   await addCart();  
+  loadCart();
   emptyCart();
 };
