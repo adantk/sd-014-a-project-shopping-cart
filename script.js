@@ -55,8 +55,7 @@ async function callItemAPI() {
   const requiJson = await requi.json();
   itemConteiner.innerHTML = null;
   const item = await requiJson.results;
-  await item.forEach((iten) => document.querySelector('.items')
-  .appendChild(createProductItemElement({ sku: iten.id,
+  await item.forEach((iten) => itemConteiner.appendChild(createProductItemElement({ sku: iten.id,
      name: iten.title,
 image: iten.thumbnail })));
   } catch (error) {
@@ -100,4 +99,6 @@ window.onload = async () => {
   await callItemAPI();
   await addCart();
   await clearCart();
+  const cartItem = document.querySelectorAll('.cart__item');
+  cartItem.forEach((item) => item.addEventListener('click', cartItemClickListener));
  };
