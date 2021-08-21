@@ -21,6 +21,7 @@ const totalPrice = async () => {
   let sum = 0;
   cartItem.forEach((e) => { sum += Number(e.id); });
   priceTag.className = 'total-price';
+  sum = Math.round(sum * 100) / 100;
   priceTag.innerText = sum;
   spanTag.className = 'text-center';
   spanTag.innerHTML = 'O total é R$';
@@ -32,7 +33,7 @@ buttonClearAll.addEventListener('click', () => {
   cartItems.innerHTML = '';
   totalPrice(); 
   saveLocalStorage();
-});
+}); 
 // requisito 7
 const loading = () => {
   divLoading.className = 'loading';
@@ -57,7 +58,6 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -91,7 +91,6 @@ async function funcaoEscutadoraBottoes(event) {
   const id = getSkuFromProductItem(event.target.parentNode);
   const array = await fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((response) => response.json());
-  // console.log(array);
   const arrayObj = {
     sku: array.id,
     name: array.title,
@@ -101,14 +100,12 @@ async function funcaoEscutadoraBottoes(event) {
   saveLocalStorage();
   totalPrice();
 }
-
 // Sessao dedicada à busca do fetch para o requisito 1
 const fetchItems = async (element = 'computador') =>
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${element}`)
     .then((response) => response.json())
     .then((response) => response.results)
     .catch(() => { throw new Error('API retornou erros'); });
-// .then((e) => console.log(e));
 // Função dedicada à transformação da resposta da fetch para estar nos moldes dos criadores
 const formatMap = (arr, lastKey = 'image', thing = 'thumbnail') => arr.map((elem) => ({
   sku: elem.id,
