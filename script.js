@@ -29,7 +29,8 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+ const capOl = document.querySelector('.cart__items');
+    capOl.removeChild(event.target);
 }
 
 // função requisito 2
