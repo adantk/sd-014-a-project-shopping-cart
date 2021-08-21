@@ -39,6 +39,7 @@ function getSkuFromProductItem(item) {
 const cartItemClickListener = (event) => {
   const itemsCarrinho = document.querySelector('.cart__items');
   itemsCarrinho.removeChild(event.target)
+  updateLocalStorage()
 }
 
 function createCartItemElement({
@@ -94,18 +95,41 @@ const getAddItemCarrinho = (event) => {
 const addItemCarrinho = (objToCart) => {
   let teste = document.getElementsByClassName('cart__items')
   teste[0].appendChild(createCartItemElement(objToCart))
+  updateLocalStorage()
 }
 
-const localStorageItems = JSON.parse(localStorage
-  .getItem('ItemsCart'));
 
-let itemsLocalStorage = localStorage
-  .getItem('ItemsCart') !== null ? localStorageItems : [];
 
-let updateLocalStorage = localStorage.setItem('ItemsCart', JSON.stringify(itemsLocalStorage))
+function updateLocalStorage() {
+  localStorage.setItem('itemsCart', document.getElementById('lista').innerHTML)
+  // ou
+  // localStorage.setItem('itemsCart', document.querySelector('.cart__items').innerText)
+}
+
+const addEscutadorDnv = () => {
+  const itemsLista = document.getElementsByClassName('cart__item');
+  for (let i = 0; i < itemsLista.length; i += 1){
+    itemsLista[i].addEventListener('click', cartItemClickListener);
+  }
+}
+
+const carregarCarrinho = () => {
+  if(localStorage.getItem('itemsCart') != null) {
+  const carrinhoLocalStorage = localStorage.getItem('itemsCart')
+  // const ol = document.getElementsByClassName('cart__items')
+  // // ol.appendChild(carrinhoLocalStorage)
+  // console.log(carrinhoLocalStorage)
+  let lista = document.getElementById('lista').innerHTML;
+  lista = lista + carrinhoLocalStorage
+  document.getElementById('lista').innerHTML = lista
+  addEscutadorDnv();
+  }
+}
 
 window.onload = async () => {
   await fetchML();
+  await carregarCarrinho();
+  // console.log(localStorage.itemsCart[1])
 }
 
 
