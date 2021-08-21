@@ -72,8 +72,11 @@ const dataAdd = (results) => {
 
 // faz a busca da API; conceito de async/await para evitar o uso de .then
 const fetchApi = async (query) => {
+  const loading = document.querySelector('.loading');
+  loading.innerText = 'loading...';
   const endPoint = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`);
   const data = await endPoint.json();
+  loading.remove();
   dataAdd(data.results);
 };
 
