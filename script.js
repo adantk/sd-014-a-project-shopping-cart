@@ -16,7 +16,7 @@ function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
   const buscaItems = document.querySelector('.items');
-
+  
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -29,13 +29,6 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// // Requisito #4
-//   const list = document.querySelector('cart__items');
-//   const saveItens = () => {
-//     localStorage.clear();
-//     localStorage.setItem('items', list.innerHTML);
-//   };
- 
 // Requisito #3
 function cartItemClickListener(event) {
   const btnRemove = document.querySelector('.cart__items');
@@ -62,6 +55,7 @@ function addCarrinho() {
         sku: buscaUrl.id,
         name: buscaUrl.title,
         salePrice: buscaUrl.price }));
+        localStorage.setItem('itens', buscaOl.innerHTML);
     });
   });
 }
@@ -87,10 +81,13 @@ function LimpaCarrinho() {
   btnLimpa.addEventListener('click', () => {
    limpaLi.innerHTML = '';
   });
+  localStorage.getItem('itens', '');
 }
 
 window.onload = () => {
   fetchApiProduct();
   addCarrinho();  
   LimpaCarrinho();
+  const buscaOl = document.querySelector('.cart__items');
+  buscaOl.innerHTML = localStorage.getItem('itens'); 
 };
