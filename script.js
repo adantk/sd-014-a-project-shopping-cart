@@ -46,7 +46,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
-
 }
 
 const segundaApi = (id) => {
@@ -58,10 +57,10 @@ const segundaApi = (id) => {
         sku: computador.id, name: computador.title, salePrice: computador.price,
       }));
       localStorage.setItem('lista', pcItemOl.innerHTML);
-      const liStorage = localStorage.getItem('lista');
-      console.log(liStorage);
-      const liObjeto = JSON.parse(liStorage);
-      return liObjeto;
+      // const liStorage = localStorage.getItem('lista');
+      // console.log(liStorage);
+      // const liObjeto = JSON.parse(liStorage);
+      // return liObjeto;
     });
 };
 
@@ -97,11 +96,23 @@ function buttonAdicionar() {
 
 function limparCarrinho() {
   const btLimpaCarrinho = document.querySelector('.empty-cart');
-  const OlItensEscolhidos = document.querySelector('.cart__items');
+  const OlItensEscolhidos = document.getElementById('ol__items');
   btLimpaCarrinho.addEventListener('click', () => {
     OlItensEscolhidos.innerHTML = '';
+    localStorage.clear();
   });
 }
+// function loading() {
+//   const campoAcionaLoading = document.createElement('div');
+//   campoAcionaLoading.classList.add('loading');
+//   campoAcionaLoading.style.backgroundColor = 'pink';
+//   campoAcionaLoading.addEventListener('click', () => {
+//     campoAcionaLoading.innerHTML = 'Carregando, aguarde...';
+//     campoAcionaLoading.innerHTML = '';
+//     return campoAcionaLoading;
+//   });
+// }
+// loading();
 
 function fetchApiProduct() {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
@@ -116,7 +127,7 @@ function fetchApiProduct() {
 window.onload = () => {
   fetchApiProduct();
   limparCarrinho();
-  const ol = document.querySelector('.cart__items');
+  const ol = document.getElementById('ol__items');
   ol.innerHTML = localStorage.getItem('lista');
   atualizaCarrinho();
 };
