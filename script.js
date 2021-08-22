@@ -31,9 +31,16 @@ function getSkuFromProductItem(item) {
 
 // Requisito #3
 function cartItemClickListener(event) {
-  const btnRemove = document.querySelector('.cart__items');
-  btnRemove.removeChild(event.target);
+  // const btnRemove = document.querySelector('.cart__items');
+  const buscaOl = document.querySelector('#cart__items');
+  buscaOl.removeChild(event.target);
+  localStorage.setItem('itens', buscaOl.innerHTML);
 }
+
+function atualizaCarrinho() {
+  const atualizaLi = document.querySelectorAll('.cart__item');
+  atualizaLi.forEach((arrayLi) => arrayLi.addEventListener('click', cartItemClickListener));
+  } 
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -45,7 +52,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 // Requisito #2 
 function addCarrinho() {
   const lista = document.querySelectorAll('.item__add');
-  const buscaOl = document.querySelector('.cart__items');
+  const buscaOl = document.querySelector('#cart__items');
   lista.forEach((item) => {
     item.addEventListener('click', async (event) => {
       const buscaId = getSkuFromProductItem(event.target.parentElement);
@@ -57,6 +64,16 @@ function addCarrinho() {
         salePrice: buscaUrl.price }));
         localStorage.setItem('itens', buscaOl.innerHTML);
     });
+  });
+}
+
+// Requisito 6
+function LimpaCarrinho() {
+  const btnLimpa = document.querySelector('.empty-cart');
+  const limpaLi = document.querySelector('.cart__items');
+  btnLimpa.addEventListener('click', () => {
+   limpaLi.innerHTML = '';
+   localStorage.clear();
   });
 }
 
@@ -74,20 +91,11 @@ function fetchApiProduct() {
       .then(() => addCarrinho()));
 }
 
-// Requisito 6
-function LimpaCarrinho() {
-  const btnLimpa = document.querySelector('.empty-cart');
-  const limpaLi = document.querySelector('.cart__items');
-  btnLimpa.addEventListener('click', () => {
-   limpaLi.innerHTML = '';
-  });
-  localStorage.getItem('itens', '');
-}
-
 window.onload = () => {
   fetchApiProduct();
-  addCarrinho();  
+  // addCarrinho();  
   LimpaCarrinho();
-  const buscaOl = document.querySelector('.cart__items');
+  const buscaOl = document.querySelector('ol');
   buscaOl.innerHTML = localStorage.getItem('itens'); 
+  atualizaCarrinho();
 };
