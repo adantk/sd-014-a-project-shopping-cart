@@ -1,7 +1,7 @@
-const itemContainer = document.querySelector(".items");
+const itemContainer = document.querySelector('.items');
 const shoppingCart = document.querySelector('.cart__title');
 
-const keyWord = "computador";
+const keyWord = 'computador';
 const url = `https://api.mercadolibre.com/sites/MLB/search?q=${keyWord}`;
 
 function createProductImageElement(imageSource) {
@@ -21,11 +21,10 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({
   id: sku,
   title: name,
-  thumbnail: image
+  thumbnail: image,
 }) {
   const section = document.createElement('section');
   section.className = 'item';
-  //console.log(sku, name, image);
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -39,14 +38,13 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
   event.target.remove();
 }
 
 function createCartItemElement({
   id: sku,
   title: name,
-  price: salePrice
+  price: salePrice,
 }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -56,21 +54,20 @@ function createCartItemElement({
 }
 
 async function addItemToCart(event) {
-  //const buttonElement = event.target;
   const itemID = getSkuFromProductItem(event.target.parentNode);
-  const itemObj =  await (await fetch(`https://api.mercadolibre.com/items/${itemID}`)).json();
-  const cartList = document.querySelector(".cart__items");
+  const itemObj = await (await fetch(`https://api.mercadolibre.com/items/${itemID}`)).json();
+  const cartList = document.querySelector('.cart__items');
   cartList.appendChild(createCartItemElement(itemObj));
 }
 
 function addClickEventToItemList() {
-  const listButtons = document.querySelectorAll(".item__add");
+  const listButtons = document.querySelectorAll('.item__add');
   listButtons.forEach((button) => button.addEventListener('click', addItemToCart));
 }
 
 async function search() {
   const response = await (await fetch(url)).json();
-  response.results.forEach(element => {
+  response.results.forEach((element) => {
     itemContainer.appendChild(createProductItemElement(element));
   });
   addClickEventToItemList();
@@ -79,4 +76,3 @@ async function search() {
 window.onload = () => {
   search();
 };
-
