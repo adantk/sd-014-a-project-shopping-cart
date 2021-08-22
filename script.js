@@ -1,26 +1,15 @@
 const itemsCart = '.cart__items';
 
 // Requisito 5
-// const totalPriceCart = () => {
-//   const items = document.querySelectorAll('.cart__item');
-//   const totalPrice = document.querySelector('.total-price');
-//   let totalSum = 0;
-//   // console.log(items);
-//   // const arrayValuesFloat = [];  
-//   items.forEach((item) => {
-//     totalSum += parseFloat(item.innerText.split('$')[1]);
-//     console.log(totalSum);
-//     // const values = item.innerText;
-//     // const valueString = values.split('$')[1].replace(',', '.'); // https://blog.betrybe.com/javascript/javascript-split/
-//     // console.log(valueString);
-//     // const valueFloat = parseFloat(valueString); // https://www.devmedia.com.br/javascript-replace-substituindo-valores-em-uma-string/39176
-//     // arrayValuesFloat.push(valueFloat);
-//     // console.log(arrayValuesFloat);    
-//   });
-//   // const totalSum = arrayValuesFloat.reduce((acc, num) => acc + num, 0);
-//   // console.log(totalSum);
-//   totalPrice.innerText = `${totalSum}`;
-// };
+const totalPriceCart = () => {
+  const items = document.querySelectorAll('.cart__item');
+  const totalPrice = document.querySelector('.total-price');
+  let totalSum = 0;   
+  items.forEach((item) => {
+    totalSum += parseFloat(item.innerText.split('$')[1]); // https://blog.betrybe.com/javascript/javascript-split/
+  });  
+  totalPrice.innerText = `${totalSum}`;
+};
 
 // Requisito 7 - Parte I
 const loadingPage = () => {
@@ -73,7 +62,7 @@ const localStorageSave = () => {
 function cartItemClickListener(event) {
   event.target.remove();
   localStorageSave();
-  // totalPriceCart();
+  totalPriceCart();
 }
 
 // Requisito 4 - parte II
@@ -82,7 +71,7 @@ const localStorageLoad = () => {
   ol.innerHTML = localStorage.getItem('listCart');  
   ol.addEventListener('click', cartItemClickListener);
   localStorageSave(); 
-  // totalPriceCart();
+  totalPriceCart();
 };
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -93,7 +82,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
   localStorageSave();
-  // totalPriceCart();
+  totalPriceCart();
   return li;
 }
 
@@ -146,7 +135,7 @@ const clearCart = () => {
   clearButton.addEventListener('click', () => {
     ol.innerHTML = '';
     localStorage.clear();
-    // totalPriceCart();
+    totalPriceCart();
   });  
 };
 
