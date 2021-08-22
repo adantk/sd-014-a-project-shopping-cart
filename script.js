@@ -1,13 +1,35 @@
 const itemsCart = '.cart__items';
 
-// Requisito 7
+// Requisito 5
+// const totalPriceCart = () => {
+//   const items = document.querySelectorAll('.cart__item');
+//   const totalPrice = document.querySelector('.total-price');
+//   let totalSum = 0;
+//   // console.log(items);
+//   // const arrayValuesFloat = [];  
+//   items.forEach((item) => {
+//     totalSum += parseFloat(item.innerText.split('$')[1]);
+//     console.log(totalSum);
+//     // const values = item.innerText;
+//     // const valueString = values.split('$')[1].replace(',', '.'); // https://blog.betrybe.com/javascript/javascript-split/
+//     // console.log(valueString);
+//     // const valueFloat = parseFloat(valueString); // https://www.devmedia.com.br/javascript-replace-substituindo-valores-em-uma-string/39176
+//     // arrayValuesFloat.push(valueFloat);
+//     // console.log(arrayValuesFloat);    
+//   });
+//   // const totalSum = arrayValuesFloat.reduce((acc, num) => acc + num, 0);
+//   // console.log(totalSum);
+//   totalPrice.innerText = `${totalSum}`;
+// };
+
+// Requisito 7 - Parte I
 const loadingPage = () => {
   const loading = document.querySelector('.loading');
   loading.innerText = 'Loading...';
-  document.body.appendChild(loading);
 };
 
-const removeLoadingPage = () => {
+// Requisito 7 - Parte II
+const removeLoadingPage = () => {  
   document.getElementsByClassName('loading')[0].remove();
 };
 
@@ -37,76 +59,84 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;  
+  return item.querySelector('span.item__sku').innerText;
 }
 
-// Requisito 4
+// Requisito 4 - parte I
 const localStorageSave = () => {
   localStorage.clear();
   const ol = document.querySelector(itemsCart);
-  localStorage.setItem('listCart', ol.innerHTML);
-};
-
-const localStorageLoad = () => {
-  const ol = document.querySelector(itemsCart);  
-  ol.innerHTML = localStorage.getItem('listCart');
-  localStorageSave();
+  localStorage.setItem('listCart', ol.innerHTML);  
 };
 
 // Requisito 3
 function cartItemClickListener(event) {
-  const ol = document.querySelector(itemsCart);
-  ol.removeChild(event.target);
+  event.target.remove();
   localStorageSave();
+  // totalPriceCart();
 }
+
+// Requisito 4 - parte II
+const localStorageLoad = () => {
+  const ol = document.querySelector(itemsCart);  
+  ol.innerHTML = localStorage.getItem('listCart');  
+  ol.addEventListener('click', cartItemClickListener);
+  localStorageSave(); 
+  // totalPriceCart();
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const ol = document.querySelector(itemsCart);
-  const li = document.createElement('li');  
+  const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
   localStorageSave();
+  // totalPriceCart();
   return li;
 }
 
-// Requisito 1
-const getList = async () => {
-  loadingPage();
-  await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-    .then((response) => response.json())
-    .then((object) => {
-      removeLoadingPage();
-      object.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
-        createProductItemElement({ sku, name, image });        
-      });
-    });  
-};
-
-// Requisito 2
+// Requisito 2 - Parte II
 // Requisição para o endpoint
-const createFetch = async (idProduct) => {  
-  await fetch(`https://api.mercadolibre.com/items/${idProduct}`)
+const createFetch = (idProduct) => {
+  fetch(`https://api.mercadolibre.com/items/${idProduct}`)
     .then((response) => response.json())
-    .then((object) => {
+    .then((object) => {      
     // Chama função que add item na lista ol (carrinho)
-    createCartItemElement({ sku: object.id, name: object.title, salePrice: object.price });    
-    });  
+      createCartItemElement({ sku: object.id, name: object.title, salePrice: object.price });    
+    });
 };
 
+// Requisito 2 - Parte I
 // Ao clicar no botão capturar a ID do produto
 const clickButton = () => {
   const getButton = document.querySelectorAll('.item__add');
   console.log(getButton);
   getButton.forEach((button) => {
     button.addEventListener('click', (event) => {
-      const idProduct = event.target.parentElement.firstChild.innerText;
-      console.log(idProduct);
+      const idProduct = getSkuFromProductItem(event.target.parentElement);
+      // const idProduct = event.target.parentElement.firstChild.innerText;      
       // Chama função que fará requisição para o endpoint
+      console.log(idProduct);
       createFetch(idProduct);
     });
   });
+};
+
+// Requisito 1
+const getList = () => {
+  loadingPage();
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+    .then((response) => response.json())
+    .then((object) => {
+      removeLoadingPage();
+      object.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
+        createProductItemElement({ sku, name, image });        
+      });
+    })
+    .then(() => clickButton())
+    .then(() => localStorageLoad());    
 };
 
 // Requisito 6
@@ -115,12 +145,12 @@ const clearCart = () => {
   const clearButton = document.querySelector('.empty-cart');
   clearButton.addEventListener('click', () => {
     ol.innerHTML = '';
+    localStorage.clear();
+    // totalPriceCart();
   });  
 };
 
-window.onload = async () => {
-  await getList();
-  await clickButton();
-  await clearCart();
-  await localStorageLoad();  
+window.onload = () => {
+  getList();
+  clearCart();    
 };
