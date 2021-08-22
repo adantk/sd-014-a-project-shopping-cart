@@ -45,16 +45,16 @@ const funcSomaTotal = () => {
   return resultado;
 };
 
-const somaTotal = () => {
-  const resultado = funcSomaTotal();
+const somaTotal = async () => {
+  const resultado = await funcSomaTotal();
   const element = document.getElementById('total');
   element.innerHTML = resultado.toFixed(2);
   const totalDOM = document.getElementById('total').innerText;
   const totalTamanho = document.getElementById('total').innerText.length;
-  if (totalDOM[totalTamanho - 1] === 0 && totalDOM[totalTamanho - 2] === 0) {
+  if (totalDOM[totalTamanho - 1] === '0' && totalDOM[totalTamanho - 2] === '0') {
     element.innerHTML = resultado.toFixed(0);
   }
-  if (totalDOM[totalTamanho - 1] === 0 && totalDOM[totalTamanho - 2] > 0) {
+  if (totalDOM[totalTamanho - 1] === '0' && totalDOM[totalTamanho - 2] > 0) {
     element.innerHTML = resultado.toFixed(1);
   }
 };
