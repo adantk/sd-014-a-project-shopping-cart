@@ -122,6 +122,8 @@ function createProductItemElement({
 window.onload = () => {};
 
 const fetchML = () => {
+  const elementoLoading = document.getElementById('carregando');
+  elementoLoading.innerText = 'Carregando. Porfavor aguarde ...';
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((resposta) => {
       resposta.json().then((dados) => {
@@ -136,6 +138,7 @@ const fetchML = () => {
         }));
       });
     });
+  elementoLoading.remove();
 };
 
 const addEscutadorDnv = () => {
