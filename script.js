@@ -1,6 +1,7 @@
 const itemContainer = document.querySelector('.items');
 const shoppingCart = document.querySelector('.cart__title');
 const cart = document.querySelector('.cart__items');
+const totalToPay = document.querySelector('.total-price');
 
 const keyWord = 'computador';
 
@@ -39,11 +40,26 @@ function getSkuFromProductItem(item) {
 
 function updateLocalStorage() {
   localStorage.setItem('cart', cart.innerHTML);
- }
+}
+
+async function updateValueToPay() {
+  let total = 0;
+  const cartList = document.querySelectorAll('.cart__item');
+  cartList.forEach((item) => {
+    const price = parseFloat(item.innerText.split('$')[1]);
+    total += price;
+  });
+  if (total > 0) {
+    totalToPay.innerHTML = total;
+  } else {
+    totalToPay.innerHTML = '';
+  }
+}
 
 function cartItemClickListener(event) {
   event.target.remove();
   updateLocalStorage();
+  updateValueToPay();
 }
 
 function createCartItemElement({
@@ -64,6 +80,7 @@ async function addItemToCart(event) {
   const cartList = document.querySelector('.cart__items');
   cartList.appendChild(createCartItemElement(itemObj));
   updateLocalStorage();
+  updateValueToPay();
 }
 
 function addClickEventToItemList() {
