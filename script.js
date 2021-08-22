@@ -34,14 +34,29 @@ function createProductItemElement({ sku, name, image }) {
   deve ser um elemento 'span' e com a classe 'item_sku': */
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-  // retorno do texto do item passado para o
+  // retorno do texto do item passado para lista do carrinho
 }
+
+const itensStorage = () => {
+  const ol = document.querySelector('#cart__items');
+  localStorage.setItem('itens', ol.innerHTML);
+};
 
 // Função que remove a li que que estiver no carrinho quando for clicada.
 function cartItemClickListener(event) {
-  const ol = document.querySelector('.cart__items');
+  const ol = document.querySelector('#cart__items');
   ol.removeChild(event.target);
+  itensStorage();
 }
+
+const storageList = () => {
+  const ol = document.querySelector('.cart__items');
+  ol.innerHTML = localStorage.getItem('itens');
+  const li = document.querySelectorAll('.cart__item');
+  li.forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
+};
 
 // Função que cria li, adiciona classe, texto e possui um escutador para a função acima:
 function createCartItemElement({ sku, name, salePrice }) {
@@ -58,10 +73,10 @@ const addItem = (idItem) => {
   fetch(`https://api.mercadolibre.com/items/${idItem}`)
     .then((response) => response.json()
       .then((id) => {
-        ol.appendChild(createCartItemElement({ 
+        ol.appendChild(createCartItemElement({ // Cria uma li com dados do produto
           sku: id.id, name: id.title, salePrice: id.price, 
         }));
-      }));
+      })).then(() => itensStorage()); // Insere o item do carrinho no local storage
 };
 
 // Requisito 2 . 2:
@@ -74,7 +89,7 @@ const buttonCar = () => {
   });
 };
 
-// Requisito 1:
+// Requisito 1 - Cria a lista de produtos no site:
 const productsList = (item) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`)
     .then((response) => response.json()
@@ -89,4 +104,5 @@ const productsList = (item) => {
 
 window.onload = () => {
   productsList('computador');
+  storageList();
 };
