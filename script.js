@@ -37,7 +37,8 @@ function getSkuFromProductItem(item) {
   // retorno do texto do item passado para lista do carrinho
 }
 
-const itensStorage = () => {
+// Requisito 4 . 1:
+const itensStorage = () => { // Os itens contidos na ol são registrados no localStorage
   const ol = document.querySelector('#cart__items');
   localStorage.setItem('itens', ol.innerHTML);
 };
@@ -46,9 +47,10 @@ const itensStorage = () => {
 function cartItemClickListener(event) {
   const ol = document.querySelector('#cart__items');
   ol.removeChild(event.target);
-  itensStorage();
+  itensStorage(); // Chamada da função acima 4.1.
 }
 
+// Requisito 4 . 2 (Remoção de item da lista do localStorage):
 const storageList = () => {
   const ol = document.querySelector('.cart__items');
   ol.innerHTML = localStorage.getItem('itens');
@@ -102,7 +104,23 @@ const productsList = (item) => {
       .then(() => buttonCar()));
 };
 
+// Requisito 6 . 1 (Ao clicar no botão limpa todo item da lista localStorage):
+const deleteAllListStorage = () => {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => localStorage.removeItem('itens'));
+};
+
+const deleteOl = () => {
+  const button = document.querySelector('.empty-cart');
+  const olSave = document.querySelector('ol');
+  button.addEventListener('click', () => {
+    olSave.innerHTML = '';
+  });
+};
+
 window.onload = () => {
   productsList('computador');
+  deleteOl();
   storageList();
+  deleteAllListStorage();
 };
