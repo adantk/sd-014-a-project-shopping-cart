@@ -33,16 +33,27 @@ function createProductItemElement({
   const ItensClass = document.querySelector('.items');
   ItensClass.appendChild(section);
 
-  return section;
+ return section;
 }
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
+// const sum = () => {
+//   let count = Number(totalPrice.innerText);
+//   const pegaList = document.querySelectorAll('.cart__item');
+//   const num = Number(pegaList[pegaList.length - 1].innerText.split('$')[1]);
+//   count += num;
+//   totalPrice.innerText = count;
+//   // console.log(soma);
+// };
 function cartItemClickListener(event) {
   // coloque seu código aqui  
   const cartList = document.querySelector('.cart__items');
+  let count = Number(totalPrice.innerText);
+  const num = event.target.innerText.split('$')[1];
+  count -= num;
+  totalPrice.innerText = count;
   cartList.removeChild(event.target);
 }
 
@@ -69,12 +80,17 @@ const fetchAPI = async () => {
     title: name,
     thumbnail: image,
   }) => {
-    createProductItemElement({
-      sku,
-      name,
-      image,
-    });
+    createProductItemElement({ sku, name, image });
   });
+};
+
+const sum = () => {
+  let count = Number(totalPrice.innerText);
+  const pegaList = document.querySelectorAll('.cart__item');
+  const num = Number(pegaList[pegaList.length - 1].innerText.split('$')[1]);
+  count += num;
+  totalPrice.innerText = count;
+  // console.log(soma);
 };
 
 const fetchId = async (id) => { // Essa função trata os dados da API e aplica na função de adicionar itens no carrinho
@@ -83,14 +99,10 @@ const fetchId = async (id) => { // Essa função trata os dados da API e aplica 
       `https://api.mercadolibre.com/items/${id}`,
     );
     const infoP = await responseRaw.json(); // tratando a resposta, e transformando os dados em Json
-    const cartItem = {
-      sku: infoP.id,
-      name: infoP.title,
-      salePrice: infoP.price,
-    }; // desestruturando o objeto recebido para manipular algumas informações
+    const cartItem = { sku: infoP.id, name: infoP.title, salePrice: infoP.price }; // desestruturando o objeto recebido para manipular algumas informações
     Ol.appendChild(createCartItemElement(cartItem)); // adicionando os itens na lista de compra
-    const { price } = infoP;
-    totalPrice.innerText = `${price}`;
+    sum();
+    // const { price } = infoP;
   } catch (error) { // com uma função pré-existente apenas chamando-a como callback e aplicando os valores capturados
     console.log(error);
   }
@@ -112,6 +124,10 @@ const apaga = () => {
   }
 };
 buttonEmpty.addEventListener('click', apaga);
+
+// pegaList {
+// const num = innerText.split('$')[1];
+// count += parseFloat(num);
 // const sumValues = () => {
 // const sumButton = document.querySelectorAll('.item__add');
 // sumButton.addEventListener('click', async (event) => {
