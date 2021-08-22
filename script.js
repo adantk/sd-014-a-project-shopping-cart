@@ -74,12 +74,12 @@ const infoProdutoSelecionado = async (idProduto) => {
   return newProduct;
 };
 
-// Adiciona o elemento retornado da função createCartItemElement(product) como filho do elemento <ol class="cart__items">.
+// Adiciona o elemento retornado da função createCartItemElement(product) como filho do elemento <ol>
 const adicionaProdutoNoCarrinho = async (event) => {
   if (event.target.classList.contains('item__add')) {
     const idProduto = event.target.parentElement.firstChild.innerText;
     const infoProduct = await infoProdutoSelecionado(idProduto);
-    const carrinho = document.querySelector('.cart__items'); 
+    const carrinho = document.getElementsByClassName('cart__items')[0]; 
     carrinho.appendChild(createCartItemElement(infoProduct));
     const innerInfo = carrinho.innerHTML;
     localStorage.setItem('infoCart', JSON.stringify(innerInfo));
@@ -87,8 +87,7 @@ const adicionaProdutoNoCarrinho = async (event) => {
 };
 
 const esvaziarCarrinho = () => {
-const listaDeCompras = document.querySelector('.cart__items');
-  listaDeCompras.innerHTML = '';
+  document.querySelector('.cart__items').innerHTML = '';
 };
 
 window.onload = async () => {
