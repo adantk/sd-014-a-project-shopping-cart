@@ -106,26 +106,26 @@ function updateLocalStorage() {
 
 const addEscutadorDnv = () => {
   const itemsLista = document.getElementsByClassName('cart__item');
-  for (let i = 0; i < itemsLista.length; i += 1){
+  for (let i = 0; i < itemsLista.length; i += 1) {
     itemsLista[i].addEventListener('click', cartItemClickListener);
   }
 }
 
 const carregarCarrinho = () => {
-  if(localStorage.getItem('itemsCart') != null) {
-  const carrinhoLocalStorage = localStorage.getItem('itemsCart')
-  let lista = document.getElementById('lista').innerHTML;
-  lista = lista + carrinhoLocalStorage
-  document.getElementById('lista').innerHTML = lista
-  addEscutadorDnv();
-  somaTotal();
+  if (localStorage.getItem('itemsCart') != null) {
+    const carrinhoLocalStorage = localStorage.getItem('itemsCart')
+    let lista = document.getElementById('lista').innerHTML;
+    lista = lista + carrinhoLocalStorage
+    document.getElementById('lista').innerHTML = lista
+    addEscutadorDnv();
+    somaTotal();
   }
 }
 
 const somaTotal = () => {
   const itemsLista = document.querySelectorAll('.cart__item')
   let resultado = 0;
-  for(let i = 0; i < itemsLista.length; i += 1){
+  for (let i = 0; i < itemsLista.length; i += 1) {
     const innerTextItem = itemsLista[i].innerText
     //Number trasforma o valor recuperado em numerioco para ser usado no futuro
     //pois ele esta sendo retirado de uma string
@@ -139,12 +139,20 @@ const somaTotal = () => {
   }
   let element = document.getElementById('total');
   element.innerHTML = resultado.toFixed(2);
+  const totalDOM = document.getElementById('total').innerText
+  const totalTamanho = document.getElementById('total').innerText.length
+  if (totalDOM[totalTamanho -1] == 0 && totalDOM[totalTamanho - 2] == 0) {
+    element.innerHTML = resultado.toFixed(0);
+  }
+  if (totalDOM[totalTamanho -1] == 0 && totalDOM[totalTamanho - 2] > 0) {
+    element.innerHTML = resultado.toFixed(1);
+  }
 }
 
 const limpaCarrinho = () => {
   let lista = document.getElementById('lista');
   let itens = document.getElementsByClassName('cart__item')
-  for (let i = itens.length - 1; i >= 0 ; i -= 1) {
+  for (let i = itens.length - 1; i >= 0; i -= 1) {
     lista.removeChild(lista.childNodes[i]);
   }
   updateLocalStorage();
