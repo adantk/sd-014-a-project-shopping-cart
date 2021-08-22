@@ -81,9 +81,14 @@ const adicionaProdutoNoCarrinho = async (event) => {
     const infoProduct = await infoProdutoSelecionado(idProduto);
     const carrinho = document.querySelector('.cart__items'); 
     carrinho.appendChild(createCartItemElement(infoProduct));
-  const innerInfo = carrinho.innerHTML;
-  localStorage.setItem('infoCart', JSON.stringify(innerInfo));
-}
+    const innerInfo = carrinho.innerHTML;
+    localStorage.setItem('infoCart', JSON.stringify(innerInfo));
+  }
+};
+
+const esvaziarCarrinho = () => {
+const listaDeCompras = document.querySelector('.cart__items');
+  listaDeCompras.innerHTML = '';
 };
 
 window.onload = async () => {
@@ -92,4 +97,6 @@ window.onload = async () => {
   const carrinho1 = document.querySelector('.cart__items');
   carrinho1.addEventListener('click', cartItemClickListener);
   carrinho1.innerHTML = JSON.parse(localStorage.getItem('infoCart'));
+  const btnEsvaziar = document.querySelector('.empty-cart');
+  btnEsvaziar.addEventListener('click', esvaziarCarrinho);
 };
