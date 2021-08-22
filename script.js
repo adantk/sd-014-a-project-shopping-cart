@@ -1,4 +1,4 @@
-const Cartitem = document.querySelector('.cart__items');
+const CartItems = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -26,20 +26,30 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 } 
 
+function apagarCarrinho() {
+  const button = document.querySelector('.empty-cart');
+
+  button.addEventListener('click', () => {
+    CartItems.innerText = '';
+    localStorage.clear();
+  });git a
+}
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
+  
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const target = event.target.classList;  
  if (target.contains('cart__item')) {    
-  Cartitem.removeChild(event.target);
+  CartItems.removeChild(event.target);
  }
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
+  li.id = salePrice;
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
@@ -54,18 +64,18 @@ function criarCarrinho() {
     const sku = elemento.firstChild.innerText;   
     const aPis = await fetch(`https://api.mercadolibre.com/items/${sku}`); 
     const requestJson = await aPis.json();
-    Cartitem.appendChild(createCartItemElement({ 
+    CartItems.appendChild(createCartItemElement({ 
       sku: requestJson.id, 
       name: requestJson.title, 
       salePrice: requestJson.price }));  
-      localStorage.setItem('storage', Cartitem.innerHTML);
+      localStorage.setItem('storage', CartItems.innerHTML);
     });
    });  
 }
 
 function getLocalStorage() {  
   const salvo = localStorage.getItem('storage');
-  Cartitem.innerHTML = salvo;
+  CartItems.innerHTML = salvo;
   const li = document.querySelectorAll('.cart__item');
   li.forEach((lista) => lista.addEventListener('click', cartItemClickListener)); 
 }
@@ -84,4 +94,5 @@ const getFetchComputador = async () => {
 window.onload = () => {  
     getFetchComputador();
     getLocalStorage();
+    apagarCarrinho();
    };
