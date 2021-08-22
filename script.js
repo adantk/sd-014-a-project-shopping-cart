@@ -1,3 +1,13 @@
+// requsito 7
+// Está carregando a página do mercado Livre com a palavra loading...
+function carregamentoDaPagina() {
+  const p = document.createElement('p');
+  p.className = 'loading';
+  p.innerText = 'loading...';
+  const sectionClass = document.querySelector('.items');
+  sectionClass.appendChild(p);
+}
+
 // requisito 6
 // Está removendo todos os itens do Produto no carrinho de compras.
 function esvaziarCarrinhoDeCompra() {
@@ -133,6 +143,7 @@ function criacaoPesquisaProdutos() {
 }
 
 window.onload = function onload() {
+  carregamentoDaPagina();
   criacaoPesquisaProdutos();
   esvaziarCarrinhoDeCompra();
   capturarLocalStoreValue();
