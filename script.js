@@ -21,7 +21,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  sectionItems.appendChild(section)
+  sectionItems.appendChild(section);
   return section;
 }
 
@@ -41,18 +41,12 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// Faz a busca da API, convertendo em .json e faz a criação do produto
 const getAPIProduct = async () => {
-  const getAPI = await fetch((`https://api.mercadolibre.com/sites/MLB/search?q=computador`))
-  console.log(getAPI);
-  const convertAPIJson = await getAPI.json();
-  console.log(convertAPIJson);
-  convertAPIJson.results.forEach(({id: sku, title: name, thumbnail: image}) => 
-  createProductItemElement({sku, name, image}));
-  console.log(convertAPIJson);
-}
-
-console.log(getAPIProduct());
+  const getAPI = await fetch(('https://api.mercadolibre.com/sites/MLB/search?q=computador')); // Criei uma constante que recebe a API
+  const convertAPIJson = await getAPI.json(); // Criei outra constante que faz a conversão da API para .json
+  convertAPIJson.results.forEach(({ id: sku, title: name, thumbnail: image }) =>
+    createProductItemElement({ sku, name, image })); // Faço a busca das informações do array em results e passo como parametro um objeto com id, nome e imagem para a criação do produto
+};
 
 window.onload = () => {
   getAPIProduct();
