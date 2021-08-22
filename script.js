@@ -1,3 +1,5 @@
+// const cartOl = document.querySelector('.cart__items'); // tentativa de colocar o elemento no escopo global. mas código quebra (por quê?)
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -5,6 +7,7 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// Requisito 1 - function fornecida que cria elementos (quadro de produtos)
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -12,6 +15,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// Requisito 1 - implementa function invocada na fetchApiProducts que marca o quadro de produtos na mainSection
 function createProductItemElement({ sku, name, image }) {
   const mainSection = document.querySelector('.items'); // captura a section superior (.items) para adicionar filhos à ela
   const section = document.createElement('section');
@@ -31,12 +35,33 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito 4 - function que cria o localStorage
+function setLocalStorage() {
+  const cartOl = document.getElementById('cart');
+  localStorage.setItem('local-cart', cartOl.innerHTML);
+}
+
+// Requisito 4 - function que captura o localStorage e coloca elementos no carrinho
+function getLocalStorage() {
+  const cartOl = document.getElementById('cart');
+  cartOl.innerHTML = localStorage.getItem('local-cart');
+}
+
+// Requisito 3 - implementa a function
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const cartOl = document.querySelector('.cart__items'); // capta ol (carrinho) que é pai do conteúdo a ser removido
   cartOl.removeChild(event.target); // remove filho (li) em que o evento de click acontece (event.target)
+  setLocalStorage(); // Requisito 4 - invoca function que faz setItem atualizando-o após remover um item do carrinho
 }
 
+// Requisito 4 - function que reativa o escutador de evento no carrinho criado da localStorage
+function listenerCartFromLocal() {
+  const cartItems = document.querySelectorAll('.cart__item');
+  cartItems.forEach((item) => item.addEventListener('click', cartItemClickListener));
+}
+
+// Requisito 2 - function que é chamada, cria elementos li, que são colocados como filhos de cartOl (carrinho)
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -45,6 +70,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// Requisito 2 - fetch da Api
 const getApiToInsertItemsOnCart = (id) => { // function busca, diretamente da API, dados dos itens que serão inseridos ao carrinho
   const cartOl = document.querySelector('.cart__items'); // capta a Ol que representa o conteúdo do carrinho para adicionar filhos à ela
   fetch(`https://api.mercadolibre.com/items/${id}`)
@@ -55,9 +81,11 @@ const getApiToInsertItemsOnCart = (id) => { // function busca, diretamente da AP
         name: product.title,
         salePrice: product.price,
       }));
+      setLocalStorage(); // Requisito 4 - invoca function que faz o setItem após adicionar itens ao carrinho
     });
 };
 
+// Requisito 2 - button function
 function addButton() { // fuction que habilita o evento de clique aos botões das sections dos produtos
   const addBtn = document.querySelectorAll('.item__add'); // querySelectorAll retorna uma NodeList (array)
   addBtn.forEach((button) => { // array de botões será percorrido e, um a um, habilitados os escutadores de eventos
@@ -67,6 +95,7 @@ function addButton() { // fuction que habilita o evento de clique aos botões da
   });
 }
 
+// Requisito 1
 function fetchApiProducts(item) {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`)
     .then((response) => response.json()
@@ -82,4 +111,6 @@ function fetchApiProducts(item) {
 
 window.onload = () => {
   fetchApiProducts('computador'); // para alterar o produto buscado da API basta modificar o parâmetro desta function
+  getLocalStorage();
+  listenerCartFromLocal();
 };
