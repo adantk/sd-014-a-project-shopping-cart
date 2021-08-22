@@ -1,6 +1,35 @@
 const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 const ID_URL_BASE = 'https://api.mercadolibre.com/items/';
 
+const totalPrice = () => {
+  const list = JSON.parse(localStorage.getItem('cart'));
+  const total = document.querySelector('.total-price');
+  if (list !== null) {
+    const price = list.reduce(((acc, element) => acc + parseFloat(element.price)), 0);
+    total.innerHTML = price;
+  } else {
+    total.innerHTML = 0;
+  }
+};
+
+const saveCart = () => {
+  const items = document.querySelectorAll('.cart__item');
+  if (items.length > 0) {
+    const cartList = Array.from(items).reduce((acc, element) => {
+      const id = element.innerText.split('|')[0].replace('SKU:', '').trim();
+      const title = element.innerText.split('|')[1].replace('NAME:', '').trim();
+      const price = element.innerText.split('|')[2].replace('PRICE: $', '').trim();
+      const obj = { id, title, price };
+      return [...acc, obj];
+    }, []); 
+    localStorage.setItem('cart', JSON.stringify(cartList));
+    totalPrice();
+  } else {
+    localStorage.setItem('cart', null);
+    totalPrice();
+  }
+};
+
 const fetchCartId = async (link) => {
   const response = await fetch(link);
   const objJson = await response.json();
@@ -16,18 +45,24 @@ function createProductImageElement(imageSource) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  saveCart();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  console.log('a');
   li.addEventListener('click', cartItemClickListener);
-  console.log(li.innerHTML);
-  console.log('a');
   document.querySelector('.cart__items').appendChild(li);
+  saveCart();
 }
+
+const loadCart = () => {
+  const items = JSON.parse(localStorage.getItem('cart'));
+  if (items !== null) {
+    items.forEach((item) => createCartItemElement(item));
+  }
+};
 
 const fullyLink = (id) => {
   const REAL_URL = `${ID_URL_BASE}${id}`;
@@ -78,5 +113,7 @@ const fetchList = async (link) => {
 // }
 
 window.onload = function onload() {
+  loadCart();
+  totalPrice();
   fetchList(API_URL);
 };
