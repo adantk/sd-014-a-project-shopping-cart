@@ -1,9 +1,28 @@
+// requisito 4
+// Está sendo salvo no localStore ao colocar e remover o produto do carrinho de compras.
+function salvarNoLocalStorage() {
+  const ol = document.querySelector('ol');
+  localStorage.setItem('KeyitemProduto', ol.innerHTML);
+}
+
 // Requesito 3
 // Removendo um produto do carrinho de compra ao clicar nele.
 function cartItemClickListener(event) {
   const removerProdutoClicadoli = event.target;
   const ol = document.querySelector('ol');
   ol.removeChild(removerProdutoClicadoli);
+  salvarNoLocalStorage();
+}
+
+// Faz parte do requisito 4
+function capturarLocalStoreValue() {
+  const ol = document.querySelector('ol');
+  const capturarLocalStoreProduto = localStorage.getItem('KeyitemProduto');
+  ol.innerHTML = capturarLocalStoreProduto;
+  const ListaProdutoli = document.querySelectorAll('li');
+  ListaProdutoli.forEach((li) => {
+    li.addEventListener('click', cartItemClickListener);
+  });
 }
 
 // Faz parte do requisito 2
@@ -19,6 +38,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 function adicionarNoCarrinho(li) {
   const ol = document.querySelector('.cart__items');
   ol.appendChild(li);
+  salvarNoLocalStorage();
 }
 
 // requisito 2
@@ -103,4 +123,5 @@ function criacaoPesquisaProdutos() {
 
 window.onload = function onload() {
   criacaoPesquisaProdutos();
+  capturarLocalStoreValue();
 };
