@@ -137,12 +137,21 @@ const somaTotal = () => {
     const valorItemI = Number(innerTextItem.substring(innerTextItem.indexOf('$') + 1))
     resultado += valorItemI
   }
-  var element = document.getElementById('total');
+  let element = document.getElementById('total');
   element.innerHTML = resultado.toFixed(2);
+}
+
+const limpaCarrinho = () => {
+  let lista = document.getElementById('lista');
+  let itens = document.getElementsByClassName('cart__item')
+  for (let i = itens.length - 1; i >= 0 ; i -= 1) {
+    lista.removeChild(lista.childNodes[i]);
+  }
+  updateLocalStorage();
 }
 
 window.onload = async () => {
   await fetchML();
   await carregarCarrinho();
-  // await document.getElementById('botao').addEventListener('click', somaTotal)
+  await document.getElementById('botao').addEventListener('click', limpaCarrinho)
 }
