@@ -1,9 +1,17 @@
+const keyWord = 'computador';
+
 const itemContainer = document.querySelector('.items');
-const shoppingCart = document.querySelector('.cart__title');
 const cart = document.querySelector('.cart__items');
 const totalToPay = document.querySelector('.total-price');
+const emptyCartBtn = document.querySelector('.empty-cart');
 
-const keyWord = 'computador';
+function emptyCart() {
+  cart.innerText = '';
+  updateLocalStorage();
+  updateValueToPay();
+}
+
+emptyCartBtn.addEventListener('click', emptyCart);
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
