@@ -1,4 +1,11 @@
 const endpoint = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+// const loadingMessage = document.createElement('div');
+
+// const createLoading = () => {
+//   loadingMessage.className = 'loading';
+//   loadingMessage.innerText = 'loading...';
+//   document.querySelector('.tems').appendChild.createLoading();
+// };
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -36,13 +43,13 @@ const appenItem = (item) => {
 };
 // desestruturo a lista de produtos, e utilizo as chaves que preciso, para criar um novo objeto que só contem elas.
 const listOfProducts = async () => {
-  const products = await getFenchAPI();
-  products.forEach((product) => {
-    const { id, title, thumbnail } = product;
-    const newProduct = { sku: id, name: title, image: thumbnail };
-    // adiciona cada produto como filho de <section class="items">
-    appenItem(createProductItemElement(newProduct));
-  });
+    const products = await getFenchAPI();
+    products.forEach((product) => {
+      const { id, title, thumbnail } = product;
+      const newProduct = { sku: id, name: title, image: thumbnail };
+      // adiciona cada produto como filho de <section class="items">
+      appenItem(createProductItemElement(newProduct));
+    });
 };
 
 function getSkuFromProductItem(item) {
