@@ -1,3 +1,14 @@
+// requisito 6
+// Está removendo todos os itens do Produto no carrinho de compras.
+function esvaziarCarrinhoDeCompra() {
+  const botaoEsvaziarCarrinhoClass = document.querySelector('.empty-cart');
+  botaoEsvaziarCarrinhoClass.addEventListener('click', () => {
+    const ol = document.querySelector('.cart__items');
+    ol.innerHTML = '';
+    localStorage.clear();
+  });
+}
+
 // requisito 4
 // Está sendo salvo no localStore ao colocar e remover o produto do carrinho de compras.
 function salvarNoLocalStorage() {
@@ -123,5 +134,6 @@ function criacaoPesquisaProdutos() {
 
 window.onload = function onload() {
   criacaoPesquisaProdutos();
+  esvaziarCarrinhoDeCompra();
   capturarLocalStoreValue();
 };
