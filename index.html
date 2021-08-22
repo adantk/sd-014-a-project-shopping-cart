@@ -10,14 +10,25 @@
   </head>
 
   <body>
-    <section class="container">
+    <header id="header-container">
+      <img src="image/mercadolivre_nova_logo.png" alt=">Logo - Mercado Livre Brasil" class="logo">
+  
+      <input type="text" id="input" placeholder="Buscar produtos, marcas e muito mais…">
+
+      <img src="image/bars-solid.svg" alt="menu" class="menu-icon">
+    
+    </header>
+    <main>
+      <section class="container">
       <section class="items"></section>
       <section class="cart">
         <span class="cart__title">Carrinho de compras</span>
         <button class="empty-cart">Esvaziar carrinho</button>
         <ol class="cart__items"></ol>
-        <p>Valor Total: R$<span class="total-price"></span></p> 
+        <p class="price">Valor Total: R$<span class="total-price"></span></p> 
       </section>
     </section>
+    </main>
+    <footer></footer>
   </body>
 </html>
