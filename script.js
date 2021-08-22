@@ -1,5 +1,9 @@
-function cartItemClickListener(/* event */) {
-  // coloque seu código aqui
+// Requesito 3
+// Removendo um produto do carrinho de compra ao clicar nele.
+function cartItemClickListener(event) {
+  const removerProdutoClicadoli = event.target;
+  const ol = document.querySelector('ol');
+  ol.removeChild(removerProdutoClicadoli);
 }
 
 // Faz parte do requisito 2
