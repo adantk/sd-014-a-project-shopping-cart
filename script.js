@@ -121,10 +121,9 @@ function createProductItemElement({
 
 window.onload = () => {};
 
-const fetchML = () => {
+const fetchML = async () => {
   const elementoLoading = document.getElementById('carregando');
-  elementoLoading.innerText = 'Carregando. Porfavor aguarde ...';
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((resposta) => {
       resposta.json().then((dados) => {
         const retornoDados = dados.results;
@@ -138,7 +137,7 @@ const fetchML = () => {
         }));
       });
     });
-  elementoLoading.remove();
+  await elementoLoading.remove();
 };
 
 const addEscutadorDnv = () => {
