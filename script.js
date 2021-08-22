@@ -79,7 +79,7 @@ const createObjForCart = (dados) => {
     name: dados.title,
     salePrice: dados.price
   }
-  return addItemCarrinho(objToCart)
+  return objToCart;
 };
 
 const getAddItemCarrinho = (event) => {
@@ -87,7 +87,8 @@ const getAddItemCarrinho = (event) => {
   fetch(`https://api.mercadolibre.com/items/${objClickSKU}`)
     .then((resposta) => {
       resposta.json().then((dados) => {
-        return createObjForCart(dados);
+        const objToCart = createObjForCart(dados);
+        return addItemCarrinho(objToCart);
       })
     })
 }
@@ -100,7 +101,7 @@ const addItemCarrinho = (objToCart) => {
 
 function updateLocalStorage() {
   localStorage.setItem('itemsCart', document.getElementById('lista').innerHTML)
-
+  somaTotal();
 }
 
 const addEscutadorDnv = () => {
@@ -117,26 +118,31 @@ const carregarCarrinho = () => {
   lista = lista + carrinhoLocalStorage
   document.getElementById('lista').innerHTML = lista
   addEscutadorDnv();
+  somaTotal();
   }
 }
 
 const somaTotal = () => {
-  const itemsLista = document.getElementsByClassName('cart__item')
-  let total = 0
-  for (let i = 0; i < itemsLista.length; i += 1){
-    itemsLista[i]
+  const itemsLista = document.querySelectorAll('.cart__item')
+  let resultado = 0;
+  for(let i = 0; i < itemsLista.length; i += 1){
+    const innerTextItem = itemsLista[i].innerText
+    //Number trasforma o valor recuperado em numerioco para ser usado no futuro
+    //pois ele esta sendo retirado de uma string
+
+    //Em substring(A,B) ira da posissao A até uma posição anterior de B
+    //mas no caso esta sendo usado substring(A) ira apenas da posissão A até o fim
+
+    //indexOf ira achar a posição do primeiro caracter passado
+    const valorItemI = Number(innerTextItem.substring(innerTextItem.indexOf('$') + 1))
+    resultado += valorItemI
   }
+  var element = document.getElementById('total');
+  element.innerHTML = resultado.toFixed(2);
 }
 
 window.onload = async () => {
   await fetchML();
   await carregarCarrinho();
-  // console.log(localStorage.itemsCart[1])
+  // await document.getElementById('botao').addEventListener('click', somaTotal)
 }
-
-
-// let botaoAddCarrinho1 = document.querySelector("#boxItems");
-// let botaoAddCarrinho2 = botaoAddCarrinho1.section
-// botaoAddCarrinho.addEventListener('click' , function(event) {
-//   console.log('teste')
-// })
