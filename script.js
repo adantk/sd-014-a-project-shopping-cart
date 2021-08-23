@@ -15,7 +15,7 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({
   sku,
   name,
-  image
+  image,
 }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -39,7 +39,7 @@ function cartItemClickListener(event) {
 function createCartItemElement({
   sku,
   name,
-  salePrice
+  salePrice,
 }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -49,33 +49,37 @@ function createCartItemElement({
 }
 
 const createLoad = () => {
-  const createLoad = document.createElement('p');
-  createLoad.className = 'loading';
-  createLoad.innerText = 'loading...'
-  document.body.appendChild(createLoad);
-}
+  const createLoading = document.createElement('p');
+  createLoading.className = 'loading';
+  createLoading.innerText = 'loading...';
+  document.body.appendChild(createLoading);
+};
 
 const removeLoad = () => document.body.removeChild(document.querySelector('.loading'));
 
+const getProducts = async () => {
+  createLoad();
+  const request = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const response = await request.json();
+  removeLoad();
+  const createItems = document.querySelector('.items');
+  response.results.forEach((item) => {
+    const itemDetails = {
+      sku: item.id,
+      name: item.title,
+      image: item.thumbnail,
+    };
+    createItems.appendChild(createProductItemElement(itemDetails));
+  });
+  };
+
 const clearCart = () => {
-  const clearBtn  = document.querySelector('.empty-cart');
+  const clearBtn = document.querySelector('.empty-cart');
   clearBtn.addEventListener('click', () => {
     const itemsCart = document.querySelector('.cart__items');
     itemsCart.innerHTML = '';
-  })
-}
-
-
-const getProducts = async () => {
-  createLoad();
-  const request = await fetch("https://api.mercadolibre.com/sites/MLB/search?q=computador");
-  const response = await request.json();
-  const results = response.results;
-  removeLoad();
-  return results;
-
-  console.log(results);
-}
+  });
+};
 
 window.onload = () => {
   getProducts();
