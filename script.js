@@ -1,6 +1,6 @@
-const obj = {
-  itemList: document.querySelector('.items'),
-  itemCart: document.querySelector('.cart__items'),
+const items = {
+  list: document.querySelector('.items'),
+  cart: document.querySelector('.cart__items'),
 };
 
 function createProductImageElement(imageSource) {
@@ -38,7 +38,8 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const cartItem = event.target.parentElement;
+  cartItem.removeChild(event.target);
 }
 
 function createCartItemElement({
@@ -57,10 +58,10 @@ const createLoad = () => {
   const createLoading = document.createElement('p');
   createLoading.className = 'loading';
   createLoading.innerText = 'loading...';
-  document.body.appendChild(createLoading);
+  items.list.appendChild(createLoading);
 };
 
-const removeLoad = () => document.body.removeChild(document.querySelector('.loading'));
+const removeLoad = () => items.list.removeChild(document.querySelector('.loading'));
 
 const getProducts = async () => {
   createLoad();
@@ -73,12 +74,12 @@ const getProducts = async () => {
       name: item.title,
       image: item.thumbnail,
     };
-    obj.itemList.appendChild(createProductItemElement(itemDetails));
+    items.list.appendChild(createProductItemElement(itemDetails));
   });
 };
 
 const addCart = () => {
-  obj.itemList.addEventListener('click', async (event) => {
+  items.list.addEventListener('click', async (event) => {
     const itemId = getSkuFromProductItem(event.target.parentElement);
     const request2 = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
     const response2 = await request2.json();
@@ -87,14 +88,14 @@ const addCart = () => {
       name: response2.title,
       salePrice: response2.price,
     };
-    obj.itemCart.appendChild(createCartItemElement(cartDetails));
+    items.cart.appendChild(createCartItemElement(cartDetails));
   });
 };
 
 const clearCart = () => {
   const clearBtn = document.querySelector('.empty-cart');
   clearBtn.addEventListener('click', () => {
-    obj.itemCart.innerHTML = '';
+    items.cart.innerHTML = '';
   });
 };
 
