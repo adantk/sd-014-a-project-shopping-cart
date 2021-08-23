@@ -1,11 +1,4 @@
 const endpoint = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-// const loadingMessage = document.createElement('div');
-
-// const createLoading = () => {
-//   loadingMessage.className = 'loading';
-//   loadingMessage.innerText = 'loading...';
-//   document.querySelector('.tems').appendChild.createLoading();
-// };
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -47,9 +40,10 @@ const listOfProducts = async () => {
     products.forEach((product) => {
       const { id, title, thumbnail } = product;
       const newProduct = { sku: id, name: title, image: thumbnail };
-      // adiciona cada produto como filho de <section class="items">
+      // adiciona cada produto como filho de <section class="items">, um a um.
       appenItem(createProductItemElement(newProduct));
     });
+    document.querySelector('.loading').remove();
 };
 
 function getSkuFromProductItem(item) {
@@ -84,7 +78,7 @@ const infoProdutoSelecionado = async (idProduto) => {
 // Adiciona o elemento retornado da função createCartItemElement(product) como filho do elemento <ol>
 const adicionaProdutoNoCarrinho = async (event) => {
   if (event.target.classList.contains('item__add')) {
-    const idProduto = event.target.parentElement.firstChild.innerText;
+    const idProduto = getSkuFromProductItem(event.target.parentElement);
     const infoProduct = await infoProdutoSelecionado(idProduto);
     const carrinho = document.getElementsByClassName('cart__items')[0]; 
     carrinho.appendChild(createCartItemElement(infoProduct));
@@ -92,9 +86,10 @@ const adicionaProdutoNoCarrinho = async (event) => {
     localStorage.setItem('infoCart', JSON.stringify(innerInfo));
   }
 };
-
+// Fução que zera o innerHTML da <ol class='cart__items'>, toda vez que apertado o <button class='empty-cart'>
 const esvaziarCarrinho = () => {
   document.querySelector('.cart__items').innerHTML = '';
+  localStorage.setItem('infoCart', JSON.stringify(''));
 };
 
 window.onload = async () => {
