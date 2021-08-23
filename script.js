@@ -61,4 +61,11 @@ return addItem(getSkuFromProductItem(event.target.parentElement));
 }
 });
 
-window.onload = () => { getAPI(); };
+const removeItensCart = () => {
+  const selectItem = document.querySelectorAll('.cart__item');
+  selectItem.forEach((li) => li.parentNode.removeChild(li));
+  const selectButton = document.querySelector('.empty-cart');
+  selectButton.addEventListener('click', removeItensCart);
+};
+
+window.onload = () => { getAPI(); removeItensCart(); };
