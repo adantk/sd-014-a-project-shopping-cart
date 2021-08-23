@@ -1,4 +1,5 @@
-const itemsCart = document.querySelector('.cart__items');
+const cartItems = '.cart__items';
+// const itemsCart = document.querySelector(cartItems);
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -29,20 +30,6 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
-// Requisito 5:
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item list-ml';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-
-  return li;
-}
-
 function sum() {
   let contador = 0;
   const total = document.getElementById('total-price');
@@ -61,23 +48,49 @@ function sum() {
   // console.log(contador);
   // console.log(li[li.length - 1].innerText.split('$')[1]);
 }
-// 3. Remova o item do carrinho de compras ao clicar nele
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
+
+function localStorageSave() {
+  const ol = document.querySelector(cartItems);
+  localStorage.setItem('list', ol.innerHTML);
+}
+
+function localStorageLoad() {
+  const ol2 = document.querySelector(cartItems);
+  ol2.innerHTML = localStorage.getItem('list');
+  localStorageSave();
+}
 function cartItemClickListener(event) {
   //  const ol2 = document.querySelector(itemsCart);
   //   ol2.removeChild(event.target);
   // localStorageSave();
   event.target.remove();
   sum();
+  localStorageSave();
 }
+// Requisito 5:
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item list-ml';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+
+  return li;
+}
+
+// 3. Remova o item do carrinho de compras ao clicar nele
 // 2. Adicione o produto ao carrinho de compras
 const fetchParaId = async (id) => {
   const resultProduct = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const jsonProduct = await resultProduct.json();
   console.log(jsonProduct);
   const obj = { sku: jsonProduct.id, name: jsonProduct.title, salePrice: jsonProduct.price };
-  const ol = document.querySelector('.cart__items');
+  const ol = document.querySelector(cartItems);
   ol.appendChild(createCartItemElement(obj));
   sum();
+  localStorageSave();
 };
 
 const clickButton = () => {
@@ -112,4 +125,4 @@ const botaoEsvazia = document.querySelector('.empty-cart');
 botaoEsvazia.addEventListener('click', apaga);
 // seleciono o item do meu carrinho, que me retorna uma espécie de array. 78, utilizo o while que 'enquanto' o itensCart tiver filhos, eu quero que remova o primeiro filho. HasChildNodes não leva parametro, me retornando true ou false. RemoveChild, recebe um parametro, na qual um elemento que ele tem que receber.  
 
-window.onload = () => { pegaComputador(); };
+window.onload = () => { pegaComputador(); localStorageLoad(); };
