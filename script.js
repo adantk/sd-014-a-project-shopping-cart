@@ -1,22 +1,22 @@
 const apiURL = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 const apiItensURL = 'https://api.mercadolibre.com/items/';
 
+let price = [];
+
+function setPrice() {
+  const totalPrice = document.querySelector('span.total-price');
+  const priceObject = price;
+  const sum = priceObject.reduce((acc, value) => acc + value.salePrice, 0);
+  totalPrice.innerText = sum;
+}
+
 function restoreProductList() {
   const savedProducts = localStorage.getItem('savedProducts');
   if (savedProducts != null) {
     return JSON.parse(savedProducts);
   }
-  return [];
+  return price;
 } 
-
-function saveProductList() {
-  const list = document.querySelectorAll('.cart__item');
-  const savedList = [];
-  list.forEach((item) => {
-    savedList.push({ innerText: item.innerText, class: item.getAttributeNode('class').value });
-  });
-  localStorage.setItem('savedProducts', JSON.stringify(savedList));
-}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -26,9 +26,19 @@ function createProductImageElement(imageSource) {
 }
 
 function cartItemClickListener(event) {
+  const list = document.querySelectorAll('.cart__item');
   const element = event.target;
+  console.log(element); 
+  let elementIndex = -1;
+  list.forEach((item, index) => {
+    if (item === element) {
+      elementIndex = index;
+    }
+  });
+  price.splice(elementIndex, 1);
   element.remove();
-  saveProductList();
+  setPrice();
+  localStorage.setItem('savedProducts', JSON.stringify(price));
 }
 
 function createCustomElement(element, className, innerText) {
@@ -39,14 +49,6 @@ function createCustomElement(element, className, innerText) {
     e.addEventListener('click', cartItemClickListener);
   }
   return e;
-}
-
-function createLoadItems() {
-  const ol = document.querySelector('.cart__items');
-  const rescueProduct = restoreProductList();
-  for (let i = 0; i < rescueProduct.length; i += 1) {
-    ol.appendChild(createCustomElement('li', rescueProduct[i].class, rescueProduct[i].innerText));
-  }
 }
 
 function getSkuFromProductItem(item) {
@@ -61,22 +63,43 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-async function addProductToCart(event) {
+function createLoadItems() {
   const ol = document.querySelector('.cart__items');
-  const skuID = getSkuFromProductItem(event.target.parentNode);
+  const rescueProduct = restoreProductList();
+  rescueProduct.forEach(({ name, salePrice, sku }) => {
+    const li = createCartItemElement({ name, salePrice, sku });
+    ol.appendChild(li);
+  });
+  price = rescueProduct;
+}
+
+async function getObject(element) {
+  const skuID = getSkuFromProductItem(element);
   const endpoint = `${apiItensURL}${skuID}`;
   const itemsResult = await (await fetch(endpoint)).json();
+  return itemsResult;
+}
+
+function setLocalStorage({ sku, name, salePrice }) {
+  price.push({ sku, name, salePrice });
+  localStorage.setItem('savedProducts', JSON.stringify(price));
+}
+
+async function appendProduct(event) {
+  const ol = document.querySelector('.cart__items');
+  const itemsResult = await getObject(event.target.parentNode);
   const { id: sku, title: name, price: salePrice } = itemsResult;
   const result = createCartItemElement({ sku, name, salePrice });
+  setLocalStorage({ sku, name, salePrice });
   ol.appendChild(result);
-  saveProductList();
+  setPrice();
 }
 
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
   const button = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
-  button.addEventListener('click', addProductToCart);
+  button.addEventListener('click', appendProduct);
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -102,7 +125,8 @@ function clearCart() {
   list.forEach((item) => {
     item.remove();
   });
-  saveProductList();
+  price = [];
+  localStorage.setItem('savedProducts', JSON.stringify(price));
 }
 
 function clearCartButton() {
