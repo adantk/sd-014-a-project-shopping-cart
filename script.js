@@ -44,9 +44,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector("span.item__sku").innerText;
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
+
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement("li");
@@ -68,6 +66,11 @@ const addCart = async (event) => {
       getCartList.appendChild(createCartItemElement({ sku, name, salePrice }));
     });
 };
+
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+  return event.target.parentNode.removeChild(event.target);
+}
 
 window.onload = async () => {
   await fetchMercadoAPI("computador");
