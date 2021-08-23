@@ -84,6 +84,15 @@ const fetchList = async () => {
   addItem();
 };// fetchList
 
+const clearListItems = () => {
+  const btnClear = document.querySelector('.empty-cart');
+  const listProduct = document.getElementById('cart__items');
+  const clear = () => {
+    listProduct.innerHTML = '';
+    localStorage.clear();
+  }; btnClear.addEventListener('click', clear);
+};
+
 const storage = () => {
   const listProduct = document.getElementById('cart__items');
   listProduct.innerHTML = localStorage.getItem('lista');
@@ -93,4 +102,5 @@ const storage = () => {
 window.onload = () => {
   fetchList();
   storage();
+  clearListItems();
 };
