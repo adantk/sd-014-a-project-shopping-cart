@@ -1,4 +1,5 @@
-// const cartOl = document.querySelector('.cart__items'); // tentativa de colocar o elemento no escopo global. mas código quebra (por quê?)
+const cartOl = document.querySelector('.cart__items');
+const totalPrice = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -37,28 +38,31 @@ function getSkuFromProductItem(item) {
 
 // Requisito 4 - function que cria o localStorage
 function setLocalStorage() {
-  const cartOl = document.getElementById('cart');
   localStorage.setItem('local-cart', cartOl.innerHTML);
-}
-
-// Requisito 4 - function que captura o localStorage e coloca elementos no carrinho
-function getLocalStorage() {
-  const cartOl = document.getElementById('cart');
-  cartOl.innerHTML = localStorage.getItem('local-cart');
 }
 
 // Requisito 3 - implementa a function
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  const cartOl = document.querySelector('.cart__items'); // capta ol (carrinho) que é pai do conteúdo a ser removido
-  cartOl.removeChild(event.target); // remove filho (li) em que o evento de click acontece (event.target)
+  const cart = document.querySelector('.cart__items'); // capta ol (carrinho) que é pai do conteúdo a ser removido
+  // const li = document.querySelectorAll('.cart-item');
+  let count = Number(totalPrice.innerText);
+  const num = event.target.innerText.split('$')[1];
+  count -= num;
+  totalPrice.innerText = count;
+  cart.removeChild(event.target); // remove filho (li) em que o evento de click acontece (event.target)
   setLocalStorage(); // Requisito 4 - invoca function que faz setItem atualizando-o após remover um item do carrinho
+}
+
+// Requisito 4 - function que captura o localStorage e coloca elementos no carrinho
+function getLocalStorage() {
+  cartOl.innerHTML = localStorage.getItem('local-cart');
 }
 
 // Requisito 4 - function que reativa o escutador de evento no carrinho criado da localStorage
 function listenerCartFromLocal() {
-  const cartItems = document.querySelectorAll('.cart__item');
-  cartItems.forEach((item) => item.addEventListener('click', cartItemClickListener));
+  const cartLi = document.querySelectorAll('.cart__item');
+  cartLi.forEach((item) => item.addEventListener('click', cartItemClickListener));
 }
 
 // Requisito 2 - function que é chamada, cria elementos li, que são colocados como filhos de cartOl (carrinho)
@@ -69,10 +73,16 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+function sumTotal() {
+  let count = Number(totalPrice.innerText);
+  const pegaList = document.querySelectorAll('.cart__item');
+  const num = Number(pegaList[pegaList.length - 1].innerText.split('$')[1]);
+  count += num;
+  totalPrice.innerText = count;
+}
 
 // Requisito 2 - fetch da Api
 const getApiToInsertItemsOnCart = (id) => { // function busca, diretamente da API, dados dos itens que serão inseridos ao carrinho
-  const cartOl = document.querySelector('.cart__items'); // capta a Ol que representa o conteúdo do carrinho para adicionar filhos à ela
   fetch(`https://api.mercadolibre.com/items/${id}`)
     .then((response) => response.json())
     .then((product) => {
@@ -82,6 +92,7 @@ const getApiToInsertItemsOnCart = (id) => { // function busca, diretamente da AP
         salePrice: product.price,
       }));
       setLocalStorage(); // Requisito 4 - invoca function que faz o setItem após adicionar itens ao carrinho
+      sumTotal();
     });
 };
 
