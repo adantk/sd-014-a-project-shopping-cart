@@ -127,8 +127,19 @@ const createItemsList = async () => {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+const deleteItems = () => {
+  const deleteButton = document.querySelector('.empty-cart');
+  deleteButton.addEventListener('click', () => {
+  const capOls = document.querySelector('.cart__items');
+  capOls.innerHTML = '';
+  capSpanValue.innerText = 0;
+  localStorage.clear();
+  });
+};
+
 window.onload = async () => {
   await createItemsList();
   retornaItems();
   listenerItemSaved();
+  deleteItems();
 };
