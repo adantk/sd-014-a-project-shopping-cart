@@ -39,10 +39,24 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const saveStorage = () => {
+  localStorage.clear();
+  const ol = document.querySelector(olClass);
+  localStorage.setItem('saveCart', ol.innerHTML);
+};
+
 function cartItemClickListener(event) {
   const ol = document.querySelector(olClass);
   ol.removeChild(event.target);
+  saveStorage();
 }
+
+const loadStorage = () => {
+  const ol = document.querySelector(olClass);
+  ol.innerHTML = localStorage.getItem('saveCart');
+  ol.addEventListener('click', cartItemClickListener);
+  saveStorage();
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');  
@@ -51,6 +65,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
+  saveStorage();
   return li;
 }
 
@@ -64,11 +79,10 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 const buttonClick = () => {
   const cartButton = document.querySelectorAll('.item__add');
-  console.log(cartButton);
   cartButton.forEach((button) => {
   button.addEventListener('click', (event) => {
     const getId = getSkuFromProductItem(event.target.parentElement);
-    console.log(getId);
+    console.log(event.target);
     fetchCart(getId);
   });  
 });
@@ -79,11 +93,13 @@ const ol = document.querySelector(olClass);
 const cleanButton = document.querySelector('.empty-cart');
 cleanButton.addEventListener('click', () => {
   ol.innerHTML = '';
+  saveStorage();
 });
 };
 
-window.onload = async () => { 
+window.onload = async () => {
    await fetchApi();
    await buttonClick();
    await cleanCart();
+   await loadStorage();
 };
