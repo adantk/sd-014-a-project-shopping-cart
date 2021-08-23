@@ -2,6 +2,7 @@ const listaProdutos = document.querySelector('.items');
 const itensCarrinho = document.querySelector('.cart__items');
 const btnEmptyCart = document.querySelector('.empty-cart');
 const totalPrice = document.querySelector('.total-price');
+const loading = document.querySelector('.loading');
 
 const sumTotalPrice = () => {
   let priceSum = 0;
@@ -10,6 +11,8 @@ const sumTotalPrice = () => {
   });
   totalPrice.innerText = `${priceSum}`;
 };
+
+const isLoading = () => loading.parentNode.removeChild(loading);
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -59,6 +62,7 @@ const fetchProdutos = async (query) => {
   const url = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
   const response = await fetch(url);
   const data = await response.json();
+  isLoading();
   return data;
 };
 
