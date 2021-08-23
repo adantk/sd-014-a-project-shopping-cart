@@ -1,4 +1,12 @@
 const itemsCart = document.querySelector('.cart__items');
+// function localStorageSave() {
+//   localStorage.clear();
+//   localStorage.setItem('lista', itemsCart.innerHTML);
+// }
+// function localStorageLoad() {
+//   itemsCart.innerHTML = localStorage.getItem('lista');
+//   // const cart = document.
+// }
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -33,44 +41,42 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// const localStorageSave = () => {
-//   localStorage.clear();
-//   const ol = document.querySelector(itemsCart);
-//   localStorage.setItem('listCart', ol.innerHTML);
-// };
+// Requisito 5:
 
-// const localStorageLoad = () => {
-//   const ol = document.querySelector(itemsCart);
-//   ol.innerHTML = localStorage.getItem('listCart');
-// localStorageSave();
-// };
-
+function sum() {
+  let contador = 0;
+  const total = document.getElementById('total-price');
+  const li = document.querySelectorAll('.list-ml');
+  li.forEach((item) => {
+    const valor = parseFloat((item.innerText).split('$')[1]);
+    console.log(valor);
+    contador += valor;
+  });
+  if (contador > 0) {
+    total.innerText = contador;
+  } else {
+    total.innerText = '';
+  }
+  // console.log(num);
+  // console.log(contador);
+  // console.log(li[li.length - 1].innerText.split('$')[1]);
+}
 // 3. Remova o item do carrinho de compras ao clicar nele
 function cartItemClickListener(event) {
   //  const ol2 = document.querySelector(itemsCart);
   //   ol2.removeChild(event.target);
   // localStorageSave();
   event.target.remove();
+  // localStorageSave();
+  sum();
 }
-
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
-  li.className = 'cart__item';
+  li.className = 'cart__item list-ml';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
 
   return li;
-}
-// Requisito 4:
-function sum() {
-  const classTotalPrice = document.querySelector('.total-price');
-  let contador = Number(classTotalPrice.innerText);
-  const li = document.querySelectorAll('.cart__item');
-  const num = Number(li[li.length - 1].innerText.split('$')[1]);
-  contador += num;
-  classTotalPrice.innerText = contador;
-  console.log(contador);
-  console.log(sum);
 }
 // 2. Adicione o produto ao carrinho de compras
 const fetchParaId = async (id) => {
@@ -91,6 +97,7 @@ const clickButton = () => {
       fetchParaId(produtoId);
     });
   });
+  // localStorageSave();
 };
 
 // 1. Crie uma listagem de produtos
@@ -108,9 +115,8 @@ const pegaComputador = async () => {
 // 6. Crie um botão para limpar carrinho de compras
 function apaga() {
   const itensCart = document.querySelector(itemsCart);
-  while (itensCart.hasChildNodes()) {
-    itensCart.removeChild(itensCart.firstChild);
-  }
+  itensCart.innerHTML = '';
+  sum();
 }
 const botaoEsvazia = document.querySelector('.empty-cart');
 botaoEsvazia.addEventListener('click', apaga);
