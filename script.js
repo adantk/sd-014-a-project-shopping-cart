@@ -1,3 +1,8 @@
+// add endpoint project.
+const dinamicKey = 'computador';
+const apiMl = `https://api.mercadolibre.com/sites/MLB/search?q=${dinamicKey}`;
+console.log(apiMl);
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -20,7 +25,6 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
 
@@ -40,4 +44,22 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+async function fetchProducts() {
+  const response = await fetch(apiMl);
+  const json = await response.json();
+  return json.results;
+}
+
+function addProducts() {
+  const productsSection = document.querySelector('.items');
+  fetchProducts().then((products) => {
+    products.forEach(({ id: sku, title: name, thumbnail: image }) => {
+      const product = createProductItemElement({ sku, name, image });
+      productsSection.appendChild(product);
+    });
+  });
+}
+
+window.onload = () => { 
+  addProducts();
+};
