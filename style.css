@@ -1,3 +1,7 @@
+html {
+  background-color: #4F4F4F;
+}
+
 .container {
   display: flex;
   justify-content: space-around;
