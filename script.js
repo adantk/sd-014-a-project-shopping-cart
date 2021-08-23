@@ -1,6 +1,23 @@
 const apiURL = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 const apiItensURL = 'https://api.mercadolibre.com/items/';
 
+function restoreProductList() {
+  const savedProducts = localStorage.getItem('savedProducts');
+  if (savedProducts != null) {
+    return JSON.parse(savedProducts);
+  }
+  return [];
+} 
+
+function saveProductList() {
+  const list = document.querySelectorAll('.cart__item');
+  const savedList = [];
+  list.forEach((item) => {
+    savedList.push({ innerText: item.innerText, class: item.getAttributeNode('class').value });
+  });
+  localStorage.setItem('savedProducts', JSON.stringify(savedList));
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -8,20 +25,32 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+function cartItemClickListener(event) {
+  const element = event.target;
+  element.remove();
+  saveProductList();
+}
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
+  if (element === 'li') {
+    e.addEventListener('click', cartItemClickListener);
+  }
   return e;
+}
+
+function createLoadItems() {
+  const ol = document.querySelector('.cart__items');
+  const rescueProduct = restoreProductList();
+  for (let i = 0; i < rescueProduct.length; i += 1) {
+    ol.appendChild(createCustomElement('li', rescueProduct[i].class, rescueProduct[i].innerText));
+  }
 }
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  const element = event.target;
-  element.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -40,6 +69,7 @@ async function addProductToCart(event) {
   const { id: sku, title: name, price: salePrice } = itemsResult;
   const result = createCartItemElement({ sku, name, salePrice });
   ol.appendChild(result);
+  saveProductList();
 }
 
 function createProductItemElement({ sku, name, image }) {
@@ -69,4 +99,5 @@ async function createProductList(element) {
 
 window.onload = () => {
   createProductList('computador');
+  createLoadItems();
 };
