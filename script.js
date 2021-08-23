@@ -1,20 +1,9 @@
 const storageKey = 'ol-content';
-const cartSection = document.querySelector('.cart');
+const cartSection = document.querySelector('.internal-cart');
 const itemsSection = document.querySelector('.items');
 const cartItemsSection = document.querySelector('.cart__items');
 const emptyCartButton = document.querySelector('.empty-cart');
 const totalPriceSpan = document.querySelector('.total-price');
-
-function deleteLoading() {
-  cartSection.removeChild(document.querySelector('.loading'));
-}
-
-function createLoading() {
-  const loadingSpan = document.createElement('span');
-  loadingSpan.innerText = 'Carregando página ...';
-  loadingSpan.className = 'loading';
-  cartSection.appendChild(loadingSpan);  
-}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -36,9 +25,18 @@ function createProductItemElement({ sku, name, image, price }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('span', 'item__price', `$${price.toFixed(2)}`));
+  section.appendChild(createCustomElement('span', 'item__price', `$ ${price.toFixed(2)}`));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   return section;
+}
+
+function deleteLoading() {
+  cartSection.removeChild(document.querySelector('.loading'));
+}
+
+function createLoading() {
+  const loadingSpan = createCustomElement('span', 'loading', 'Carregando página ...');
+  cartSection.appendChild(loadingSpan);  
 }
 
 function testReponse(response) {
