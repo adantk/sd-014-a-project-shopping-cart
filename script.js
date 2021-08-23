@@ -97,7 +97,21 @@ async function createProductList(element) {
   });
 }
 
+function clearCart() {
+  const list = document.querySelectorAll('.cart__item');
+  list.forEach((item) => {
+    item.remove();
+  });
+  saveProductList();
+}
+
+function clearCartButton() {
+  const clearButton = document.querySelector('.empty-cart');
+  clearButton.addEventListener('click', clearCart);
+}
+
 window.onload = () => {
   createProductList('computador');
   createLoadItems();
+  clearCartButton();
 };
