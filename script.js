@@ -84,8 +84,10 @@ const adicionaProdutoNoCarrinho = async (event) => {
     carrinho.appendChild(createCartItemElement(infoProduct));
     const innerInfo = carrinho.innerHTML;
     localStorage.setItem('infoCart', JSON.stringify(innerInfo));
+    console.log(infoProduct.salePrice);
   }
 };
+
 // Fução que zera o innerHTML da <ol class='cart__items'>, toda vez que apertado o <button class='empty-cart'>
 const esvaziarCarrinho = () => {
   document.querySelector('.cart__items').innerHTML = '';
