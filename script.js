@@ -73,7 +73,7 @@ const productsList = async (query) => {
 async function totalPrice(price) {
   const total = document.querySelector('.total-price');
   const result = parseFloat(total.innerText) + parseFloat(price);
-  totalPrice.innerText = result;
+  total.innerText = result;
 }
 
 async function addCart() {
