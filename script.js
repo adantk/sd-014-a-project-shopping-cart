@@ -1,8 +1,25 @@
 // por necessidade de reutilizar o mesmo caminho, e evitar repetição
 const currentCart = document.querySelector('.cart__items');
 const itemsFromSection = document.querySelector('.items');
+const totalValue = document.querySelector('.total-price');
+
+const finishedLoad = () => {
+  const loader = document.querySelector('.loading');
+  loader.parentNode.removeChild(loader);
+};
 const saveToLocalStorage = () => {
+  localStorage.clear();
   localStorage.setItem('savedCart', currentCart.innerHTML);
+};
+// função abaixo créditada ao Guilherme Roos,que solicitou code review, simples sucinta e fácil de entender
+// fonte: https://github.com/tryber/sd-014-a-project-shopping-cart/pull/82 
+// linhas 7 a 13 do script.js
+const updateCartValue = () => {
+  let total = 0;
+  currentCart.childNodes.forEach((item) => {
+    total += parseFloat(item.innerText.split('$')[1]);
+  });
+  totalValue.innerText = `${total}`;
 };
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -37,6 +54,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
   event.currentTarget.remove();
   saveToLocalStorage();
+  updateCartValue();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -78,6 +96,7 @@ async function fetchProduct(id) {
    // const productToJson = await productInfo.json();
    const createdProduct = createCartItemElement(productInfo);
     cart.appendChild(createdProduct);
+    updateCartValue();
   }));
   saveToLocalStorage();
 }
@@ -91,7 +110,8 @@ const emptyCart = () => {
   cleatButton.addEventListener('click', () => {
   currentCart.innerHTML = '';
   localStorage.clear();
-  saveToLocalStorage(); 
+  saveToLocalStorage();
+  updateCartValue(); 
   });
 };
 window.onload = async () => {
@@ -99,4 +119,5 @@ window.onload = async () => {
   getFromLocalStorage();
   await addToCart();
   emptyCart();
+  finishedLoad();
 };
