@@ -88,7 +88,13 @@ const clearCart = () => {
   });
 };
 
+const runLocalStorage = () => {
+  itensCarrinho.innerHTML = localStorage.getItem('list') ? localStorage.getItem('list') : '';
+  itensCarrinho.childNodes.forEach((li) => li.addEventListener('click', cartItemClickListener));  
+};
+
 window.onload = () => { 
+  runLocalStorage();
   fetchProdutos('computador')
   .then((data) => data.results)
   .then((results) => results.forEach((item) => {
