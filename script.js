@@ -1,12 +1,4 @@
 const itemsCart = document.querySelector('.cart__items');
-// function localStorageSave() {
-//   localStorage.clear();
-//   localStorage.setItem('lista', itemsCart.innerHTML);
-// }
-// function localStorageLoad() {
-//   itemsCart.innerHTML = localStorage.getItem('lista');
-//   // const cart = document.
-// }
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -42,6 +34,14 @@ function getSkuFromProductItem(item) {
 }
 
 // Requisito 5:
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item list-ml';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+
+  return li;
+}
 
 function sum() {
   let contador = 0;
@@ -67,16 +67,7 @@ function cartItemClickListener(event) {
   //   ol2.removeChild(event.target);
   // localStorageSave();
   event.target.remove();
-  // localStorageSave();
   sum();
-}
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item list-ml';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-
-  return li;
 }
 // 2. Adicione o produto ao carrinho de compras
 const fetchParaId = async (id) => {
@@ -97,7 +88,6 @@ const clickButton = () => {
       fetchParaId(produtoId);
     });
   });
-  // localStorageSave();
 };
 
 // 1. Crie uma listagem de produtos
@@ -114,7 +104,7 @@ const pegaComputador = async () => {
 
 // 6. Crie um botão para limpar carrinho de compras
 function apaga() {
-  const itensCart = document.querySelector(itemsCart);
+  const itensCart = document.querySelector('.cart__items');
   itensCart.innerHTML = '';
   sum();
 }
@@ -123,4 +113,3 @@ botaoEsvazia.addEventListener('click', apaga);
 // seleciono o item do meu carrinho, que me retorna uma espécie de array. 78, utilizo o while que 'enquanto' o itensCart tiver filhos, eu quero que remova o primeiro filho. HasChildNodes não leva parametro, me retornando true ou false. RemoveChild, recebe um parametro, na qual um elemento que ele tem que receber.  
 
 window.onload = () => { pegaComputador(); };
-// localStorageLoad();
