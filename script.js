@@ -1,3 +1,7 @@
+const valorTotal = document.querySelector('.total-price');
+let count = Number(localStorage.getItem('valor-total'));
+valorTotal.innerText = 0;
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,10 +33,23 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function saveStorage() {
+  localStorage.setItem('valor-total', count);
+}
+
+const subtracao = (event) => {
+  console.log(event);
+  const numero = Number(event.innerText.split('$')[1]);
+  count -= numero;
+  valorTotal.innerText = count;
+  saveStorage();
+};
+
 function cartItemClickListener(event) {
   const ol = document.querySelector('.cart__items');
   ol.removeChild(event.target);
   localStorage.setItem('lista', ol.innerHTML);
+  subtracao(event.target);
 }
 
 function atualizaCarrinho() {
@@ -47,21 +64,49 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+// window.onload = () => { };
+// const carregaLoading = () => {
+//   const textoLoading = document.createElement('p');
+//   textoLoading.classList.add = 'loading';
+//   textoLoading.innerHTML = 'Loading ...';
+//   document.body.appendChild(textoLoading);
+// 
+
+// function sum() {
+//   if (totalPrice === null) {
+//     totalPrice = '0';
+//   }
+
+//   let totPrice = parseFloat(totalPrice.innerText);
+//   console.log(typeof totPrice);
+//   let count = 0;
+//   const pegaList = document.querySelectorAll('.cart__item');
+//   totPrice.innerHTML = count;
+//   let ultimoclickNum = parseFloat(pegaList[pegaList.length - 1].innerText.split('$')[1]);
+
+//  let soma =  ultimoclickNum + ultimoclickNum;
+//  console.log(soma);
+// }
+
+const sum = () => {
+  const pegaList = document.querySelectorAll('.cart__item');
+  const num = Number(pegaList[pegaList.length - 1].innerText.split('$')[1]);
+  count += num;
+  valorTotal.innerText = count;
+  saveStorage();
+};
 
 const segundaApi = (id) => {
   const pcItemOl = document.querySelector('.cart__items');
   fetch(`https://api.mercadolibre.com/items/${id}`)
-    .then((response) => response.json())
-    .then((computador) => {
-      pcItemOl.appendChild(createCartItemElement({
-        sku: computador.id, name: computador.title, salePrice: computador.price,
+    .then((response) => response.json()
+      .then((computador) => {
+        pcItemOl.appendChild(createCartItemElement({
+          sku: computador.id, name: computador.title, salePrice: computador.price,
+        }));
+        sum();
+        localStorage.setItem('lista', pcItemOl.innerHTML);
       }));
-      localStorage.setItem('lista', pcItemOl.innerHTML);
-      // const liStorage = localStorage.getItem('lista');
-      // console.log(liStorage);
-      // const liObjeto = JSON.parse(liStorage);
-      // return liObjeto;
-    });
 };
 
 function buttonAdicionar() {
@@ -73,61 +118,44 @@ function buttonAdicionar() {
   });
 }
 
-// function cartItemClickListener(event) {
-//    const ol = document.querySelector('.cart__items');
-//   const limpaItemLi = document.querySelectorAll('.cart__item');
-//   limpaItemLi.forEach((clear) => {
-//   clear.addEventListener('click', () => {
-//   const pcSelecionado = clear;
-//    if (event.target.classList.contains('cart__item')) { 
-//   ol.removeChild(pcSelecionado);
-//   }
-//    });
-//   });
-//   }
-//  refatorando com ajuda do MaTheus Souza e Thiago Oliveira
-
-//   const container = document.querySelector('.container');
-//   const botaoLimpar = document.createElement('button');
-//   botaoLimpar.classList.add('empty-cart');
-//   botaoLimpar.innerText = 'Limpar Carrinho';
-//   botaoLimpar.appendChild(container);
-//   return botaoLimpar;
-
 function limparCarrinho() {
   const btLimpaCarrinho = document.querySelector('.empty-cart');
   const OlItensEscolhidos = document.getElementById('ol__items');
   btLimpaCarrinho.addEventListener('click', () => {
     OlItensEscolhidos.innerHTML = '';
+   valorTotal.innerText = 0;
     localStorage.clear();
   });
 }
-// function loading() {
-//   const campoAcionaLoading = document.createElement('div');
-//   campoAcionaLoading.classList.add('loading');
-//   campoAcionaLoading.style.backgroundColor = 'pink';
-//   campoAcionaLoading.addEventListener('click', () => {
-//     campoAcionaLoading.innerHTML = 'Carregando, aguarde...';
-//     campoAcionaLoading.innerHTML = '';
-//     return campoAcionaLoading;
-//   });
+
+// function criarLoading() {
+//    const loading = document.createElement('p');
+//   textoLoading.classList.add = 'loading';
+//   textoLoading.innerHTML = 'Loading ...';
+//   document.body.appendChild(textoLoading);
 // }
-// loading();
+
+function storageValorFinal() {
+  const ol = document.getElementById('ol__items');
+  valorTotal.innerText = count;
+  ol.innerHTML = localStorage.getItem('lista');
+}
 
 function fetchApiProduct() {
+  // carregaLoading();
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+    //  .then(() => removerCarregaLoading.remove())
     .then((response) => response.json()
       .then((computadores) =>
         computadores.results.forEach((comput) => {
           createProductItemElement({ sku: comput.id, name: comput.title, image: comput.thumbnail });
         }))
-      .then(() => buttonAdicionar()));
+      .then(() => buttonAdicionar())
+      .then(() => storageValorFinal())
+      .then(() => atualizaCarrinho()));
 }
 
 window.onload = () => {
   fetchApiProduct();
   limparCarrinho();
-  const ol = document.getElementById('ol__items');
-  ol.innerHTML = localStorage.getItem('lista');
-  atualizaCarrinho();
 };
