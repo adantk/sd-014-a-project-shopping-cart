@@ -122,13 +122,18 @@ function emptyCart() {
   });
 }
 
-function createLoading() {
-  const loading = document.createElement('h1');
-  loading.innerText = 'loading...';
-  loading.style.display = 'flex';
-  loading.style.justifyContent = 'center';
+// function createLoading() {
+//   const loading = document.createElement('h1');
+//   loading.innerText = 'loading...';
+//   loading.style.display = 'flex';
+//   loading.style.justifyContent = 'center';
 
-  document.body.appendChild(loading);
+//   document.body.appendChild(loading);
+// }
+
+function removeLoading() {
+  const loading = document.querySelector('h1');
+  document.body.removeChild(loading);
 }
 
 // Requisito 1
@@ -142,12 +147,13 @@ function fetchApiProducts(item) {
           image: product.thumbnail,
         });
       }))
+      .then(() => removeLoading())
       .then(() => addButton()));
 }
 
 window.onload = async () => {
+  // createLoading(); criando dinamicamente não passou o teste. ao abrir o npx cypress pude ver o esperado
   fetchApiProducts('computador'); // para alterar o produto buscado da API basta modificar o parâmetro desta function
-  createLoading();
   emptyCart();
   getLocalStorage();
   listenerCartFromLocal();
