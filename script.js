@@ -57,18 +57,20 @@ function localStorageSave() {
   localStorage.setItem('list', ol.innerHTML);
 }
 
-function localStorageLoad() {
-  const ol2 = document.querySelector(cartItems);
-  ol2.innerHTML = localStorage.getItem('list');
-  localStorageSave();
-}
 function cartItemClickListener(event) {
   //  const ol2 = document.querySelector(itemsCart);
   //   ol2.removeChild(event.target);
   // localStorageSave();
-  event.target.remove();
+  if (event.target.className === 'cart__item list-ml') event.target.remove();
   sum();
   localStorageSave();
+}
+function localStorageLoad() {
+  const ol2 = document.querySelector(cartItems);
+  ol2.innerHTML = localStorage.getItem('list');
+  Array.from(ol2.children).forEach((cadaLi) => {
+    cadaLi.addEventListener('click', cartItemClickListener);
+  });
 }
 // Requisito 5:
 function createCartItemElement({ sku, name, salePrice }) {
