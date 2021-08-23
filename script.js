@@ -88,6 +88,11 @@ function fetchApiProduct() {
         const newItens = createProductItemElement({ sku, name, image });
         itemApi.appendChild(newItens);
       }))
+      .then(() => {
+        const loading = document.querySelector('.loading');
+        const body = document.querySelector('body');
+        body.removeChild(loading);
+      })
       .then(() => addCarrinho()));
 }
 
