@@ -16,12 +16,11 @@ function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
-  const parentElmt = document.querySelector('.items');
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  const parentElmt = document.querySelector('.items');
   parentElmt.appendChild(section);
   return section;
 }
@@ -30,8 +29,30 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  event.target.remove();
+// Requisito 5 - Calcula preço
+const priceSpan = () => {
+  const spPrice = document.createElement('span');
+  const cartV = document.querySelector('.cart');
+  spPrice.className = 'total-price';
+  cartV.appendChild(spPrice);
+  spPrice.innerText = '$';
+};
+
+const sumValue = () => {
+  const cartItem = document.querySelectorAll('.cart__item'); 
+  const totalPrice = document.querySelector('.total-price'); 
+  let sum = 0;
+  cartItem.forEach((product) => {
+    const price = (product.innerText).split('$')[1];
+    sum += parseFloat(price);
+  });
+  totalPrice.innerHTML = sum;
+};
+
+// Requisito 3 - Remove o item clicado no carrinho
+function cartItemClickListener(ev) {
+  ev.target.remove();
+  sumValue();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -43,7 +64,6 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 // Requisito 2.1  - Chamada da API 
-
 const addProduct = async (id) => {
   const dataRaw = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const respJson = await dataRaw.json();
@@ -53,8 +73,7 @@ const addProduct = async (id) => {
     name: respJson.title,
     salePrice: respJson.price,
   }));
-  const loading = document.querySelector('.loading');
-  loading.remove();
+  sumValue();
 };
 
 // Requisito 2.2 - Cria o botão
@@ -73,10 +92,11 @@ const endpointProducts = async () => {
     createProductItemElement({ sku, name, image });
   }));
   buttonAdd();
-  const loading = document.querySelector('.loading');
-  loading.remove();
+  // const load = document.querySelector('loading');
+  // load.remove();
 };
 
 window.onload = () => {
   endpointProducts();
+  priceSpan();
 };
