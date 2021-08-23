@@ -1,3 +1,16 @@
+// Requisito 7.1 
+const loading = () => {
+  const spanLoad = document.createElement('span');
+  spanLoad.className = 'loading';
+  spanLoad.innerHTML = 'loading...';
+  document.body.appendChild(spanLoad);
+};
+
+// Requisito 7.2 para retirar o loading
+const removLoading = () => {
+  document.querySelector('.loading').remove();
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -83,6 +96,7 @@ const addProduct = async (id) => {
     salePrice: respJson.price,
   }));
   sumValue();
+  removLoading();
 };
 
 // Requisito 2.2 - Cria o botão
@@ -95,14 +109,14 @@ const buttonAdd = () => {
 
 // Requisito 1 - Chamada da API e criação da lista
 const endpointProducts = async () => {
+  loading();
   await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
   .then((response) => response.json())
   .then((product) => product.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
     createProductItemElement({ sku, name, image });
   }));
   buttonAdd();
-  // const load = document.querySelector('loading');
-  // load.remove();
+  removLoading();
 };
 
 window.onload = () => {
