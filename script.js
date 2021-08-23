@@ -137,8 +137,15 @@ const deleteItems = () => {
   });
 };
 
+const loading = async () => {
+  const capBody = document.querySelector('body');
+  const capLoading = document.querySelector('.loading');
+  capBody.removeChild(capLoading);
+};
+
 window.onload = async () => {
   await createItemsList();
+  await loading(); 
   retornaItems();
   listenerItemSaved();
   deleteItems();
