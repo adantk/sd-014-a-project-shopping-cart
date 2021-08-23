@@ -1,7 +1,7 @@
-// add endpoint project.
-const dinamicKey = 'computador';
-const apiMl = `https://api.mercadolibre.com/sites/MLB/search?q=${dinamicKey}`;
-console.log(apiMl);
+const endPoints = {
+  computer: 'https://api.mercadolibre.com/sites/MLB/search?q=',
+  item: 'https://api.mercadolibre.com/items/',     
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -32,7 +32,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
   // coloque seu código aqui
 }
 
@@ -44,22 +44,40 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-async function fetchProducts() {
-  const response = await fetch(apiMl);
+async function fetchData(endpoint, query) {
+  const api = `${endpoint}${query || ''}`;
+  const response = await fetch(api);
   const json = await response.json();
-  return json.results;
+  return json;
+}// ajuda dos colegas.(modificado para ficar dinamico.)
+
+async function addProducts(section) {
+  const products = await fetchData(endPoints.computer, 'computador')
+  .then((json) => json.results);
+  products.forEach(({ id: sku, title: name, thumbnail: image }) => {
+      const product = createProductItemElement({ sku, name, image });
+      section.appendChild(product);    
+  });
+}// ajuda dos colegas.
+
+async function addCart(event) {
+  if (event.target.classList.contains('item__add')) { 
+    const productId = getSkuFromProductItem(event.target.parentElement);
+    const productInfo = await fetchData(endPoints.item, productId)
+      .then(({ title: name, price: salePrice }) => (
+        { sku: productId, name, salePrice }
+      ));
+    document.querySelector('.cart__items')
+      .appendChild(createCartItemElement(productInfo));
+  }
 }
 
-function addProducts() {
-  const productsSection = document.querySelector('.items');
-  fetchProducts().then((products) => {
-    products.forEach(({ id: sku, title: name, thumbnail: image }) => {
-      const product = createProductItemElement({ sku, name, image });
-      productsSection.appendChild(product);
-    });
-  });
+async function eventPage() {
+  const products = document.querySelector('.items');
+  await addProducts(products);
+  products.addEventListener('click', addCart);
 }
 
 window.onload = () => { 
-  addProducts();
+  eventPage();
 };
