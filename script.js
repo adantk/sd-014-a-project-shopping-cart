@@ -85,7 +85,7 @@ function createCartItemElement({ sku, name, salePrice }) {
    fetch(`https://api.mercadolibre.com/items/${getId}`)
    .then((response) => response.json())
    .then((object) => { 
-    //removeLoadingMsg();
+    // removeLoadingMsg();
    createCartItemElement({ sku: object.id, name: object.title, salePrice: object.price });
    }); 
  }; 
