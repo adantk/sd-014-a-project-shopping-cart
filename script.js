@@ -39,11 +39,10 @@ function getSkuFromProductItem(item) {
 // isso ta bugado
 const removeItem = (id) => {
   JSON.parse(localStorage.getItem(data));
-  data.forEach((item) => {
+  data.forEach((item) => { // a partir daqui nao funciona direito
     if (id === item.id) {
       console.log(id);
       console.log(item.id);
-
       data.pop(item);
       localStorage.removeItem('selectedItems', JSON.stringify(data));
     }
@@ -166,7 +165,7 @@ const clearCart = () => {
   });
 };
 
-// coloca o valor total no carrinho
+// coloca o valor total no carrinho(nao funciona ainda)
 const totalValue = () => {
   const loadingDiv = document.createElement('div');
   loadingDiv.className = 'total-price';
