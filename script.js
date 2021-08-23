@@ -27,12 +27,20 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+let valuePrice = 0;
+const totalPrice = document.querySelector('.total-price');
+
 function cartItemClickListener(event) {
+  const itemPrice = event.target.innerText.split('$')[1];
+  valuePrice -= itemPrice;
+  totalPrice.innerText = valuePrice;
   event.target.remove(event);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
+  valuePrice += salePrice;
+  totalPrice.innerText = valuePrice;
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
