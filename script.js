@@ -1,5 +1,7 @@
 const url = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
 
+let sum = 0;
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -33,6 +35,9 @@ function createProductItemElement({
 const removeCarItems = () => {
   const btnRemoveAllItems = document.querySelector('.empty-cart');
   btnRemoveAllItems.addEventListener('click', () => {
+    sum = 0;
+    const price = document.getElementsByClassName('total-price');
+     price.innerHTML = sum;
     const li = document.querySelectorAll('.cart__item');
     li.forEach((item) => {
       item.remove();
@@ -45,6 +50,10 @@ const removeCarItems = () => {
 // }
 
 function cartItemClickListener(event) {
+  const price = document.querySelector('.total-price');
+  const money = Number(event.target.textContent.split('$')[1]);
+  sum -= money;
+  price.innerHTML = sum;
   event.target.remove();
 }
 
@@ -81,6 +90,12 @@ const removeLoading = () => {
   document.querySelector('.loading').remove();
 };
 
+const totalPrice = (a) => {
+  const price = document.querySelector('.total-price');
+  sum += a;
+  price.innerHTML = sum;
+};
+
  const addItemCart = () => {
   const btnAddCart = document.querySelectorAll('.item__add');
   btnAddCart.forEach((btn, index) => {
@@ -96,6 +111,7 @@ const removeLoading = () => {
          salePrice: comput.price,
         });
         document.querySelector('.cart__items').appendChild(addCart);
+        totalPrice(comput.price);
       });
     });
   });
