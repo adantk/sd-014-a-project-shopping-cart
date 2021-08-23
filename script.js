@@ -12,7 +12,9 @@ const sumTotalPrice = () => {
   totalPrice.innerText = `${priceSum}`;
 };
 
-const isLoading = () => loading.parentNode.removeChild(loading);
+const isLoading = () => {
+  loading.parentNode.removeChild(loading);
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -74,6 +76,7 @@ const cartAdd = () => {
       const data = await response.json();
       itensCarrinho.appendChild(createCartItemElement(data));
       sumTotalPrice();
+      localStorage.setItem('list', itensCarrinho.innerHTML);
     }
   });
 };
