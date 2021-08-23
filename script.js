@@ -91,6 +91,12 @@ const buttonCar = () => {
   });
 };
 
+const loadingPage = () => {
+  const body = document.querySelector('body');
+  const loading = document.querySelector('.loading');
+  body.removeChild(loading);
+};
+
 // Requisito 1 - Cria a lista de produtos no site:
 const productsList = (item) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`)
@@ -100,7 +106,7 @@ const productsList = (item) => {
           sku: computer.id,
           name: computer.title,
           image: computer.thumbnail });
-      }))
+      })).then(() => loadingPage())
       .then(() => buttonCar()));
 };
 
@@ -109,7 +115,7 @@ const deleteAllListStorage = () => {
   const button = document.querySelector('.empty-cart');
   button.addEventListener('click', () => localStorage.removeItem('itens'));
 };
-
+// Requisito 6 . 2 (Limpa a ol):
 const deleteOl = () => {
   const button = document.querySelector('.empty-cart');
   const olSave = document.querySelector('ol');
