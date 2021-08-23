@@ -142,14 +142,17 @@ function storageValorFinal() {
 }
 
 function fetchApiProduct() {
-  // carregaLoading();
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-    //  .then(() => removerCarregaLoading.remove())
     .then((response) => response.json()
       .then((computadores) =>
         computadores.results.forEach((comput) => {
           createProductItemElement({ sku: comput.id, name: comput.title, image: comput.thumbnail });
         }))
+        .then(() => {
+          const loading = document.querySelector('.loading');
+          const body = document.querySelector('body');
+          body.removeChild(loading);
+        })
       .then(() => buttonAdicionar())
       .then(() => storageValorFinal())
       .then(() => atualizaCarrinho()));
