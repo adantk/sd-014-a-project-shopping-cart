@@ -77,7 +77,7 @@ function createCartItemElement({ sku, name, salePrice }) {
    .then((object) => { 
    createCartItemElement({ sku: object.id, name: object.title, salePrice: object.price });
    });
-   loading.remove();
+   // loading.remove();
  }; 
 
 const buttonClick = () => {
