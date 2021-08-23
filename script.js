@@ -39,24 +39,28 @@ function getSkuFromProductItem(item) {
 // Requisito 4 - function que cria o localStorage
 function setLocalStorage() {
   localStorage.setItem('local-cart', cartOl.innerHTML);
+  localStorage.setItem('local-total', totalPrice.innerText);
 }
 
 // Requisito 3 - implementa a function
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const cart = document.querySelector('.cart__items'); // capta ol (carrinho) que é pai do conteúdo a ser removido
-  // const li = document.querySelectorAll('.cart-item');
-  let count = Number(totalPrice.innerText);
-  const num = event.target.innerText.split('$')[1];
-  count -= num;
-  totalPrice.innerText = count;
+  let count = Number(totalPrice.innerText); // Requisito 5 - contas que 
+  const num = event.target.innerText.split('$')[1]; // subtraem valores quando
+  count -= num; // itens são removidos e
+  totalPrice.innerText = count; // os imprimem no total do carrinho
   cart.removeChild(event.target); // remove filho (li) em que o evento de click acontece (event.target)
   setLocalStorage(); // Requisito 4 - invoca function que faz setItem atualizando-o após remover um item do carrinho
 }
 
 // Requisito 4 - function que captura o localStorage e coloca elementos no carrinho
 function getLocalStorage() {
+  const localTotal = localStorage.getItem('local-total'); // necessário adicionar esta variável para evitar repetição
   cartOl.innerHTML = localStorage.getItem('local-cart');
+  if (localTotal) { // condição para definir valor total do valor do local apenas se este existir
+    totalPrice.innerText = localTotal;
+  }
 }
 
 // Requisito 4 - function que reativa o escutador de evento no carrinho criado da localStorage
@@ -73,6 +77,8 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+// Requisito 5 - function que soma o total e imprime valor no carrinho
 function sumTotal() {
   let count = Number(totalPrice.innerText);
   const pegaList = document.querySelectorAll('.cart__item');
@@ -91,8 +97,8 @@ const getApiToInsertItemsOnCart = (id) => { // function busca, diretamente da AP
         name: product.title,
         salePrice: product.price,
       }));
-      setLocalStorage(); // Requisito 4 - invoca function que faz o setItem após adicionar itens ao carrinho
       sumTotal();
+      setLocalStorage(); // Requisito 4 - invoca function que faz o setItem após adicionar itens ao carrinho
     });
 };
 
@@ -103,6 +109,15 @@ function addButton() { // fuction que habilita o evento de clique aos botões da
     button.addEventListener('click', (event) => {
       getApiToInsertItemsOnCart(getSkuFromProductItem(event.target.parentElement)); // invoca a function que capta dados da API tendo 
     }); // como parâmetro a function que busca o innerText do elemento identificando o Id necessário. Dica valiosíssima da colega Dayane Barbosa
+  });
+}
+
+function emptyCart() {
+  const emptyBtn = document.querySelector('.empty-cart');
+  emptyBtn.addEventListener('click', () => {
+    cartOl.innerHTML = '';
+    totalPrice.innerText = 0;
+    localStorage.clear();
   });
 }
 
@@ -120,8 +135,9 @@ function fetchApiProducts(item) {
       .then(() => addButton()));
 }
 
-window.onload = () => {
+window.onload = async () => {
   fetchApiProducts('computador'); // para alterar o produto buscado da API basta modificar o parâmetro desta function
+  emptyCart();
   getLocalStorage();
   listenerCartFromLocal();
 };
