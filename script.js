@@ -49,6 +49,15 @@ const sumValue = () => {
   totalPrice.innerHTML = sum;
 };
 
+// Requisito 6 -
+function removeItemsList() {
+  const btnRemov = document.querySelector('.empty-cart');
+  btnRemov.addEventListener('click', () => {
+    document.querySelector('ol').innerHTML = '';
+    priceSpan();
+  });
+}
+
 // Requisito 3 - Remove o item clicado no carrinho
 function cartItemClickListener(ev) {
   ev.target.remove();
@@ -98,5 +107,6 @@ const endpointProducts = async () => {
 
 window.onload = () => {
   endpointProducts();
+  removeItemsList();
   priceSpan();
 };
