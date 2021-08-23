@@ -112,6 +112,7 @@ function addButton() { // fuction que habilita o evento de clique aos botões da
   });
 }
 
+// Requisito 6 - function que habilita botão "esvaziar carrinho"
 function emptyCart() {
   const emptyBtn = document.querySelector('.empty-cart');
   emptyBtn.addEventListener('click', () => {
@@ -119,6 +120,15 @@ function emptyCart() {
     totalPrice.innerText = 0;
     localStorage.clear();
   });
+}
+
+function createLoading() {
+  const loading = document.createElement('h1');
+  loading.innerText = 'loading...';
+  loading.style.display = 'flex';
+  loading.style.justifyContent = 'center';
+
+  document.body.appendChild(loading);
 }
 
 // Requisito 1
@@ -137,6 +147,7 @@ function fetchApiProducts(item) {
 
 window.onload = async () => {
   fetchApiProducts('computador'); // para alterar o produto buscado da API basta modificar o parâmetro desta function
+  createLoading();
   emptyCart();
   getLocalStorage();
   listenerCartFromLocal();
