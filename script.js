@@ -71,7 +71,7 @@ const fetchProdutos = async (query) => {
 const cartAdd = () => {
   listaProdutos.addEventListener('click', async (event) => {
     if (event.target.classList.contains('item__add')) {
-      const idSku = event.target.parentElement.firstChild.innerText;
+      const idSku = getSkuFromProductItem(event.target.parentElement);
       const response = await fetch(`https://api.mercadolibre.com/items/${idSku}`);
       const data = await response.json();
       itensCarrinho.appendChild(createCartItemElement(data));
@@ -84,7 +84,8 @@ const cartAdd = () => {
 const clearCart = () => {
   btnEmptyCart.addEventListener('click', () => { 
     itensCarrinho.innerHTML = '';
-    sumTotalPrice(); 
+    sumTotalPrice();
+    localStorage.setItem('list', itensCarrinho.innerHTML);
   });
 };
 
