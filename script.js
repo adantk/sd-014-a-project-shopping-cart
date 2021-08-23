@@ -54,6 +54,24 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+  return event.target.parentNode.removeChild(event.target);
+}
+
+// function loadLocalStorage() {
+//   const getCart = localStorage.getItem('cartt');
+//   document.querySelector('.cart_items').value = getCart
+// }
+
+const loadLocalStorage = () => {
+  const getCart = document.querySelector('.cart')
+  getCart.querySelector('.cart_items')
+  getCart.innerHTML = localStorage.getItem('cartt')
+}
+// https://www.w3schools.com/jsref/met_storage_setitem.asp
+// https://developer.mozilla.org/pt-BR/docs/Web/API/Storage/getItem
+
 const addCart = async (event) => {
   const clickk = event.target.parentNode;
   const itemID = getSkuFromProductItem(clickk);
@@ -64,14 +82,11 @@ const addCart = async (event) => {
       const getCartList = document.querySelector(".cart")
       getCartList.querySelector('cart_items');
       getCartList.appendChild(createCartItemElement({ sku, name, salePrice }));
+      localStorage.setItem('cartt', getCartList.innerHTML);
     });
 };
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-  return event.target.parentNode.removeChild(event.target);
-}
-
 window.onload = async () => {
   await fetchMercadoAPI("computador");
+  await loadLocalStorage();
 };
