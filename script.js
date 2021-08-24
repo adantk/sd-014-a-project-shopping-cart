@@ -25,6 +25,15 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+// Requisito 6
+const emptyCartBtn = () => {
+  const emptyCart = document.querySelector('.empty-cart');
+  const ol = document.querySelector('.cart__items');
+  emptyCart.addEventListener('click', () => {
+    ol.innerHTML = '';
+  });
+};
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -64,9 +73,10 @@ const getAPIProduct = async () => {
   const convertAPIJson = await getAPI.json();
   convertAPIJson.results.forEach(({ id: sku, title: name, thumbnail: image }) =>
     createProductItemElement({ sku, name, image }));
-    addCartBtn();
+  addCartBtn();
 };
 
 window.onload = () => {
   getAPIProduct();
+  emptyCartBtn();
 };
