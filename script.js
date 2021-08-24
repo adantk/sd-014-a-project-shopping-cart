@@ -1,5 +1,6 @@
 const url = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 const itemUrl = 'https://api.mercadolibre.com/items/';
+const getCartList = () => document.querySelector('.cart__items');
 
 const totalPrice = async () => {
   let total = 0;
@@ -26,7 +27,6 @@ function createCustomElement(element, className, innerText) {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   return event.target.parentNode.removeChild(event.target);
-  
 }
 
 function getSkuFromProductItem(item) {
@@ -48,10 +48,10 @@ const addCart = async (event) => {
     .then((response) => response.json())
     .then((itemData) => {
       const { id: sku, title: name, price: salePrice } = itemData;
-      const getCartList = document.querySelector('.cart__items');
-      getCartList.appendChild(createCartItemElement({ sku, name, salePrice }));
+      
+      getCartList().appendChild(createCartItemElement({ sku, name, salePrice }));
       localStorage.setItem('cartt', getCartList.innerHTML);
-      totalPrice()
+      totalPrice();
     });
 };
 
@@ -82,14 +82,14 @@ function createProductItemElement({ sku, name, image }) {
 const loading = () => {
   const loadingDiv = document.createElement('div');
   loadingDiv.className = 'loading';
-  loadingDiv.innerText = 'loading...'
-  document.querySelector('.container').appendChild(loadingDiv)
-}
+  loadingDiv.innerText = 'loading...';
+  document.querySelector('.container').appendChild(loadingDiv);
+};
 
 const loaded = () => document.querySelector('.loading').remove();
 
 function fetchMercadoAPI(product) {
-  loading()
+  loading();
   const itemClass = document.querySelector('.items');
   fetch(`${url}${product}`).then((response) => {
     response.json().then((dataML) => {
@@ -99,7 +99,7 @@ function fetchMercadoAPI(product) {
       });
     });
   });
-  loaded()
+  loaded();
 }
 
 // function loadLocalStorage() {
@@ -108,14 +108,13 @@ function fetchMercadoAPI(product) {
 // }
 
 const loadLocalStorage = () => {
-  const getCart = document.querySelector('.cart__items');
-  getCart.innerHTML = localStorage.getItem('cartt');
+  getCartList().innerHTML = localStorage.getItem('cartt');
 };
 // https://www.w3schools.com/jsref/met_storage_setitem.asp
 // https://developer.mozilla.org/pt-BR/docs/Web/API/Storage/getItem
 
 function emptyCart() {
-  const cart = document.querySelector('.cart__items')
+  const cart = document.querySelector('.cart__items');
   cart.innerHTML = '';
   totalPrice();
   localStorage.clear();
@@ -123,12 +122,12 @@ function emptyCart() {
 
 const emptyCartButton = () => { 
   const emptyCartButtonTwo = document.querySelector('.empty-cart');
-  emptyCartButtonTwo.addEventListener('click', emptyCart)
-}
+  emptyCartButtonTwo.addEventListener('click', emptyCart);
+};
 
 window.onload = async () => {
   fetchMercadoAPI('computador');
   loadLocalStorage();
-  totalPrice()
-  emptyCartButton()
+  totalPrice();
+  emptyCartButton();
 };
