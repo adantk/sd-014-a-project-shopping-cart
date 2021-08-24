@@ -1,7 +1,11 @@
 const endPoints = {
   computer: 'https://api.mercadolibre.com/sites/MLB/search?q=',
   item: 'https://api.mercadolibre.com/items/',     
-}
+};
+
+// salvar dados da lista
+// remover dados da lista
+// retornar dados salvos
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -28,6 +32,7 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+// busca id do produto
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -40,7 +45,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -53,32 +57,39 @@ async function fetchData(endpoint, query) {
 
 async function addProducts(section) {
   const products = await fetchData(endPoints.computer, 'computador')
-  .then((json) => json.results);
+  .then((json) => json.results);  
   products.forEach(({ id: sku, title: name, thumbnail: image }) => {
       const product = createProductItemElement({ sku, name, image });
       section.appendChild(product);    
   });
 }// ajuda dos colegas.
 
+const listaCarrinho = document.querySelector('.cart__items');
+
 async function addCart(event) {
-  if (event.target.classList.contains('item__add')) { 
+    if (event.target.classList.contains('item__add')) { 
     const productId = getSkuFromProductItem(event.target.parentElement);
     const productInfo = await fetchData(endPoints.item, productId)
       .then(({ title: name, price: salePrice }) => (
-        { sku: productId, name, salePrice }
+        { sku: productId, name, salePrice } 
       ));
     const productElement = createCartItemElement(productInfo);
-    productElement.addEventListener('click', cartItemClickListener);
-    document.querySelector('.cart__items').appendChild(productElement);
+    // salva no webstorage.
+    listaCarrinho.appendChild(productElement);
+    localStorage.setItem('store', JSON.stringify(listaCarrinho.innerHTML));
   }
 }
 
+listaCarrinho.addEventListener('click', cartItemClickListener);
+
 async function eventPage() {
-  const products = document.querySelector('.items');
-  await addProducts(products);
-  products.addEventListener('click', addCart);
+  const listaProdutos = document.querySelector('.items');
+  await addProducts(listaProdutos);
+  listaProdutos.addEventListener('click', addCart);
 }
 
-window.onload = () => { 
+window.onload = () => {
   eventPage();
+  listaCarrinho.innerHTML = JSON.parse(localStorage.getItem('store'));
+  console.log(listaCarrinho.innerHTML);  
 };
