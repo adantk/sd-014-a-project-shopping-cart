@@ -1,3 +1,5 @@
+const botaoLimpaTudo = document.querySelector('.empty-cart');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -80,6 +82,12 @@ function identificaProduto() {
   const buscaBotao = document.querySelector('.items');
   buscaBotao.addEventListener('click', identificaId);
 }
+const esvaziaCarrinho = () => {
+  const buscaCarrinho = document.querySelector('.cart__items');
+  buscaCarrinho.innerHTML = '';
+};
+
+botaoLimpaTudo.addEventListener('click', esvaziaCarrinho);
 
 window.onload = () => {
   BuscaApi('computador');
