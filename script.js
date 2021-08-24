@@ -1,11 +1,5 @@
-let list = [];
 const prices = [];
 const cartItems = '.cart__items';
-// const sum = () => {
-//   const totalPrice = document.querySelector('.total-price');
-//   const number = prices.reduce((acc, price) => acc + price, 0);
-//   totalPrice.innerHTML = `Total: ${number.toFixed(2)}`;
-// };
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -48,13 +42,13 @@ function cartItemClickListener(event) {
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const cart = document.querySelector(cartItems); // destino do item a ser criado.
+  const cart = document.querySelector(cartItems); // o item a ser criado será armazenado aqui.
   
   const li = document.createElement('li'); 
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   
-  cart.appendChild(li); // afixa o item no carrinho
+  cart.appendChild(li); // afixa o item no carrinho.
 
   window.localStorage.setItem(name, li.innerText); // armazena os dados do item no localStorage.
 
@@ -76,13 +70,6 @@ const addToCart = async (id) => { // puxa a API com dados do item a ser adiciona
 });
 };
 
-const addListenerToButtons = () => {
-  const buttonArr = Array.from(document.getElementsByClassName('item__add'));
-  const skuArr = Array.from(document.getElementsByClassName('item__sku'));
-  buttonArr.forEach((el, i) => el.addEventListener('click',
-  addToCart.bind(this, skuArr[i].innerHTML.toString()))); // referencia para o .bind: https://stackoverflow.com/questions/35667267/addeventlistenerclick-firing-immediately
-};
-
 const loadCart = () => { // carrega os itens do carrinho ao iniciar a pág.
   const storage = Object.keys(window.localStorage).sort(); // referência: https://trybecourse.slack.com/archives/C023YHXAEGM/p1628892824387200.
 
@@ -96,20 +83,30 @@ const loadCart = () => { // carrega os itens do carrinho ao iniciar a pág.
   });
 };
 
+const addListenerToButtons = () => {
+  const buttonArr = Array.from(document.getElementsByClassName('item__add')); // junta todos os botões num array.
+  const itemArr = Array.from(document.getElementsByClassName('item__sku')); // junta todos os itens num array .
+  buttonArr.forEach((button, i) => button.addEventListener('click', // adiciona um listener em cada botão...
+  addToCart.bind(this, itemArr[i].innerHTML.toString()))); // ...que executa a função addToCart, adicionando dados do item no carrinho. 
+};
+
 const getApi = async (searchItem) => {
+    // o primeiro bloco abaixo adiciona a exibição do texto 'loading' à página.
     const loading = document.createElement('h1');
     loading.classList.add('loading');
     loading.innerHTML = 'LOADING';
     document.querySelector('.items').appendChild(loading);
-    fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${searchItem}`)
+  
+    let list = [];
+    fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${searchItem}`) // pega os items que se relacionam à busca.
     .then((response) => response.json())
     .then(function (obj) {
-      list = obj.results;
+      list = obj.results; // armazena os dados dos itens. 
     })
     .then(function () {
-      list.forEach((item) => createProductItemElement(item));
-    addListenerToButtons();
-    document.querySelector('.items').removeChild(loading);
+      document.querySelector('.items').removeChild(loading); // com os itens carregados, o loading some.
+      list.forEach((item) => createProductItemElement(item));// para cada item é feito um card.
+    addListenerToButtons(); // função para adicionar listener aos botões de cada card.
   })
     .catch((error) => console.log(error));
 };
@@ -118,7 +115,7 @@ const emptyCart = () => {
   const button = document.querySelector('.empty-cart');
   button.addEventListener('click', () => {
     document.querySelector(cartItems).innerHTML = '';
-    localStorage.clear();
+    localStorage.clear(); // apaga itens dentro do carrinho.
     });
 };
 
