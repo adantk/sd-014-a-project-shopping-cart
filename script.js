@@ -90,8 +90,22 @@ const totalPrice = async () => {
   document.querySelector('.total-price').innerText = total;
 };
 
+function emptyCart() {
+  const cart = document.querySelector('.cart__items')
+  cart.innerHTML = '';
+  totalPrice();
+  localStorage.clear();
+
+}
+
+const emptyCartButton = () => { 
+  const emptyCartButtonTwo = document.querySelector('.empty-cart');
+  emptyCartButtonTwo.addEventListener('click', emptyCart)
+}
+
 window.onload = async () => {
   await fetchMercadoAPI('computador');
   await loadLocalStorage();
   totalPrice()
+  emptyCartButton()
 };
