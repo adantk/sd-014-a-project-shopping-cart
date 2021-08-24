@@ -16,6 +16,8 @@
 }
 
 .item {
+  top: 0;
+  position: relative;
   border: 2px solid blue;
   border-radius: 5px;
   box-sizing: border-box;
@@ -26,6 +28,10 @@
   width: 200px;
   background-color: white;
 }
+
+.item:hover {top: -4px;
+  box-shadow: 0 8px 8px gray;
+  transition: all 0.2s ease-in-out;}
 
 .cart__items {
   list-style-type: square;
