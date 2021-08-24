@@ -24,12 +24,8 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 function cartItemClickListener(event) {
-  //  código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
