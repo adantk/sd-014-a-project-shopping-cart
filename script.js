@@ -50,7 +50,7 @@ const addCart = async (event) => {
       const { id: sku, title: name, price: salePrice } = itemData;
       
       getCartList().appendChild(createCartItemElement({ sku, name, salePrice }));
-      localStorage.setItem('cartt', getCartList.innerHTML);
+      localStorage.setItem('cartt', getCartList().innerHTML);
       totalPrice();
     });
 };
