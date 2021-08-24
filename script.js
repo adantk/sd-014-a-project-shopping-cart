@@ -91,22 +91,22 @@ const loadLocalStorage = () => {
 const orderTotal = () => {
   let total = 0;
   let listItem = document.querySelectorAll('.cart__item');
-  // console.log(listItem);
   listItem.forEach((element) => {
     total += parseFloat(element.getAttribute('price'));
-    // console.log(element.getAttribute('price'));
   });
   const elementTotalOrder = document.getElementById('total-order1');
   elementTotalOrder.innerText = total;
 }
-// // let total = 0;
-// const orderTotal = (salePrice) => {
-//   total = total + salePrice;
-//   const elementTotalOrder = document.getElementById('total-order');
-//   elementTotalOrder.innerHTML = total;
-// }
+const emptyCart = () => {
+  buttonEmpty = document.querySelector('.empty-cart');
+  buttonEmpty.addEventListener('click', () => {
+    document.querySelector('.cart__items').innerHTML = '';
+    saveLocalStorage();
+  }) 
+}
 window.onload = () => { 
   fetchListMl();
   loadLocalStorage();
   cartItemClickListener();
+  emptyCart();
 };
