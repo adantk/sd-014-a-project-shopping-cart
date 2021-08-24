@@ -82,20 +82,16 @@ const loadLocalStorage = () => {
 // https://www.w3schools.com/jsref/met_storage_setitem.asp
 // https://developer.mozilla.org/pt-BR/docs/Web/API/Storage/getItem
 
-// function totalPrice() {
-//   if (document.querySelector('.total-price')) {
-//     document.querySelector('.total-price');
-//   }
-//   const totalPriceelement = createCustomElement('div', 'total-price', ' ');
-//   let total = 0;
-//   document.querySelector('.cart__item').forEach((prices) => {
-//     total += parseFloat(prices.salePrice);
-//     totalPriceelement.innerHTML = total;
-//   });
-//   document.querySelector('.cart').appendChild(totalPriceelement);
-// }
+const totalPrice = async () => {
+  let total = 0;
+  const cartItems = [...document.querySelectorAll('.cart__item')]; 
+  const catItemsMap = cartItems.map((itemsList) => parseFloat(itemsList.innerText.split('$')[1]));
+  total = catItemsMap.reduce((acc, current) => acc + current, 0);
+  document.querySelector('.total-price').innerText = total;
+};
 
 window.onload = async () => {
   await fetchMercadoAPI('computador');
   await loadLocalStorage();
+  totalPrice()
 };
