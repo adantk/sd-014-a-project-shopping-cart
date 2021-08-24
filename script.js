@@ -32,7 +32,9 @@ function cartItemClickListener() {
   // coloque seu código aqui
   document.querySelector('.cart__items').addEventListener('click', event => {
     event.target.remove();
-  })
+  });
+  saveLocalStorage();
+  // orderTotal();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -41,7 +43,13 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   document.querySelector('.cart__items').appendChild(li);
+  saveLocalStorage();
   // return li;
+  // orderTotal();
+  // let listOl = document.querySelector('.cart__items');
+  // console.log(listOl.innerHTML);
+  // let listItem = document.querySelectorAll('.cart_item');
+  // console.log(listItem[1]);
 }
 
 const fetchListMl = async () => {
@@ -52,6 +60,7 @@ const fetchListMl = async () => {
     createProductItemElement({sku, name, image});
   });
   addListenerToButtons();
+  // orderTotal();
 };
 const fetchItemMl = async (itemId) => {
   const responseRaw = await fetch(`https://api.mercadolibre.com/items/${itemId}`);
@@ -67,6 +76,34 @@ const addListenerToButtons = () => {
     })
   })
 }
+const saveLocalStorage = () => {
+  let listCartItems = document.querySelector('.cart__items');
+  localStorage.setItem("listCart", listCartItems.innerHTML);
+}
+const loadLocalStorage = () => {
+  let listLocalStorage = localStorage.getItem("listCart");
+  let listCartItems = document.querySelector('.cart__items');
+  listCartItems.innerHTML = listLocalStorage;
+}
+// const orderTotal = async () => {
+//   let total = 0;
+//   let listItem = document.querySelectorAll('.cart_item');
+//   console.log(listItem);
+//   listItem.forEach((element) => {
+//     const xablau = element.innerText.split('$')[1];
+//     total += parseFloat(xablau);
+//   });
+//   const elementTotalOrder = document.getElementById('total-order1');
+//   elementTotalOrder.innerText = total;
+// }
+// // let total = 0;
+// const orderTotal = (salePrice) => {
+//   total = total + salePrice;
+//   const elementTotalOrder = document.getElementById('total-order');
+//   elementTotalOrder.innerHTML = total;
+// }
 window.onload = () => { 
   fetchListMl();
+  loadLocalStorage();
+  cartItemClickListener();
 };
