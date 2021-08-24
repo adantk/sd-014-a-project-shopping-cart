@@ -22,11 +22,17 @@ function subtraiCart(product) {
   return total;
 }
 
+function savePage() {
+  localStorage.setItem('cartItems', document.querySelector('#cart__items').innerHTML);
+  localStorage.setItem('total', document.querySelector('#total-cart').innerHTML);
+}
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const cart = document.getElementById('cart__items'); 
-  cart.removeChild(event);
+  event.remove();
   subtraiCart(event);
+  savePage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -37,15 +43,15 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-function sumCart(price) {
+function sumCart(event) {
   let total = 0;
-  const sum = document.querySelector('.total-price');
+  const sum = document.querySelector('#total-cart');
   const liCart = document.querySelectorAll('.cart__item');
   liCart.forEach((item) => {
     total += parseFloat((Number(item.innerText.split('PRICE: $')[1])).toFixed(2));
-    sum.innerText = `${total}`;
+    sum.innerText = `${parseFloat((total).toFixed(2))}`;
   });
-  
+  savePage();
   return sum;
 }
 
@@ -59,8 +65,8 @@ function addToCart(id) {
             name: data.title,
             salePrice: data.price,
           };
-          document.querySelector('.cart__items').appendChild(createCartItemElement(cartObj));
-          sumCart(cartObj.salePrice);
+          document.querySelector('#cart__items').appendChild(createCartItemElement(cartObj));
+          sumCart();
     });
 });
 }
@@ -112,10 +118,27 @@ function clearCart() {
   clearBtn.addEventListener('click', () => {
     cart.innerHTML = '';
     document.querySelector('.total-price').innerText = '0';
+    savePage();
   });
+}
+
+function loadSavedCart() {
+  document.getElementById('cart__items').innerHTML = localStorage
+  .getItem('cartItems');
+  document.querySelector('.total-price').innerHTML = localStorage
+  .getItem('total');
 }
 
 window.onload = () => { 
   addProducts();
   clearCart();
+  loadSavedCart();
+  document.querySelectorAll('.cart__item').forEach((item) => {
+    item.addEventListener('click', (event) => {
+    // event.target.remove();
+    cartItemClickListener(event.target);
+    // sumCart(event.target);
+    // subtraiCart(event.target);
+  });
+});
 };
