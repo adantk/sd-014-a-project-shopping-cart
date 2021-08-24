@@ -4,8 +4,9 @@ let cartPrice = 0;
 
 const transformToBrl = (price) => 
   // Transforma moeda para formato Brazilian Real
-   Intl.NumberFormat('pr-BR', { style: 'currency', currency: 'BRL' }).format(price);
-
+  //  Intl.NumberFormat('pr-BR', { style: 'currency', currency: 'BRL' }).format(price);
+  // a funcao Intl.NumberFormat() transforma a moeda para o formato Real, mas o projeto não aceita a informacao desta forma. 
+  price;
 const whileLoading = () => {
   // Mostra mensagem loading enquanto aguarda resposta da API
   const loading = document.createElement('span');
@@ -158,7 +159,6 @@ const createTagTotalPrice = () => {
   // cria a tag preço total ao carregar a página
   const totalPrice = document.createElement('span');
   totalPrice.className = 'total-price';
-  
   totalPrice.innerHTML = transformToBrl(cartPrice);
   const cart = document.querySelector('.cart');
   cart.appendChild(totalPrice);
