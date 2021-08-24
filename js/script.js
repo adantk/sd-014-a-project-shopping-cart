@@ -1,4 +1,3 @@
-// const { apiCallBack } = require('./fetch');
 const ol = document.querySelector('.cart__items');
 const empty = document.querySelector('.empty-cart')
 
@@ -51,6 +50,10 @@ function createCartItemElement({
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+  empty.addEventListener('click', () => {
+    ol.innerHTML = '';
+});
 
 const cartApi = async (search) => {
   const getEndPointForAdd = await `https://api.mercadolibre.com/items/${search}`;
