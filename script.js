@@ -3,7 +3,7 @@ const itemUrl = 'https://api.mercadolibre.com/items/';
 const getCartList = () => document.querySelector('.cart__items');
 
 const loading = () => {
-  const loadingDiv = document.createElement('p');
+  const loadingDiv = document.createElement('h1');
   loadingDiv.className = 'loading';
   loadingDiv.innerText = 'loading...';
   document.querySelector('.items').appendChild(loadingDiv);
