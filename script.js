@@ -1,8 +1,8 @@
 function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
-  img.className = 'item__image';
-  img.src = imageSource;
-  return img;
+  const image = document.createElement('img');
+  image.className = 'item__image';
+  image.src = imageSource;
+  return image;
 }
 
 function createCustomElement(element, className, innerText) {
@@ -12,16 +12,25 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
+function createProductItemElement(id, title, uriImagem) {
+  const sectionPai = document.querySelector('.items'); 
+  const sectionFilha = document.createElement('section');
+  const spanId = document.createElement('span'); 
+  const spanTitle = document.createElement('span');
+  const img = document.createElement('img'); 
+  const button = document.createElement('button');
+  spanId.innerText = id; spanId.classList.add('item__sku');
+  spanTitle.innerHTML = title; spanTitle.classList.add('item__title');
+  img.src = uriImagem; img.classList.add('item__image');
+  button.innerText = 'Adicionar ao carrinho'; button.classList.add('item__add');
 
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  sectionFilha.classList.add('item');
+  sectionFilha.appendChild(spanId);
+  sectionFilha.appendChild(spanTitle);
+  sectionFilha.appendChild(img);
+  sectionFilha.appendChild(button);
 
-  return section;
+  sectionPai.appendChild(sectionFilha);
 }
 
 function getSkuFromProductItem(item) {
@@ -40,4 +49,15 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+// Requisito 1
+const adicionarInfos = async (computer) => {
+  const listaDeProd = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${computer}`);
+  const listaDeProdutosJson = await listaDeProd.json();
+  listaDeProdutosJson.results.forEach((prod) => {
+    createProductItemElement(prod.id, prod.title, prod.thumbnail);
+  });
+};
+
+window.onload = () => {
+  adicionarInfos('computador');
+};
