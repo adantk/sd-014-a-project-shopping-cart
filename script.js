@@ -36,7 +36,7 @@ function createCustomElement(element, className, innerText) {
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const eventClick = event.target.parentNode.removeChild(event.target);
-  totalPrice()
+  totalPrice();
   return eventClick;
 }
 
