@@ -83,6 +83,12 @@
   display: flex;
   width: 100%;
   justify-content: space-around;
+}
+
+#header-main {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
   align-items: center;
 }
 
@@ -115,14 +121,6 @@
   height: 60px;
 }
 
-#search-area {
-  width: 80%;
-  height: 40px;
-  border: none;
-  border-radius: 3px;
-  padding-left: 10px;
-}
-
 #icons-header {
   display: flex;
   justify-content: space-between;
@@ -142,14 +140,36 @@
   margin: 5px;
 }
 
-#search-and-menu {
+#search-area {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  width: 60%;
+  align-items: center;
+}
+
+#search-text-and-button {
+  display: flex;
+  width: 80%;
+}
+
+#search-text {
+  width: 95%;
+  height: 40px;
+  border: none;
+  border-radius: 5px 0 0 5px;
+  padding-left: 10px;
+}
+
+#search-button {
+  border: none;
+  background-color: white;
+  border-radius: 0 5px 5px 0;
+  padding: 10px;
+  cursor: pointer;
 }
 
 #nav-menu {
   display: flex;
-  justify-content: space-around;
 }
 
 .total-price {
