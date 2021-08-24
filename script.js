@@ -2,6 +2,10 @@ const cartItemsClass = '.cart__items';
 const totalPriceCart = '.total-price';
 let cartPrice = 0;
 
+const transformToBrl = (price) => {
+  return Intl.NumberFormat('pr-BR', { style: 'currency', currency: 'BRL' }).format(price)
+}
+
 const whileLoading = () => {
   const loading = document.createElement('span');
   loading.innerHTML = 'loading...';
@@ -16,25 +20,25 @@ const removeLoading = () => {
 };
 
 const savePriceToLocalStorage = (totalPrice) => {
-  localStorage.setItem('totalPrice', totalPrice.innerHTML);
-  };
+  localStorage.setItem('totalPrice', totalPrice);
+};
+  
+const saveToLocalStorage = (cart) => { 
+  localStorage.setItem('cartList', cart.innerHTML);
+};
 
 const addPriceItem = (price) => {
   const totalPrice = document.querySelector(totalPriceCart);
   cartPrice += price;
-  totalPrice.innerHTML = cartPrice;
-  savePriceToLocalStorage(totalPrice);
+  totalPrice.innerHTML = transformToBrl(cartPrice);
+  savePriceToLocalStorage(cartPrice);
 };
 
 const removePriceItem = (price) => {
   const totalPrice = document.querySelector(totalPriceCart);
   cartPrice -= price;
-  totalPrice.innerHTML = cartPrice;
-  savePriceToLocalStorage(totalPrice);
-};
-
-const saveToLocalStorage = (cart) => { 
-  localStorage.setItem('cartList', cart.innerHTML);
+  totalPrice.innerHTML = transformToBrl(cartPrice);
+  savePriceToLocalStorage(cartPrice);
 };
 
 async function cartItemClickListener(event) {
@@ -135,7 +139,7 @@ const createTagTotalPrice = () => {
   const totalPrice = document.createElement('span');
   totalPrice.className = 'total-price';
   
-  totalPrice.innerHTML = cartPrice;
+  totalPrice.innerHTML = transformToBrl(cartPrice);
   const cart = document.querySelector('.cart');
   cart.appendChild(totalPrice);
 };
@@ -145,7 +149,7 @@ const emptyCart = () => {
   cart.innerHTML = '';
   const totalPrice = document.querySelector(totalPriceCart);
   cartPrice = 0;
-  totalPrice.innerHTML = 0;
+  totalPrice.innerHTML = transformToBrl(cartPrice);
   localStorage.setItem('cartList', '');
   localStorage.setItem('totalPrice', 0);
 };
