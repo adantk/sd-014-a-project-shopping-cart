@@ -1,5 +1,6 @@
 // const { apiCallBack } = require('./fetch');
 const ol = document.querySelector('.cart__items');
+const empty = document.querySelector('.empty-cart')
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -36,7 +37,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  ol.removeChild(event.target);
 }
 
 function createCartItemElement({
