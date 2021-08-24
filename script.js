@@ -2,13 +2,11 @@ const cartItemsClass = '.cart__items';
 const totalPriceCart = '.total-price';
 let cartPrice = 0;
 
-const transformToBrl = (price) => 
-  // Transforma moeda para formato Brazilian Real
+const transformToBrl = (price) => price;
   //  Intl.NumberFormat('pr-BR', { style: 'currency', currency: 'BRL' }).format(price);
   // a funcao Intl.NumberFormat() transforma a moeda para o formato Real, mas o projeto não aceita a informacao desta forma. 
-  price;
+
 const whileLoading = () => {
-  // Mostra mensagem loading enquanto aguarda resposta da API
   const loading = document.createElement('span');
   loading.innerHTML = 'loading...';
   loading.className = 'loading';
@@ -17,23 +15,19 @@ const whileLoading = () => {
 };
 
 const removeLoading = () => {
-  // Retira mensagem loading da tela após receber resposta da API
   const loading = document.querySelector('.loading');
   loading.remove();
 };
 
 const savePriceToLocalStorage = (totalPrice) => {
-  // salva valor total do carrinho no localStorage
   localStorage.setItem('totalPrice', totalPrice);
 };
   
 const saveToLocalStorage = (cart) => { 
-  // salva itens do carrinho no localStorage
   localStorage.setItem('cartList', cart.innerHTML);
 };
 
 const addPriceItem = (price) => {
-  // adiciona itens ao carrinho
   const totalPrice = document.querySelector(totalPriceCart);
   cartPrice += price;
   totalPrice.innerHTML = transformToBrl(cartPrice);
@@ -41,7 +35,6 @@ const addPriceItem = (price) => {
 };
 
 const removePriceItem = (price) => {
-  // remove itens do carrinho
   const totalPrice = document.querySelector(totalPriceCart);
   cartPrice -= price;
   totalPrice.innerHTML = transformToBrl(cartPrice);
@@ -49,7 +42,6 @@ const removePriceItem = (price) => {
 };
 
 function cartItemClickListener(event) {
-  // remove item clicado do carrinho
   const cart = document.querySelector(cartItemsClass);
   const itemHtml = event.target.innerHTML;
   const priceItem = Number(itemHtml.split('PRICE: $')[1]);
@@ -59,7 +51,6 @@ function cartItemClickListener(event) {
 }
 
 const loadCartFromStorage = () => {
-  // carrega carrinho do localStorage
   const cart = document.querySelector(cartItemsClass);
   const cartLocalStorage = localStorage.getItem('cartList');
   const priceLocalStorage = localStorage.getItem('totalPrice');
@@ -73,7 +64,6 @@ const loadCartFromStorage = () => {
 };
 
 function createProductImageElement(imageSource) {
-  // cria imagem para item da lista de produtos
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
@@ -81,20 +71,17 @@ function createProductImageElement(imageSource) {
 }
 
  function getSkuFromProductItem(item) {
-   // retorna id do item correspondente ao botao 'adicionar ao carrinho' foi clicado
   const addButton = item.target.parentNode;
   return addButton.querySelector('span.item__sku').innerText;
 }
 
 const fetchRequestEndpoint = async (idProduct) => {
-  // chama a API para um produto através do id
   const responseRaw = await fetch(`https://api.mercadolibre.com/items/${idProduct}`);
   const responseJson = await responseRaw.json();
   return responseJson;
 };
 
 function createCartItemElement({ sku, name, salePrice }) {
-  // cria os itens adicionados ao carrinho
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -103,7 +90,6 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 const addItemToCart = async (event) => {
-  // adiciona item clicado ao carrinho
   whileLoading();
   const idProductAdd = await getSkuFromProductItem(event);
   const returnEndPoint = await fetchRequestEndpoint(idProductAdd);
@@ -116,7 +102,6 @@ const addItemToCart = async (event) => {
 };
 
 function createCustomElement(element, className, innerText) {
-  // cria um elemento inserindo parametros
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
@@ -124,7 +109,6 @@ function createCustomElement(element, className, innerText) {
 }
 
 function createProductItemElement({ sku, name, image }) {
-  // aplica os parametros para criar os elementos
   const section = document.createElement('section');
   section.className = 'item';
   
@@ -138,14 +122,12 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 const fetchProduct = async (search) => {
-  // realiza a pesquisa na API do produto escolhido 
  const responseRaw = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`);
  const responseJson = await responseRaw.json();
  return responseJson.results;
 };
 
 const loadElements = async (search) => {
-  // carrega lista de itens
   const listItems = document.querySelector('.items');
   listItems.innerHTML = '';
   whileLoading();
@@ -156,7 +138,6 @@ const loadElements = async (search) => {
 };
 
 const createTagTotalPrice = () => {
-  // cria a tag preço total ao carregar a página
   const totalPrice = document.createElement('span');
   totalPrice.className = 'total-price';
   totalPrice.innerHTML = transformToBrl(cartPrice);
@@ -165,7 +146,6 @@ const createTagTotalPrice = () => {
 };
 
 const emptyCart = () => {
-  // botao esvaziar carrinho
   const cart = document.querySelector(cartItemsClass);
   cart.innerHTML = '';
   const totalPrice = document.querySelector(totalPriceCart);
@@ -176,7 +156,6 @@ const emptyCart = () => {
 };
 
 const searchField = () => {
-  // campo de pesquisa para usuário 
   const button = document.getElementById('search-button');
   const searchArea = document.getElementById('search-text');
 
@@ -194,14 +173,13 @@ const searchField = () => {
 };
 
 const emptyButton = () => {
-  // adiciona eventlistener ao botao esvaziar carrinho
   const buttonEmptyCart = document.querySelector('.empty-cart');
   buttonEmptyCart.addEventListener('click', emptyCart);
 };
 
 window.onload = () => {
   emptyButton();
-  loadElements('computador'); // parametro inicial obrigatório do projeto é 'computador'
+  loadElements('computador'); // parametro inicial obrigatório do projeto: 'computador'
   searchField();
   loadCartFromStorage();
   createTagTotalPrice();
