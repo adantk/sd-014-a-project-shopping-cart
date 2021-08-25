@@ -72,21 +72,6 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-// const loading = (itsLoading) => {
-//   if (itsLoading === true) {
-//     const loadingElement = document.createElement('div');
-//     loadingElement.className = 'loading';
-//     loadingElement.innerText = 'Loading...';
-//   } else if (itsLoading === false) {
-//     const deleteLoadingElement = document.querySelector('.loading');
-//     deleteLoadingElement.remove();
-//   }
-// };
-
-// function timeTest() {
-//   setTimeout(function (){ fetchMercadoAPI('computador'); }, 3000);
-// }
-
 function fetchMercadoAPI(product) {
   const itemClass = document.querySelector('.items');
   fetch(`${url}${product}`).then((response) => {
@@ -96,8 +81,7 @@ function fetchMercadoAPI(product) {
         itemClass.appendChild(createProductItemElement({ sku, name, image }));
       });
     });
-  });
-  loaded();
+  }).then(loaded());
 }
 
 const loading = async () => {
@@ -105,14 +89,7 @@ const loading = async () => {
   loadingDiv.className = 'loading';
   loadingDiv.innerText = 'loading...';
   document.querySelector('.items').appendChild(loadingDiv);
-  // timeTest()
-  fetchMercadoAPI('computador');
 };
-
-// function loadLocalStorage() {
-//   const getCart = localStorage.getItem('cartt');
-//   document.querySelector('.cart_items').value = getCart
-// }
 
 const loadLocalStorage = () => {
   getCartList().innerHTML = localStorage.getItem('cartt');
@@ -133,9 +110,10 @@ const emptyCartButton = () => {
 };
 
 window.onload = async () => {
-  loading();
-  // fetchMercadoAPI('computador');
-  loadLocalStorage();
-  totalPrice();
-  emptyCartButton();
+  await loading();
+  await fetchMercadoAPI('computador');
+  // setTimeout( function() { fetchMercadoAPI('droga')}, 10000)
+  await loadLocalStorage();
+  await totalPrice();
+  await emptyCartButton();
 };
