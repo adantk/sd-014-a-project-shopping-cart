@@ -1,6 +1,11 @@
 const ol = document.querySelector('.cart__items');
 const empty = document.querySelector('.empty-cart');
 const load = document.getElementsByClassName('loading');
+const total = document.querySelector('.total-price');
+
+function globalStorage(key, value) {
+  localStorage.setItem(key, value);
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -38,6 +43,12 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   ol.removeChild(event.target);
+  let num = Number(total.innerText);
+  let count = Number(event.target.innerText.split('$')[1]);
+  num -= count;
+  total.innerText = num;
+  globalStorage('price', total.innerText);
+  globalStorage('cartItem',ol.innerHTML);
 }
 
 function createCartItemElement({
@@ -54,7 +65,18 @@ function createCartItemElement({
 
   empty.addEventListener('click', () => {
     ol.innerHTML = '';
+    total.innerText = 0;
+    localStorage.clear();
 });
+
+const calculate = () => {
+  const lista = document.querySelectorAll('.cart__item');
+  const num = Number(total.innerText);
+  let count = Number(lista[lista.length - 1].innerText.split('$')[1]);
+  count += num;
+  total.innerText = count;
+  globalStorage('price', total.innerText);
+}
 
 const cartApi = async (search) => {
   const getEndPointForAdd = await `https://api.mercadolibre.com/items/${search}`;
@@ -66,6 +88,8 @@ const cartApi = async (search) => {
     salePrice: getJsonForCart.price,
   }
   await ol.appendChild(createCartItemElement(jsonForSku));
+  await calculate();
+  globalStorage('cartItem',ol.innerHTML);
 }
 
 const addToCart = async () => {
@@ -91,6 +115,20 @@ const apiCallBack = async () => { // async = funçao com sincronia, um espera o 
   await body.removeChild(load);
 }
 
-window.onload = () => {
-  apiCallBack();
+function getStorage() {
+  ol.innerHTML = localStorage.getItem('cartItem')
+  total.innerText = Number(localStorage.getItem('price'))
+}
+
+const localBtn = () => {
+  const li = document.querySelectorAll('.cart__item');
+  li.forEach((lista) => {
+    lista.addEventListener('click', cartItemClickListener)
+  });
+}
+
+window.onload = async () => {
+  await apiCallBack();
+  await getStorage();
+  await localBtn();
 };
