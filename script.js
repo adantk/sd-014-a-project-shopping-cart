@@ -37,6 +37,15 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const listaCarrinho = document.querySelector('.cart__items');
+
+function clearList() {
+  listaCarrinho.innerHTML = ''; 
+  localStorage.setItem('store', JSON.stringify(listaCarrinho.innerHTML));
+}
+
+document.querySelector('.empty-cart').addEventListener('click', clearList);
+// limpa carrinho, executando função clearList
 function cartItemClickListener(event) {
   if (event.target.classList.contains('cart__item')) {
     event.target.remove();  
@@ -65,8 +74,6 @@ async function addProducts(section) {
       section.appendChild(product);    
   });
 }// ajuda dos colegas.
-
-const listaCarrinho = document.querySelector('.cart__items');
 
 async function addCart(event) {
     if (event.target.classList.contains('item__add')) { 
