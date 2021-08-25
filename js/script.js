@@ -1,5 +1,6 @@
 const ol = document.querySelector('.cart__items');
-const empty = document.querySelector('.empty-cart')
+const empty = document.querySelector('.empty-cart');
+const load = document.getElementsByClassName('loading');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -77,7 +78,7 @@ const addToCart = async () => {
 }
 
 const apiCallBack = async () => { // async = funçao com sincronia, um espera o proximo
-  const getEndPoint = await `https://api.mercadolibre.com/sites/MLB/search?q=computador`; // const para manipular a API na linha do fetch.
+  const getEndPoint = await `https://api.mercadolibre.com/sites/MLB/search?q=computador`;
   const getFetch = await fetch(getEndPoint); // const para salvar o retorno do fetch
   const getJson = await getFetch.json();
   const itemsSelctor = document.querySelector('.items');
@@ -85,6 +86,9 @@ const apiCallBack = async () => { // async = funçao com sincronia, um espera o 
     itemsSelctor.appendChild(createProductItemElement(result)); // transforma um elemento em item na ul
   });
   await addToCart();
+  const body = document.querySelector('body');
+  const load = document.querySelector('.loading')
+  await body.removeChild(load);
 }
 
 window.onload = () => {
