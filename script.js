@@ -73,6 +73,7 @@ async function addProducts(section) {
       const product = createProductItemElement({ sku, name, image });
       section.appendChild(product);    
   });
+  document.querySelector('.loading').remove();
 }// ajuda dos colegas.
 
 async function addCart(event) {
