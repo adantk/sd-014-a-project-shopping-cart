@@ -1,5 +1,5 @@
 const sectionPaiHtml = document.querySelector('.items');
-const listaDeCompra = document.querySelector('.cart__items');
+// const listaDeCompra = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
