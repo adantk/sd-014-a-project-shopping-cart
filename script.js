@@ -132,5 +132,4 @@ window.onload = async () => {
   loadLocalStorage();
   totalPrice();
   emptyCartButton();
-  
 };
