@@ -1,3 +1,5 @@
+const cartItems = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -38,15 +40,31 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito 4 - p1
+const localStorageSave = () => {
+  localStorage.clear();
+  const storageCart = document.querySelector(cartItems);
+  localStorage.setItem('cart', storageCart.innerHTML);
+};
+
+// Requisito 3
 function cartItemClickListener(event) {
-  // coloque seu código aqui
   event.target.remove();
+  localStorageSave();
 }
+
+// Requisito 4 - p2
+const localStorageLoad = () => {
+  const storageCart = document.querySelector(cartItems);
+  storageCart.innerHTML = localStorage.getItem('cart');
+  storageCart.addEventListener('click', cartItemClickListener);
+  localStorageSave();
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
-  const ol = document.querySelector('.cart__items');
-  li.className = 'cart__item';
+  const ol = document.querySelector(cartItems);
+  li.className = cartItems;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
@@ -64,17 +82,12 @@ const rmLoadingText = () => {
   rmLoading.remove();
 };
 
-// Requisito 4
-// const localStorageSave = () => {
-//   const shoppingCart = document.querySelector('.cart__item');
-//   localStorage.setItem('cart', shoppingCart.innerHTML);
-// };
-
 // Requisito 2 - p1
 const addCart = async (productId) => {
   const productSearch = await fetch((`https://api.mercadolibre.com/items/${productId}`));
   const pSJson = await productSearch.json();
   createCartItemElement({ sku: pSJson.id, name: pSJson.title, salePrice: pSJson.price });
+  localStorageSave();
 };
 
 // Requisito 2 - p2
@@ -98,5 +111,6 @@ const getAPIProduct = async () => {
 
 window.onload = () => {
   getAPIProduct();
+  localStorageLoad();
   emptyCartBtn();
 };
