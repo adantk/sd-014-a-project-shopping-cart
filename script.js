@@ -86,7 +86,7 @@ const addCart = () => {
     const cartDetails = {
       sku: response2.id,
       name: response2.title,
-      salePrice: response2.price.toFixed(2),
+      salePrice: response2.price,
     };
     items.cart.appendChild(createCartItemElement(cartDetails));
   });
