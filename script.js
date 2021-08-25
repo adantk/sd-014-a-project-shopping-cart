@@ -26,16 +26,43 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+const saveCartState = () => {
+  const cartItems = document.querySelectorAll('.cart__item');
+  let cartString = '';
+  for (let index = 0; index < cartItems.length; index += 1) {
+    cartString += `${cartItems[index].innerText}----`;
+  }
+  localStorage.setItem('cartState', cartString);
+};
+
+function cartItemClickListener(event) {
+  event.target.remove();
+  saveCartState();
+}
+
+const loadCartState = () => {
+  const cartSection = document.querySelector(CART_ITEMS_CLASS);
+  const cartState = localStorage.getItem('cartState');
+  const allCartItems = cartState.split('----');
+  allCartItems.pop(); // Remove string vazia do final do array
+  allCartItems.map((item) => {
+    const li = document.createElement('li');
+    li.className = 'cart__item';
+    li.innerText = item;
+    li.addEventListener('click', cartItemClickListener);
+    cartSection.appendChild(li);
+    return 0;
+  });
+};
+
+// eslint-disable-next-line no-unused-vars
 const clearCart = () => {
   const cartSection = document.querySelector(CART_ITEMS_CLASS);
   while (cartSection.firstChild) {
     cartSection.removeChild(cartSection.firstChild);
   }
+  saveCartState();
 };
-
-function cartItemClickListener(event) {
-  event.target.remove();
-}
 
 const sumCartPrice = () => {
   //  Função do requisito 5
@@ -83,6 +110,7 @@ const addToCart = async (event) => {
   const productHTML = createCartItemElement(parameters);
   cartSection.appendChild(productHTML);
   sumCartPrice(); //  Calcula o total do preço dos produtos no carrinho
+  saveCartState();
 };
 
 const addToCartImplementation = () => {
@@ -95,4 +123,5 @@ const addToCartImplementation = () => {
 window.onload = async () => { 
   await loadProducts(); //  Carrega os produtos do ML na página
   addToCartImplementation(); // Adiciona event listeners aos botões de Adicionar ao carrinho
+  loadCartState();
 };
