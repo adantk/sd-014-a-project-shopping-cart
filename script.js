@@ -53,7 +53,6 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 const addCart = async (event) => {
-  loading();
   const clickk = event.target.parentNode;
   const itemID = getSkuFromProductItem(clickk);
   await fetch(`${itemUrl}${itemID}`)
@@ -64,7 +63,6 @@ const addCart = async (event) => {
       getCartList().appendChild(createCartItemElement({ sku, name, salePrice }));
       localStorage.setItem('cartt', getCartList().innerHTML);
       totalPrice();
-      loaded();
     });
 };
 
@@ -103,7 +101,6 @@ function fetchMercadoAPI(product) {
       });
     });
   });
-  loaded();
 }
 
 // function loadLocalStorage() {
@@ -131,7 +128,9 @@ const emptyCartButton = () => {
 
 window.onload = async () => {
   fetchMercadoAPI('computador');
+  loaded();
   loadLocalStorage();
   totalPrice();
   emptyCartButton();
+  
 };
