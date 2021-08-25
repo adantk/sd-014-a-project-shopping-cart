@@ -1,6 +1,5 @@
 const ol = document.querySelector('.cart__items');
 const empty = document.querySelector('.empty-cart');
-const load = document.getElementsByClassName('loading');
 const total = document.querySelector('.total-price');
 
 function globalStorage(key, value) {
@@ -24,7 +23,7 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({
   id: sku,
   title: name,
-  thumbnail: image
+  thumbnail: image,
 }) { // feito para facilitar na linha 7, definindo como cada parametro representará na leitura da API
   const section = document.createElement('section');
   section.className = 'item';
@@ -38,23 +37,23 @@ function createProductItemElement({
 }
 
 function getSkuFromProductItem(item) {
-  return  item.querySelector('span.item__sku').innerText;
+  return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
   ol.removeChild(event.target);
   let num = Number(total.innerText);
-  let count = Number(event.target.innerText.split('$')[1]);
+  const count = Number(event.target.innerText.split('$')[1]);
   num -= count;
   total.innerText = num;
   globalStorage('price', total.innerText);
-  globalStorage('cartItem',ol.innerHTML);
+  globalStorage('cartItem', ol.innerHTML);
 }
 
 function createCartItemElement({
   sku,
   name,
-  salePrice
+  salePrice,
 }) {
   const li = document.createElement('li'); // cria uma li 
   li.className = 'cart__item'; // com classe 'cart_item'
@@ -63,10 +62,10 @@ function createCartItemElement({
   return li;
 }
 
-  empty.addEventListener('click', () => {
-    ol.innerHTML = '';
-    total.innerText = 0;
-    localStorage.clear();
+empty.addEventListener('click', () => {
+  ol.innerHTML = '';
+  total.innerText = 0;
+  localStorage.clear();
 });
 
 const calculate = () => {
@@ -76,7 +75,7 @@ const calculate = () => {
   count += num;
   total.innerText = count;
   globalStorage('price', total.innerText);
-}
+};
 
 const cartApi = async (search) => {
   const getEndPointForAdd = await `https://api.mercadolibre.com/items/${search}`;
@@ -86,23 +85,23 @@ const cartApi = async (search) => {
     sku: getJsonForCart.id,
     name: getJsonForCart.title,
     salePrice: getJsonForCart.price,
-  }
+  };
   await ol.appendChild(createCartItemElement(jsonForSku));
   await calculate();
-  globalStorage('cartItem',ol.innerHTML);
-}
+  globalStorage('cartItem', ol.innerHTML);
+};
 
 const addToCart = async () => {
-  const btnAdd = document.querySelectorAll('.item__add'); // manipular o botão de adicionar 
+  const btnAdd = document.querySelectorAll('.item__add'); // manipular o botão de adicionar
   await btnAdd.forEach((btnAddCart) => { // para manipular todos os botões com forEach
     btnAddCart.addEventListener('click', (event) => { // adciona um escutador em cada um dos btn
-     cartApi(getSkuFromProductItem(event.target.parentElement))
-    })
+      cartApi(getSkuFromProductItem(event.target.parentElement));
+    });
   });
-}
+};
 
 const apiCallBack = async () => { // async = funçao com sincronia, um espera o proximo
-  const getEndPoint = await `https://api.mercadolibre.com/sites/MLB/search?q=computador`;
+  const getEndPoint = await 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   const getFetch = await fetch(getEndPoint); // const para salvar o retorno do fetch
   const getJson = await getFetch.json();
   const itemsSelctor = document.querySelector('.items');
@@ -111,21 +110,21 @@ const apiCallBack = async () => { // async = funçao com sincronia, um espera o 
   });
   await addToCart();
   const body = document.querySelector('body');
-  const load = document.querySelector('.loading')
+  const load = document.querySelector('.loading');
   await body.removeChild(load);
-}
+};
 
 function getStorage() {
-  ol.innerHTML = localStorage.getItem('cartItem')
-  total.innerText = Number(localStorage.getItem('price'))
+  ol.innerHTML = localStorage.getItem('cartItem');
+  total.innerText = Number(localStorage.getItem('price'));
 }
 
 const localBtn = () => {
   const li = document.querySelectorAll('.cart__item');
   li.forEach((lista) => {
-    lista.addEventListener('click', cartItemClickListener)
+    lista.addEventListener('click', cartItemClickListener);
   });
-}
+};
 
 window.onload = async () => {
   await apiCallBack();
