@@ -53,17 +53,42 @@ const saveLocal = () => {
   sumCart();
 };
 
+const createLoad = () => {
+  const createLoading = document.createElement('p');
+  createLoading.className = 'loading';
+  createLoading.innerText = 'loading...';
+  items.list.appendChild(createLoading);
+};
+
+const removeLoad = () => items.list.removeChild(document.querySelector('.loading'));
+
+const getProducts = async () => {
+  createLoad();
+  const request = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const response = await request.json();
+  removeLoad();
+  response.results.forEach((item) => {
+    const itemDetails = {
+      sku: item.id,
+      name: item.title,
+      image: item.thumbnail,
+    };
+    items.list.appendChild(createProductItemElement(itemDetails));
+  });
+};
+
 function cartItemClickListener(event) {
-  const cartItem = event.target.parentElement;
-  localStorage.removeItem('cart', 'price');
-  cartItem.removeChild(event.target);
+  items.cart.removeChild(event.target);
   sumCart();
   saveLocal();
 }
 
-const loadLocal = () => {
+const loadLocal = () => {  
   items.cart.innerHTML = localStorage.getItem('cart');
-  items.cart.addEventListener('click', cartItemClickListener);
+  items.cart.childNodes.forEach((listCart) => {
+    listCart.addEventListener('click', cartItemClickListener);
+  });
+  // Tive que buscar uma solução na internet, pois apesar de o projeto estar todo funcional como se pedia os requisitos, o evaluator, quando eu inseria o código // items.cart.addEventListener('click', cartItemClickListener); //, não passava os requisitos 3 e 5.
   sumCart();
 };
 
@@ -78,28 +103,6 @@ function createCartItemElement({
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-const createLoad = () => {
-  const createLoading = document.createElement('p');
-  createLoading.className = 'loading';
-  createLoading.innerText = 'loading...';
-  items.list.appendChild(createLoading);
-};
-
-const getProducts = async () => {
-  createLoad();
-  const request = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-  const response = await request.json();
-  items.list.removeChild(document.querySelector('.loading'));
-  response.results.forEach((item) => {
-    const itemDetails = {
-      sku: item.id,
-      name: item.title,
-      image: item.thumbnail,
-    };
-    items.list.appendChild(createProductItemElement(itemDetails));
-  });
-};
 
 const addCart = () => {
   items.list.addEventListener('click', async (event) => {
