@@ -87,8 +87,14 @@ const addCartItem = () => {
   });
 };
 
+const loadingAPI = () => {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+};
+
 window.onload = async function onload() { 
   await fetchProducts();
+  loadingAPI();
   addCartItem();
-  cartItemClickListener();
+  cartItemClickListener();  
 };
