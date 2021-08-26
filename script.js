@@ -1,4 +1,5 @@
-const itensCarrinho = '.cart__items';
+// const carrinhoList = document.querySelector('.cart__items');
+const CartItemsId = '.cart__items';
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,11 +30,28 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// requesito 4
+const saveCart = () => {
+  const cartList = document.querySelector(CartItemsId);
+  localStorage.setItem('cartItems', cartList.innerHTML);
+}; 
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  event.target.remove();
+  console.log(event.target);
+  event.target.remove();  
 }
-
+const loadCart = () => {
+  const cartList = document.querySelector(CartItemsId);
+  const cartItems = localStorage.getItem('cartItems');
+  console.log(cartItems);
+  if (cartItems) {
+    cartList.innerHTML = cartItems;  
+    cartList.childNodes.forEach((cartItem) => {
+      cartItem.addEventListener('click', cartItemClickListener);
+    });
+  }
+};
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -46,10 +64,12 @@ function createCartItemElement({ sku, name, salePrice }) {
   const urlBut = `https://api.mercadolibre.com/items/${ids}`;
   const getFechBut = await fetch(urlBut);
   const getJsonBut = await getFechBut.json();
-  const olCartItem = document.querySelector('.cart__items');
+  const olCartItem = document.querySelector(CartItemsId);
   const { id, title, price } = getJsonBut;
   olCartItem.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
+  saveCart();
   };
+
   function btnAddCar() {
     const botaoItem = document.querySelectorAll('.item__add');    
     botaoItem.forEach((botao) => botao.addEventListener('click', (event) => {
@@ -57,6 +77,7 @@ function createCartItemElement({ sku, name, salePrice }) {
     }));
   }
 
+// requesito 1
 const ApiCall = async () => {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador'; 
   const getFech = await fetch(url);
@@ -70,4 +91,5 @@ const ApiCall = async () => {
 
 window.onload = () => {
   ApiCall();
+  loadCart();
  };
