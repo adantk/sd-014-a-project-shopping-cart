@@ -87,7 +87,7 @@ const createTotalPrice = (() => {
   totalPriceElement.className = 'total-price';
   divPrice.appendChild(totalPriceElement);
 
-  totalPriceParent.innerText = 'Preço total: $ ';
+  totalPriceParent.innerText = 'Preço total: ';
 });
 createTotalPrice();
 
@@ -105,7 +105,9 @@ const totalPrice = (() => {
   // console.log(numero);
   sumPrices += numero;
   });
-  actualPrice.innerText = `${Math.round(sumPrices * 100) / 100}`;
+  // actualPrice.innerText = `${Intl.NumberFormat('pt-br', { style: 'currency', currency: 'BRL' })
+  //   .format(Math.round(sumPrices * 100) / 100)}`;
+  actualPrice.innerText = `${(Math.round(sumPrices * 100) / 100)}`;
   saveCart();
 });
 // Source: https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf
