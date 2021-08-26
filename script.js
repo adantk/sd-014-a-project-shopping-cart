@@ -6,15 +6,14 @@ function createProductImageElement(imageSource) {
 }
 
 function createCustomElement(element, className, innerText) {
-  const e = document.createElemeent(element);
+  const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   return e;
 }
-
-// Requsito 01 - A função abaixo também é chamada na função mercadoFetchApi().
+// Requsito 01 - relacionada à função...
 function createProductItemElement({ sku, name, image }) {
-  const upSection = document.querySelector('.items'); // cria uma constante que retorna o elemento section de classe 'items' (localizada acima da section de classe cart) para inserir elementos filhos para ela.
+  const upSection = document.querySelector('.items'); // cria uma constante que retorna o elemento section de classe 'items' (a que fica acima da section de classe cart) para inserir filhos para ela.
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -22,6 +21,7 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+
   upSection.appendChild(section); // Insere elementos(sections) filhos de upSection(section criada).
 
   return section;
