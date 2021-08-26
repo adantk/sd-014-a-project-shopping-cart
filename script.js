@@ -15,6 +15,13 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// Requisito 04 - Parte 02
+
+function locStorageSave() {
+  const itemsList = document.querySelector(olCartItems);
+  localStorage.setItem('cartList', itemsList.innerHTML);
+}
+
 // Requisito 01
 
 function apiML(mercadoria) {
@@ -34,8 +41,8 @@ function addToCartAPI(id) { // requisição para o endpoint
   const endpoint = `https://api.mercadolibre.com/items/${id}`; // valor id do item selecionado.
   return new Promise((resolve) => {
     fetch(endpoint).then((response) => {
-      response.json().then((item) => {
-        resolve(item);
+    response.json().then((item) => {
+      resolve(item);
       });
     });
   });
@@ -43,6 +50,16 @@ function addToCartAPI(id) { // requisição para o endpoint
 
 function cartItemClickListener(event) { 
   event.target.remove(); // Ref. site do MDN
+  locStorageSave(); // Todas as adições e remoções devem ser abordadas para que a lista atual seja salva.
+}
+
+function locStorageLoad() {
+  const shopList = document.querySelector(olCartItems);
+  shopList.innerHTML = localStorage.getItem('cartList');
+  const cartItems = document.querySelectorAll('.cart__item');
+  cartItems.forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -50,6 +67,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span class="price">${salePrice}</span>`;
   li.addEventListener('click', cartItemClickListener);
+  locStorageSave();
   return li;
 }
 
@@ -66,11 +84,11 @@ function addToCart() {
       const wait = await addToCartAPI(codSku);
       const cart1 = document.querySelector(olCartItems);
       cart1.appendChild(createCartItemElement(wait));
-  }));
+      locStorageSave(); // Ref. Todas as adições e remoções devem ser abordadas para que a lista atual seja salva.
+    }));
 }
 
 // Ref. Requisito 01 - Função para criar os componentes HTML referentes a um produto.
-
 const createProductItemElement = async () => {
   const results = await apiML();
 
@@ -99,11 +117,13 @@ const clearCart = () => {
       item.remove();
     });
     totalPrice.innerHTML = '0,00';
+    locStorageSave();
   });
 };
- 
+
 window.onload = async () => {
   apiML('computador');
   createProductItemElement();
   clearCart();
+  locStorageLoad(); // Ao carregar a página, o estado atual do carrinho de compras deve ser carregado do LocalStorage.
 };
