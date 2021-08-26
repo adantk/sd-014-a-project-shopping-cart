@@ -2,6 +2,13 @@ const url = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 const itemUrl = 'https://api.mercadolibre.com/items/';
 const getCartList = () => document.querySelector('.cart__items');
 
+// const loading = async () => {
+//   const loadingDiv = await document.createElement('h1');
+//   loadingDiv.className = 'loading';
+//   loadingDiv.innerText = 'loading...';
+//   document.querySelector('.items').appendChild(loadingDiv);
+// };
+
 const loaded = () => document.querySelector('.loading').remove();
 
 const totalPrice = async () => {
@@ -75,21 +82,15 @@ function createProductItemElement({ sku, name, image }) {
 function fetchMercadoAPI(product) {
   const itemClass = document.querySelector('.items');
   fetch(`${url}${product}`).then((response) => {
+    loaded()
     response.json().then((dataML) => {
       dataML.results.forEach((resultsML) => {
         const { id: sku, title: name, thumbnail: image } = resultsML;
         itemClass.appendChild(createProductItemElement({ sku, name, image }));
       });
     });
-  }).then(loaded());
+  })
 }
-
-const loading = async () => {
-  const loadingDiv = await document.createElement('h1');
-  loadingDiv.className = 'loading';
-  loadingDiv.innerText = 'loading...';
-  document.querySelector('.items').appendChild(loadingDiv);
-};
 
 const loadLocalStorage = () => {
   getCartList().innerHTML = localStorage.getItem('cartt');
@@ -110,9 +111,9 @@ const emptyCartButton = () => {
 };
 
 window.onload = async () => {
-  await loading();
+  // loading();
   await fetchMercadoAPI('computador');
-  // setTimeout( function() { fetchMercadoAPI('droga')}, 10000)
+  // setTimeout( function() { fetchMercadoAPI('computador')}, 1000)
   await loadLocalStorage();
   await totalPrice();
   await emptyCartButton();
