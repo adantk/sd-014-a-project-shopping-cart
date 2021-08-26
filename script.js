@@ -2,6 +2,10 @@ const cartItem = document.getElementsByClassName('items');
 const priceEl = document.getElementsByClassName('total-price');
 let total = 0;
 
+function totalPrice() {
+  priceEl[0].innerText = 0;
+}
+
 function loading() {
   const loadElement = document.getElementsByClassName('loading');
   loadElement.innerText = 'loading...';
@@ -60,17 +64,21 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function setStorage() {
+  const elementoPai = document.getElementsByClassName('cart__items');
+  localStorage.setItem('key', elementoPai[0].innerHTML);
+}
+
 function cartItemClickListener(event) {
   const itemEvent = event.target.innerText;
-  const idItem = itemEvent.slice(5, 18);
-  fetch(`https://api.mercadolibre.com/items/${idItem}`)
-  .then((response) => {
-    response.json().then((itemPrice) => {
-      total -= itemPrice.price;
-      priceEl[0].innerText = total;
-    });
-  });
-  event.target.remove();
+  const index = itemEvent.indexOf('$');
+  const itemSlice = itemEvent.slice(index + 1, itemEvent.length);
+  const itemParse = parseFloat(itemSlice);
+  total -= itemParse;
+  priceEl[0].innerText = total;
+  const elementoPai = document.getElementsByClassName('cart__items');
+  elementoPai[0].removeChild(event.target);
+  setStorage();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -96,6 +104,7 @@ function getItemApi() {
         getList[0].appendChild(createCartItemElement(itemInfo));
         total += itemInfo.salePrice;
         priceEl[0].innerText = total;
+        setStorage();
       });
     });
   });
@@ -104,6 +113,8 @@ function getItemApi() {
 function removeAllItems() {
   const but = document.getElementsByClassName('empty-cart');
   but[0].addEventListener('click', () => {
+    localStorage.removeItem('key');
+    totalPrice();
     const list = document.getElementsByClassName('cart__items');
     // https://www.w3schools.com/jsref/met_node_removechild.asp
     while (list[0].hasChildNodes()) {  
@@ -112,8 +123,18 @@ function removeAllItems() {
   });
 }
 
+function localstorage() {
+  const elementoPai = document.getElementsByClassName('cart__items');
+  elementoPai[0].innerHTML = localStorage.getItem('key');
+  elementoPai[0].childNodes.forEach((li) => {
+    li.addEventListener('click', cartItemClickListener);
+  });
+}
+
 window.onload = () => {
   getDataApi();
   getItemApi();
   removeAllItems();
+  localstorage();
+  totalPrice();
 };
