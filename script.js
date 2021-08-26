@@ -26,6 +26,27 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+const getPriceFromLi = (liParameter) => {
+  const priceString = liParameter.innerText.split(':').pop();
+  const priceNumber = Number(priceString.split('').slice(2).join(''));
+  return priceNumber;
+};
+
+const sumCartPrice = async (isClear) => {
+  const priceSection = document.querySelector('.total-price');
+  if (isClear === 'cleared') {
+    priceSection.innerText = 0;
+    return 0;
+  }
+  let totalPrice = 0;
+  const cartItems = document.querySelectorAll('.cart__item');
+  for (let index = 0; index < cartItems.length; index += 1) {
+    const itemPrice = getPriceFromLi(cartItems[index]);
+    totalPrice += itemPrice;
+    priceSection.innerText = Math.floor(totalPrice * 100) / 100;
+  }
+};
+
 const saveCartState = () => {
   const cartItems = document.querySelectorAll('.cart__item');
   let cartString = '';
@@ -38,11 +59,13 @@ const saveCartState = () => {
 function cartItemClickListener(event) {
   event.target.remove();
   saveCartState();
+  sumCartPrice();
 }
 
 const loadCartState = () => {
   const cartSection = document.querySelector(CART_ITEMS_CLASS);
   const cartState = localStorage.getItem('cartState');
+  if (cartState === null) return 0;
   const allCartItems = cartState.split('----');
   allCartItems.pop(); // Remove string vazia do final do array
   allCartItems.map((item) => {
@@ -53,6 +76,7 @@ const loadCartState = () => {
     cartSection.appendChild(li);
     return 0;
   });
+  sumCartPrice();
 };
 
 // eslint-disable-next-line no-unused-vars
@@ -62,10 +86,7 @@ const clearCart = () => {
     cartSection.removeChild(cartSection.firstChild);
   }
   saveCartState();
-};
-
-const sumCartPrice = () => {
-  //  Função do requisito 5
+  sumCartPrice('cleared');
 };
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -109,8 +130,8 @@ const addToCart = async (event) => {
   const parameters = { sku: productInfo.id, name: productInfo.title, salePrice: productInfo.price };
   const productHTML = createCartItemElement(parameters);
   cartSection.appendChild(productHTML);
-  sumCartPrice(); //  Calcula o total do preço dos produtos no carrinho
   saveCartState();
+  sumCartPrice();
 };
 
 const addToCartImplementation = () => {
@@ -124,4 +145,5 @@ window.onload = async () => {
   await loadProducts(); //  Carrega os produtos do ML na página
   addToCartImplementation(); // Adiciona event listeners aos botões de Adicionar ao carrinho
   loadCartState();
+  sumCartPrice();
 };
