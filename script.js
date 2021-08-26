@@ -16,9 +16,7 @@ function subtraiCart(product) {
   const total = document.getElementsByClassName('total-price')[0];
   const totalPrice = parseFloat((Number(total.innerText)).toFixed(2));
   const removed = parseFloat((Number(product.innerText.split('$')[1])).toFixed(2));
-
   total.innerText = `${totalPrice - removed}`;
-  
   return total;
 }
 
@@ -29,7 +27,6 @@ function savePage() {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  const cart = document.getElementById('cart__items'); 
   event.remove();
   subtraiCart(event);
   savePage();
@@ -71,27 +68,27 @@ function addToCart(id) {
 });
 }
 
+function buttonAdd(event) {
+const btnParent = event.parentElement;
+const productId = btnParent.firstChild.innerText;
+return addToCart(productId);
+}
+
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   const btnAdd = (createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  btnAdd.addEventListener('click', () => {
-    const btnParent = btnAdd.parentElement;
-  const productId = btnParent.firstChild.innerText;
-  addToCart(productId);
-  });
+  btnAdd.addEventListener('click', (event) => buttonAdd(event.target));
   section.appendChild(btnAdd);
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function addProducts() {
   const load = document.querySelector('.loading');
@@ -129,16 +126,17 @@ function loadSavedCart() {
   .getItem('total');
 }
 
+function clickAfterLoad() {
+  document.querySelectorAll('.cart__item').forEach((item) => {
+    item.addEventListener('click', (event) => {
+    cartItemClickListener(event.target);
+  });
+});
+}
+
 window.onload = () => { 
   addProducts();
   clearCart();
   loadSavedCart();
-  document.querySelectorAll('.cart__item').forEach((item) => {
-    item.addEventListener('click', (event) => {
-    // event.target.remove();
-    cartItemClickListener(event.target);
-    // sumCart(event.target);
-    // subtraiCart(event.target);
-  });
-});
+  clickAfterLoad();
 };
