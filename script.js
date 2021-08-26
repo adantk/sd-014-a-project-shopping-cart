@@ -82,14 +82,14 @@ function createProductItemElement({ sku, name, image }) {
 function fetchMercadoAPI(product) {
   const itemClass = document.querySelector('.items');
   fetch(`${url}${product}`).then((response) => {
-    loaded()
+    loaded();
     response.json().then((dataML) => {
       dataML.results.forEach((resultsML) => {
         const { id: sku, title: name, thumbnail: image } = resultsML;
         itemClass.appendChild(createProductItemElement({ sku, name, image }));
       });
     });
-  })
+  });
 }
 
 const loadLocalStorage = () => {
