@@ -48,10 +48,8 @@ const saveCartToLocalStorage = () => {
   localStorage.setItem('cart', listCart.innerHTML);
 };
 
-function cartItemClickListener() {  
-  const catchParent = document.querySelector(cartItems);
-  const catchChild = document.querySelector('.cart__item');
-  catchParent.removeChild(catchChild);
+function cartItemClickListener(event) {  
+  event.target.remove();
   cartTotalPrice();
   saveCartToLocalStorage(); // REQUISITO 4
 }
