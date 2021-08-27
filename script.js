@@ -2,6 +2,7 @@ const sectionPaiHtml = document.querySelector('.items');
 const listaDeCompra = document.querySelector('.cart__items');
 const ITEM_URL = 'https://api.mercadolibre.com/items';
 const buttonEscaziarCarrinho = document.querySelector('.empty-cart');
+const chaveDoLocalStorage = 'Carrinho de compra';
 
 const limparCarrinho = () => {
   listaDeCompra.innerHTML = '';
@@ -28,30 +29,49 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+let listaDoCarrinhoStorage = [];
+
 function cartItemClickListener(event) {
-  // document.querySelector('li').remove();
+  const idDoCarrinho = event.target.innerText.split(' ')[1];
   event.target.remove();
+  // remover sku da listadecarrinhostorage
+  listaDoCarrinhoStorage = listaDoCarrinhoStorage.filter((skuref) => skuref !== idDoCarrinho);
+  // salvar a nova lista no locar storage
+  localStorage.setItem(chaveDoLocalStorage, JSON.stringify(listaDoCarrinhoStorage));
 }
+
+const AddLocalStorage = (sku) => {
+  listaDoCarrinhoStorage.push(sku);
+  localStorage.setItem(chaveDoLocalStorage, JSON.stringify(listaDoCarrinhoStorage));
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  // return li;
-
   return listaDeCompra.appendChild(li);
 }
 
 const addButtonClickListener = (sku) => { /**/
   fetchProductItens(sku)
-    .then((item) => {
-      createCartItemElement({
-        sku: item.id,
-        name: item.title,
-        salePrice: item.price,
-      });
+  .then((item) => {
+    createCartItemElement({
+      sku: item.id,
+      name: item.title,
+      salePrice: item.price,
     });
+  });
+};
+
+const atualizarCarrinho = () => {
+  if (localStorage.getItem(chaveDoLocalStorage) === null) {
+    localStorage.setItem(chaveDoLocalStorage, JSON.stringify([]));
+  }
+  listaDoCarrinhoStorage = JSON.parse(localStorage.getItem(chaveDoLocalStorage));
+  listaDoCarrinhoStorage.forEach((sku) => {
+    addButtonClickListener(sku);
+  });
 };
 
 const createCustomElementButton = (className, titulo, sku) => {
@@ -60,6 +80,7 @@ const createCustomElementButton = (className, titulo, sku) => {
   button.innerText = titulo;
   button.addEventListener('click', () => {
     addButtonClickListener(sku);
+    AddLocalStorage(sku);
   });
 
   return button;
@@ -97,8 +118,7 @@ const buscandoProdutos = async () => {
 //   });
 // };
 
-buscandoProdutos();
-
 window.onload = () => {
-
+  buscandoProdutos();
+  atualizarCarrinho();
 };
