@@ -3,6 +3,7 @@ const listaDeCompra = document.querySelector('.cart__items');
 const ITEM_URL = 'https://api.mercadolibre.com/items';
 const buttonEscaziarCarrinho = document.querySelector('.empty-cart');
 const chaveDoLocalStorage = 'Carrinho de compra';
+const loadingTag = document.querySelector('.loading');
 
 const limparCarrinho = () => {
   listaDeCompra.innerHTML = '';
@@ -109,6 +110,7 @@ const buscandoProdutos = async () => {
   data.results.forEach((produto) => {
     createProductItemElement(produto.id, produto.title, produto.thumbnail);
   });
+  loadingTag.remove();
 };
 // const buscandoProduto = async (sku) => {
 //   const response = await fetch(`https://api.mercadolibre.com/sites/$SITE_ID/search?q=Motorola%20G6${sku}`);
