@@ -11,6 +11,11 @@ function somaTotal() {
   preçoTotal.innerText = soma;
 }
 
+function carregamento() {
+  const buscaLoading = document.querySelector('.loading');
+  buscaLoading.remove();
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -75,6 +80,7 @@ async function BuscaApi(buscar) {
    };
    createProductItemElement(produto);
   });
+  carregamento();
 }
 
 async function buscaApiId(id) {
