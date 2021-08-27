@@ -15,6 +15,19 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// Requisito 07 - FALTA COMENTAR;
+
+const loadingCreate = () => {
+  const getCartSection = document.querySelector('.cart');
+  const loadingElement = createCustomElement('div', 'loading', 'loading...'); // Função createCustomElement
+  getCartSection.appendChild(loadingElement);
+};
+
+const loadingRemove = () => {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+};
+
 // Requisito 04 - Parte 02
 
 function locStorageSave() {
@@ -118,6 +131,7 @@ const createProductItemElement = async () => {
 
     mainSection.appendChild(section); // Insere elementos(sections) filhos de mainSection(section criada).
   });
+  loadingRemove();
   addToCart(); // chamada da função 
 };
 
@@ -141,4 +155,5 @@ window.onload = async () => {
   createProductItemElement();
   clearCart();
   locStorageLoad(); // Ao carregar a página, o estado atual do carrinho de compras deve ser carregado do LocalStorage.
+  loadingCreate();
 };
