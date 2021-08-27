@@ -1,7 +1,8 @@
 const cartItems = '.cart__items';
 const listCart = document.querySelector(cartItems);
-// const clearCartBtn = document.querySelector('.empty-cart');
+const clearCartBtn = document.querySelector('.empty-cart');
 const totalPrice = '.total-price';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -32,23 +33,26 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const cartTotalPrice = () => {
+  const cartItem = document.querySelectorAll('.cart__item');
+  let sum = 0;
+  cartItem.forEach((cart) => {
+    const priceCart = cart.innerText.split('$')[1];
+    sum += parseFloat(priceCart);
+  });
+  document.querySelector(totalPrice).innerText = sum;
+};
+
 // REQUISITO 4
 const saveCartToLocalStorage = () => {
   localStorage.setItem('cart', listCart.innerHTML);
 };
 
-const cartTotalPrice = (price) => {
-  const getInitialPrice = document.querySelector(totalPrice).innerText;
-  const sumPrice = Number(getInitialPrice) + Number(price);
-  document.querySelector(totalPrice).innerText = Math.round(sumPrice * 100) / 100;
-};
-
- function cartItemClickListener(event) {  
+function cartItemClickListener() {  
   const catchParent = document.querySelector(cartItems);
   const catchChild = document.querySelector('.cart__item');
   catchParent.removeChild(catchChild);
-  const priceCart = event.target.innerHTML.split('$')[1];
-  cartTotalPrice(`-${priceCart}`);
+  cartTotalPrice();
   saveCartToLocalStorage(); // REQUISITO 4
 }
 
@@ -82,14 +86,14 @@ const addCartItem = () => {
   const cartList = document.querySelector('.cart__items');
   addButton.forEach((button) => {
     button.addEventListener('click', (event) => {
-      // Linha 66 com auxílio do MDN Web Docs - https://developer.mozilla.org/pt-BR/docs/Web/API/Node/parentNode
+      // Próxima linha com auxílio do MDN Web Docs - https://developer.mozilla.org/pt-BR/docs/Web/API/Node/parentNode
       const itemID = getSkuFromProductItem(event.target.parentNode);
       fetch(`https://api.mercadolibre.com/items/${itemID}`)
       .then((response) => response.json())
       .then((product) => {
         const li = createCartItemElement(product);
         cartList.appendChild(li);
-        cartTotalPrice(product.price);
+        cartTotalPrice();
         saveCartToLocalStorage(); // REQUISITO 4
       });
     });
@@ -108,10 +112,17 @@ const updateLocalStorage = () => {
   console.log(document.querySelector(cartItems));
 };
 
+const btnClearCart = () => {
+  clearCartBtn.addEventListener('click', () => {
+    listCart.innerHTML = '';
+    cartTotalPrice();
+  });
+};
+
 window.onload = async function onload() { 
   await fetchProducts();
   loadingAPI();
-  addCartItem();
-  cartItemClickListener();  
+  addCartItem();  
   updateLocalStorage(); // REQUISITO 4
+  btnClearCart();
 };
