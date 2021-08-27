@@ -6,10 +6,12 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
+
 const calculator = {
   add: (valor, total) => Math.round((valor + total) * 100) / 100,
   sub: (valor, total) => Math.round((total - valor) * 100) / 100,
 };
+
 const precoAtualizado = (callback, price) => {
   let valorInit = 0;
   const elementosOl = document.querySelectorAll('.cart__item');
@@ -20,11 +22,18 @@ const precoAtualizado = (callback, price) => {
   totalText.innerHTML = callback(price, valorInit);
 };// Ajuda dos colegas!!!
 
+document.querySelector('.empty-cart').addEventListener('click', () => {
+  ol.innerHTML = '';
+  precoAtualizado(calculator.add, 0);
+  localStorage.removeItem('carrinho');
+});
+
 function cartItemClickListener(e) {
   precoAtualizado(calculator.sub, (parseFloat(e.innerText.split('$')[1])));
   e.remove();
   localStorage.setItem('carrinho', ol.innerHTML);
 } // Ajuda dos colegas!!!
+
 const abastecerCarrinho = () => {
   ol.innerHTML = localStorage.getItem('carrinho');
   ol.childNodes.forEach((el) => el.addEventListener('click', (e) =>
@@ -50,6 +59,7 @@ async function fetchApiID(id) {
    precoAtualizado(calculator.add, 0);
  });
 }
+
 const eventoButtonId = () => document.querySelectorAll('.item__add').forEach((button) => button
 .addEventListener('click', (e) =>
 fetchApiID(e.target.parentElement.firstChild.innerText)));
@@ -73,8 +83,8 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
+ // function getSkuFromProductItem(item) {
+  // return item.querySelector('span.item__sku').innerText;
 // }
  
 const findApi = 'https://api.mercadolibre.com/sites/MLB/search?q=';
@@ -83,6 +93,7 @@ const promiseFetchBusca = async (query) => fetch(`${findApi}${query}`)
 .then((dados) => dados.results.forEach((element) =>
 document.querySelector('.items').appendChild(createProductItemElement(element)))))
 .then(() => eventoButtonId());
+
 window.onload = () => { 
   promiseFetchBusca('computador');
   abastecerCarrinho();
