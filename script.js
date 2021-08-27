@@ -22,6 +22,15 @@ function locStorageSave() {
   localStorage.setItem('cartList', itemsList.innerHTML);
 }
 
+// Requisito 05
+
+function totalSum() {
+  const precoSel = document.querySelectorAll('.price');
+  const custoTotal = [...precoSel].reduce((acumulador, valorAtual) => // Uso do operador spread e da HOF reduce
+  acumulador + parseFloat(parseFloat(valorAtual.innerHTML)), 0);
+  document.querySelector('.total-price').innerHTML = custoTotal; // array destructuring
+}
+
 // Requisito 01
 
 function apiML(mercadoria) {
@@ -51,7 +60,10 @@ function addToCartAPI(id) { // requisição para o endpoint
 function cartItemClickListener(event) { 
   event.target.remove(); // Ref. site do MDN
   locStorageSave(); // Todas as adições e remoções devem ser abordadas para que a lista atual seja salva.
+  totalSum();
 }
+
+// Requisito 04 - Parte 01
 
 function locStorageLoad() {
   const shopList = document.querySelector(olCartItems);
@@ -85,6 +97,7 @@ function addToCart() {
       const cart1 = document.querySelector(olCartItems);
       cart1.appendChild(createCartItemElement(wait));
       locStorageSave(); // Ref. Todas as adições e remoções devem ser abordadas para que a lista atual seja salva.
+      totalSum();
     }));
 }
 
@@ -107,6 +120,8 @@ const createProductItemElement = async () => {
   });
   addToCart(); // chamada da função 
 };
+
+// Requisito 03 e 06
 
 const clearCart = () => {
   const btnClear = document.querySelector('.empty-cart');
