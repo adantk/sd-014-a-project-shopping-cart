@@ -1,5 +1,7 @@
 const cartItems = '.cart__items';
-
+const listCart = document.querySelector(cartItems);
+// const clearCartBtn = document.querySelector('.empty-cart');
+const totalPrice = '.total-price';
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -30,10 +32,15 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// REQUISITO 4
+const saveCartToLocalStorage = () => {
+  localStorage.setItem('cart', listCart.innerHTML);
+};
+
 const cartTotalPrice = (price) => {
-  const getInitialPrice = document.querySelector('.total-price').innerText;
+  const getInitialPrice = document.querySelector(totalPrice).innerText;
   const sumPrice = Number(getInitialPrice) + Number(price);
-  document.querySelector('.total-price').innerText = Math.round(sumPrice * 100) / 100;
+  document.querySelector(totalPrice).innerText = Math.round(sumPrice * 100) / 100;
 };
 
  function cartItemClickListener(event) {  
@@ -42,6 +49,7 @@ const cartTotalPrice = (price) => {
   catchParent.removeChild(catchChild);
   const priceCart = event.target.innerHTML.split('$')[1];
   cartTotalPrice(`-${priceCart}`);
+  saveCartToLocalStorage(); // REQUISITO 4
 }
 
  function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -82,6 +90,7 @@ const addCartItem = () => {
         const li = createCartItemElement(product);
         cartList.appendChild(li);
         cartTotalPrice(product.price);
+        saveCartToLocalStorage(); // REQUISITO 4
       });
     });
   });
@@ -92,9 +101,17 @@ const loadingAPI = () => {
   loading.remove();
 };
 
+// REQUISITO 4
+const updateLocalStorage = () => {
+  listCart.innerHTML = localStorage.getItem('cart');
+  listCart.addEventListener('click', cartItemClickListener);
+  console.log(document.querySelector(cartItems));
+};
+
 window.onload = async function onload() { 
   await fetchProducts();
   loadingAPI();
   addCartItem();
   cartItemClickListener();  
+  updateLocalStorage(); // REQUISITO 4
 };
