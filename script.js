@@ -1,8 +1,8 @@
 // const salvando as classes
 const btnclearcart = document.querySelector('.empty-cart');
-const cartItems = document.querySelector('.cart__items');
+const cartItems = document.querySelector('.cart__items'); // Ol Pai que representa o Cart onde é salvo os itens LIs
 const totalValue = document.querySelector('.total-price'); // ps: usei span no html pq a tag embuti na div
-const cartItem = document.querySelectorAll('.cart__item');
+const cartItem = document.querySelectorAll('.cart__item'); // itens li (computadores)
 
 // requisito 6
 function clearCart() {
@@ -15,10 +15,24 @@ function clearCart() {
     localStorage.setItem('savedCart', cartItems.innerHTML = '');
   });
 }
-// Requisito 4.1
-// const savedCartLocal = () => {
-//  localStorage.setItem('savedCart', cartItems.innerHTML);
-// };
+
+ // Requisito 4.1 // o savedCartLocal tem que ser chamado toda vez que um item li é colacadoo ou removido do cart 
+ const savedCartLocal = () => {
+  localStorage.clear();
+  localStorage.setItem('savedCart', cartItems.innerHTML);
+ };
+
+ // Remove itens do carrinho
+function cartItemClickListener(event) {
+  event.target.remove();
+  savedCartLocal();
+}
+ // Requisito 4.2
+ const loadCartLocal = () => {
+  cartItems.innerHTML = localStorage.getItem('savedCart');
+  cartItems.addEventListener('click', cartItemClickListener);
+  savedCartLocal();
+ };
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -62,10 +76,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  event.target.remove();
-}
-// FUNCAO ORIGINAL - Parte Requisito 2
+// FUNCAO ORIGINAL - Parte Requisito 2 // Criando item li no carrinho de compras 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -73,13 +84,14 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-// Requisito 2.2 Pegar API por ID
+// Requisito 2.2 Pegar API por ID // Anexa li no carrinho de compras (ol)
 const getApi2 = async (ItemID) => {
   const api = await fetch(`https://api.mercadolibre.com/items/${ItemID}`); 
   const respostaApi = await api.json(); 
   const { id, title, price } = respostaApi;
   const ol = document.querySelector('.cart__items');
   ol.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
+  savedCartLocal();
 };
 // getApi2('MLB1341706310');
 
@@ -96,4 +108,5 @@ window.onload = async () => {
   await getApi();
   clearCart();
   btnsAddItem();
+  loadCartLocal();
  };
