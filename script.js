@@ -1,20 +1,3 @@
-const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-const parametro = { method: 'GET', headers: { Accept: 'application/json' } };
-
-function getProductList() {
-  fetch(url, parametro)
-    .then((resposta) => resposta.json())
-    .then((objeto) => objeto.results.forEach((produto) => {
-      const secaoProduto = document.querySelector('.items');
-      const resultado = createProductItemElement({
-        sku: produto.id,
-        name: produto.title,
-        image: produto.thumbnail,
-      });
-      secaoProduto.appendChild(resultado);
-    }));
-}
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,11 +12,8 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({
-  sku,
-  name,
-  image
-}) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+  const secaoItem = document.querySelector('.items');
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -41,9 +21,18 @@ function createProductItemElement({
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  return section;
+  secaoItem.appendChild(section);
+  return secaoItem;
 }
+
+const productList = async () => {
+  const listaProdutos = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+  .then((resposta) => resposta.json())
+  .then((data) => data.results);
+  listaProdutos.forEach((product) => {
+    createProductItemElement(product);
+  });
+};
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
@@ -53,11 +42,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({
-  sku,
-  name,
-  salePrice
-}) {
+function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -66,5 +51,5 @@ function createCartItemElement({
 }
 
 window.onload = () => {
-  getProductList();
-};
+  productList();
+ };
