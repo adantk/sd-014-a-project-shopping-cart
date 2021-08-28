@@ -50,6 +50,23 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+const emptyCart = () => {
+  const itensCarrinho = document.querySelectorAll('.cart__item');
+  itensCarrinho.forEach((item) => item.remove());
+  localStorage.clear();
+};
+
+const itensComprados = () => {
+  if (localStorage.getItem('stored')) {
+    const itensCarrinho = document.querySelector('cart__items');
+    itensCarrinho.innerHTML += localStorage.getItem('stored');
+    itensCarrinho.childNodes.forEach((item) => {
+      item.addEventListener('click', cartItemClickListener);
+    });
+  }
+};
+
 window.onload = () => {
   productList();
+  document.querySelector('.empty-cart').addEventListener('click', emptyCart);
   };
