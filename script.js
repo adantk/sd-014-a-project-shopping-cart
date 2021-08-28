@@ -4,6 +4,24 @@ const ITEM_URL = 'https://api.mercadolibre.com/items';
 const buttonEscaziarCarrinho = document.querySelector('.empty-cart');
 const chaveDoLocalStorage = 'Carrinho de compra';
 const loadingTag = document.querySelector('.loading');
+const totalPrice = document.querySelector('.total-price');
+
+// quando eu adicionar algo no carrinho vou atualizar o valor total
+// quando remover um produto, é necessario 
+let precoTotal = 0;
+
+const atualizarValorTotal = (preco) => {
+  precoTotal += preco;
+  totalPrice.innerText = precoTotal;
+  // const filhosDoOL = listaDeCompra.children;
+  // for (let x = 0; x < filhosDoOL.length; x += 1) {
+  //   const blabla = filhosDoOL[x].innerText.split(' ');
+  //   console.log(blabla, 'oi');
+  // }
+  // console.log(filhosDoOL, filhosDoOL.length);
+};
+
+// eu preciso criar uma função "AtualizaValorTotal" para ser chamado nas funções de adicionar e remover
 
 const limparCarrinho = () => {
   listaDeCompra.innerHTML = '';
@@ -33,10 +51,13 @@ function createCustomElement(element, className, innerText) {
 let listaDoCarrinhoStorage = [];
 
 function cartItemClickListener(event) {
-  const idDoCarrinho = event.target.innerText.split(' ')[1];
+  const inTextEmArray = event.target.innerText.split(' ');
+  const valorEmString = inTextEmArray[inTextEmArray.length - 1];
+  const valorADescontar = parseFloat(valorEmString.slice(1)) * -1;
+  atualizarValorTotal(valorADescontar);
   event.target.remove();
   // remover sku da listadecarrinhostorage
-  listaDoCarrinhoStorage = listaDoCarrinhoStorage.filter((skuref) => skuref !== idDoCarrinho);
+  listaDoCarrinhoStorage = listaDoCarrinhoStorage.filter((skuref) => skuref !== inTextEmArray[1]);
   // salvar a nova lista no locar storage
   localStorage.setItem(chaveDoLocalStorage, JSON.stringify(listaDoCarrinhoStorage));
 }
@@ -51,7 +72,8 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  return listaDeCompra.appendChild(li);
+  listaDeCompra.appendChild(li);
+  atualizarValorTotal(salePrice);
 }
 
 const addButtonClickListener = (sku) => { /**/
