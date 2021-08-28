@@ -84,6 +84,15 @@ const fetchComputers = async (computador) => {
   btnAddItem();
 };
 
+const erase = () => {
+  const btnClear = document.querySelector('.empty-cart');
+  btnClear.addEventListener('click', () => {
+    const cart = document.querySelector('.cart__items');
+    cart.innerHTML = '';
+  });
+ };
+
 window.onload = () => { 
   fetchComputers('computador');
+  erase();
 };
