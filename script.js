@@ -1,10 +1,5 @@
 const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-const parametro = {
-  method: 'GET',
-  headers: {
-    Accept: 'application/json'
-  }
-};
+const parametro = { method: 'GET', headers: { Accept: 'application/json' } };
 
 function getProductList() {
   fetch(url, parametro)
