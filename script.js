@@ -58,7 +58,7 @@ const emptyCart = () => {
 
 const itensComprados = () => {
   if (localStorage.getItem('stored')) {
-    const itensCarrinho = document.querySelector('cart__items');
+    const itensCarrinho = document.querySelector('.cart__items');
     itensCarrinho.innerHTML += localStorage.getItem('stored');
     itensCarrinho.childNodes.forEach((item) => {
       item.addEventListener('click', cartItemClickListener);
@@ -69,4 +69,5 @@ const itensComprados = () => {
 window.onload = () => {
   productList();
   document.querySelector('.empty-cart').addEventListener('click', emptyCart);
-  };
+  itensComprados();
+};
