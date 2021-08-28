@@ -40,6 +40,29 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+const addCartItems = async (idItem) => {
+  const responseRaw = await fetch(`https://api.mercadolibre.com/items/${idItem}`);
+  const responseJson = await responseRaw.json();
+
+  const { id, title, price } = responseJson;
+  const products = document.querySelector('.cart__items');
+
+  products.appendChild(createCartItemElement({
+    sku: id,
+    name: title,
+    salePrice: price,
+  }));
+};
+
+const btnAddItem = () => {
+  const btn = document.querySelectorAll('.item__add');
+  btn.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      addCartItems(event.target.parentElement.firstChild.innerText);
+    });
+  });
+};
+
 const fetchComputers = async (computador) => {
   const responseRaw = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${computador}`);
   const responseJson = await responseRaw.json();
@@ -48,12 +71,11 @@ const fetchComputers = async (computador) => {
   const items = document.querySelector('.items');
 
   results.forEach(({ title, id, thumbnail }) => items.appendChild(createProductItemElement({
-    
     name: title,
     sku: id,
     image: thumbnail,
-
   })));
+  btnAddItem();
 };
 
 window.onload = () => { 
