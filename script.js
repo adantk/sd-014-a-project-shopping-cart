@@ -65,7 +65,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   // coloque seu código aqui
 }
-
+// FUNCAO ORIGINAL - Parte Requisito 2
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -73,8 +73,27 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+// Requisito 2.2 Pegar API por ID
+const getApi2 = async (ItemID) => {
+  const api = await fetch(`https://api.mercadolibre.com/items/${ItemID}`); 
+  const respostaApi = await api.json(); 
+  const { id, title, price } = respostaApi;
+  const ol = document.querySelector('.cart__items');
+  ol.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
+};
+// getApi2('MLB1341706310');
 
-window.onload = () => {
-  getApi();
+// minha func. pra pegar botao
+const btnsAddItem = () => {
+  const itemAdd = document.querySelectorAll('.item__add'); // querySelectorAll retorna um array;
+  itemAdd.forEach((btn) => btn.addEventListener('click', (event) => {
+    const sku = event.target.parentNode.firstChild.innerText; // innerText pega só o texto dentro do elemento;
+    getApi2(sku);
+  })); 
+};
+
+window.onload = async () => {
+  await getApi();
   clearCart();
+  btnsAddItem();
  };
