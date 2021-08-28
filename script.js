@@ -1,3 +1,25 @@
+// const salvando as classes
+const btnclearcart = document.querySelector('.empty-cart');
+const cartItems = document.querySelector('.cart__items');
+const totalValue = document.querySelector('.total-price'); // ps: usei span no html pq a tag embuti na div
+const cartItem = document.querySelectorAll('.cart__item');
+
+// requisito 6
+function clearCart() {
+  btnclearcart.addEventListener('click', () => {
+    totalValue.innerHTML = '0'; // preço total igual é zerado
+    localStorage.clear();
+    cartItem.forEach((item) => {
+      item.parentNode.removeChild(item); // A propriedade parentNode retorna o nó pai do nó especificado, como um objeto Node W3 School
+    });
+    localStorage.setItem('savedCart', cartItems.innerHTML = '');
+  });
+}
+// Requisito 4.1
+// const savedCartLocal = () => {
+//  localStorage.setItem('savedCart', cartItems.innerHTML);
+// };
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -13,7 +35,9 @@ function createCustomElement(element, className, innerText) {
 }
 
 function createProductItemElement({ sku, name, image }) {
+  const item = document.querySelector('.items');
   const section = document.createElement('section');
+  item.appendChild(section);
   section.className = 'item';
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
@@ -23,6 +47,16 @@ function createProductItemElement({ sku, name, image }) {
 
   return section;
 }
+
+const getApi = async () => {
+  const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador'); 
+  const respostaApi = await api.json(); 
+  respostaApi.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
+    createProductItemElement({ sku, name, image });
+  });
+  // console.log(respostaApi)
+};
+// ;
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
@@ -40,4 +74,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+window.onload = () => {
+  getApi();
+  clearCart();
+ };
