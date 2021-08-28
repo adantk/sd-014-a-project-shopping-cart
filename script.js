@@ -16,6 +16,18 @@ function clearCart() {
   });
 }
 
+// Requisito 7
+const sumPrice = () => {
+  const sumCartItem = document.querySelectorAll('.cart__item');
+  let stringToNumber = 0;
+  sumCartItem.forEach((li) => {
+   const price = li.innerText.split('$')[1]; // src: Split : https://www.w3schools.com/jsref/jsref_split.asp
+   stringToNumber += parseFloat(price); // src: parseFloat : https://www.alura.com.br/artigos/convertendo-string-para-numero-em-javascript
+  });
+  totalValue.innerText = stringToNumber;
+  console.log(sumCartItem);
+};
+
  // Requisito 4.1 // o savedCartLocal tem que ser chamado toda vez que um item li é colacadoo ou removido do cart 
  const savedCartLocal = () => {
   localStorage.clear();
@@ -26,6 +38,7 @@ function clearCart() {
 function cartItemClickListener(event) {
   event.target.remove();
   savedCartLocal();
+  sumPrice();
 }
  // Requisito 4.2
  const loadCartLocal = () => {
@@ -92,6 +105,7 @@ const getApi2 = async (ItemID) => {
   const ol = document.querySelector('.cart__items');
   ol.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
   savedCartLocal();
+  sumPrice();
 };
 // getApi2('MLB1341706310');
 
