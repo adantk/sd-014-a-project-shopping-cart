@@ -64,8 +64,14 @@ const btnAddItem = () => {
 };
 
 const fetchComputers = async (computador) => {
+  const itemsSection = document.querySelector('.items');
+  const loadingSection = document.createElement('section');
+  loadingSection.innerHTML = 'loading...';
+  loadingSection.classList.add('loading');
+  itemsSection.appendChild(loadingSection);
   const responseRaw = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${computador}`);
   const responseJson = await responseRaw.json();
+  loadingSection.remove();
 
   const { results } = responseJson;
   const items = document.querySelector('.items');
