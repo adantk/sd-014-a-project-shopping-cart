@@ -1,4 +1,4 @@
-const prices = [];
+let prices = [];
 const cartItems = '.cart__items';
 
 function createProductImageElement(imageSource) {
@@ -15,7 +15,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image, price: salePrice }) {
   // nessa função usei o código do Rodolfo Pinheiro de referência para a correção de um erro meu, detalhado abaixo. Fonte: https://github.com/tryber/sd-014-a-project-shopping-cart/pull/98/files
   const itemsList = document.querySelector('.items'); // estava errando nessa linha, porque estava usando .getElementsByClassName, que retorna não o elemento, mas uma HTMLlist. Usando o querySelector, como o Rodolfo usou, consegui acessar o elemento diretamente.
   const section = document.createElement('section');
@@ -24,6 +24,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('span', 'item__price', `R$ ${salePrice.toFixed(2)}`));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   itemsList.appendChild(section);
@@ -41,6 +42,12 @@ function cartItemClickListener(event) {
   event.remove();
 }
 
+const sum = async () => {
+  const totalPrice = document.querySelector('.total-price');
+  const number = prices.reduce((acc, price) => acc + price, 0);
+  totalPrice.innerText = number; // referencia: https://stackoverflow.com/questions/3612744/remove-insignificant-trailing-zeros-from-a-number
+};
+
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const cart = document.querySelector(cartItems); // o item a ser criado será armazenado aqui.
   
@@ -54,20 +61,19 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
   li.addEventListener('click', cartItemClickListener.bind(this, li)); // referencia para o .bind: https://stackoverflow.com/questions/35667267/addeventlistenerclick-firing-immediately.
   li.addEventListener('click', () => window.localStorage.removeItem(name)); // apaga o item correspondente no storage.
-
+  li.addEventListener('click', () => {
+    prices = prices.filter((price) => price !== salePrice);
+    sum();
+  });
   return li;
 }
 
 const addToCart = async (id) => { // puxa a API com dados do item a ser adicionado ao cart
-  fetch(`https://api.mercadolibre.com/items/${id}`)
-  .then((response) => response.json())
-  .then((product) => { 
-    createCartItemElement(product); // chama a função createCartItemElement passando os dados do item a ser adicionado
-    prices.push(parseFloat(product.price));
-    const totalPrice = document.querySelector('.total-price');
-    const number = prices.reduce((acc, price) => acc + price, 0);
-  totalPrice.innerText = number; // referencia: https://stackoverflow.com/questions/3612744/remove-insignificant-trailing-zeros-from-a-number
-});
+  const myFetch = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const response = await myFetch.json();
+  createCartItemElement(response); // chama a função createCartItemElement passando os dados do item a ser adicionado
+  prices.push(response.price);
+  sum();
 };
 
 const loadCart = () => { // carrega os itens do carrinho ao iniciar a pág.
@@ -91,24 +97,22 @@ const addListenerToButtons = () => {
 };
 
 const getApi = async (searchItem) => {
-    // o primeiro bloco abaixo adiciona a exibição do texto 'loading' à página.
-    const loading = document.createElement('h1');
+    const loading = document.createElement('h1'); // esse primeiro bloco abaixo adiciona a exibição do texto 'loading' à página.
     loading.classList.add('loading');
     loading.innerHTML = 'LOADING';
     document.querySelector('.items').appendChild(loading);
   
+    try {
     let list = [];
-    fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${searchItem}`) // pega os items que se relacionam à busca.
-    .then((response) => response.json())
-    .then(function (obj) {
-      list = obj.results; // armazena os dados dos itens. 
-    })
-    .then(function () {
+    const myFetch = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${searchItem}`); // pega os items que se relacionam à busca.
+    const response = await myFetch.json();
+      list = await response.results; // armazena os dados dos itens. 
       document.querySelector('.items').removeChild(loading); // com os itens carregados, o loading some.
       list.forEach((item) => createProductItemElement(item));// para cada item é feito um card.
     addListenerToButtons(); // função para adicionar listener aos botões de cada card.
-  })
-    .catch((error) => console.log(error));
+    } catch (error) {
+      console.log(error);
+}
 };
 
 const emptyCart = () => {
@@ -123,4 +127,5 @@ window.onload = () => {
  getApi('computador');
  loadCart();
  emptyCart();
+ sum();
 };
