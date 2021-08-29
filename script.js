@@ -47,8 +47,8 @@ const btnParaCarrinho = () => {
       const carrinho = document.querySelector('.cart__items');
       const elemento = event.target.parentElement;
       const sku = elemento.firstChild.innerText;
-      const listaProdutos = await fetch(`https://api.mercadolibre.com/items/${sku}`,
-      ).then((resposta) => resposta.json());
+      const listaProdutos = await fetch(`https://api.mercadolibre.com/items/${sku}`)
+        .then((resposta) => resposta.json());
       carrinho.appendChild(createCartItemElement(listaProdutos));
       valorTotal();
       localStorage.setItem('stored', carrinho.innerHTML);
