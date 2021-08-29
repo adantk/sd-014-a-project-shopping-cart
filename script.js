@@ -27,6 +27,11 @@ const valorTotal = () => {
   document.querySelector('.cart').appendChild(precosTotais);
 };
 
+function cartItemClickListener(event) {
+  event.target.remove();
+  valorTotal();
+}
+
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -85,11 +90,6 @@ const emptyCart = () => {
   localStorage.clear();
   valorTotal();
 };
-
-function cartItemClickListener(event) {
-  event.target.remove();
-  valorTotal();
-}
 
 const itensComprados = () => {
   if (localStorage.getItem('stored')) {
