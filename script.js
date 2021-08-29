@@ -12,6 +12,22 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+const valorTotal = () => {
+  const precosTotais = document.createElement('span');
+  const itensCarrinho = document.querySelectorAll('.cart__item');
+  let soma = 0;
+  if (document.querySelector('total-price')) {
+    document.querySelector('.total-price').remove();
+  }
+  itensCarrinho.forEach((item) => {
+    const precoItem = item.innerText.split('$')[1];
+    soma += parseFloat(precoItem);
+  });
+  precosTotais.className = 'total-price';
+  precosTotais.innerText = `${soma}`;
+  document.querySelector('.cart').appendChild(precosTotais);
+};
+
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const secaoItem = document.querySelector('.items');
   const section = document.createElement('section');
