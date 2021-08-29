@@ -16,7 +16,7 @@ function clearCart() {
   });
 }
 
-// Requisito 7
+// Requisito 5 Somar Itens 
 const sumPrice = () => {
   const sumCartItem = document.querySelectorAll('.cart__item');
   let stringToNumber = 0;
@@ -75,12 +75,24 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
+// Requisito 7: CRIANDO UMA MENSAGEM DE LOADING
+const loadingAPI = () => {
+  const loadingText = document.createElement('span');
+  const body = document.querySelector('body');
+  loadingText.className = 'loading';
+  loadingText.innerText = 'loading...';
+  body.insertAdjacentElement('afterbegin', loadingText);
+};
+
 const getApi = async () => {
+  loadingAPI();
   const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador'); 
   const respostaApi = await api.json(); 
   respostaApi.results.forEach(({ id: sku, title: name, thumbnail: image }) => {
     createProductItemElement({ sku, name, image });
   });
+  const loadingClass = document.querySelector('.loading');
+  loadingClass.remove();
   // console.log(respostaApi)
 };
 // ;
@@ -97,8 +109,10 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
 // Requisito 2.2 Pegar API por ID // Anexa li no carrinho de compras (ol)
 const getApi2 = async (ItemID) => {
+  loadingAPI();
   const api = await fetch(`https://api.mercadolibre.com/items/${ItemID}`); 
   const respostaApi = await api.json(); 
   const { id, title, price } = respostaApi;
@@ -106,10 +120,12 @@ const getApi2 = async (ItemID) => {
   ol.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
   savedCartLocal();
   sumPrice();
+  const loadingClass = document.querySelector('.loading');
+  loadingClass.remove();
 };
 // getApi2('MLB1341706310');
 
-// minha func. pra pegar botao
+// minha func. pra CAPTURAR BOTAO
 const btnsAddItem = () => {
   const itemAdd = document.querySelectorAll('.item__add'); // querySelectorAll retorna um array;
   itemAdd.forEach((btn) => btn.addEventListener('click', (event) => {
@@ -119,6 +135,7 @@ const btnsAddItem = () => {
 };
 
 window.onload = async () => {
+  loadingAPI();
   await getApi();
   clearCart();
   btnsAddItem();
