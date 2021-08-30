@@ -1,6 +1,7 @@
 const urlBase = 'https://api.mercadolibre.com/';
 const savedProduct = document.querySelector('.cart__items');
 const amount = document.querySelector('.total-price');
+const cleanCart = document.querySelector('.empty-cart');
 let productsListing = [];
 
 function createProductImageElement(imageSource) {
@@ -24,12 +25,11 @@ const saveLocalStorage = async () => {
 const sumAllPrices = () => {
   const listItems = document.querySelectorAll('.cart__item');
   let sumOfPrices = 0;
-
   listItems.forEach((item) => {
     const itemPrice = item.innerText.match(/(?<=PRICE: \$).*/)[0];
     sumOfPrices += parseFloat(itemPrice);
   });
-  amount.innerText = `Valor Total: R$${sumOfPrices.toFixed(2)}`;
+  amount.innerText = sumOfPrices;
 };
 
 function cartItemClickListener(event) {
@@ -38,9 +38,9 @@ function cartItemClickListener(event) {
   sumAllPrices();
 }
 
-const getFromLocal = () => {
-  savedProduct.innerHTML = localStorage.getItem('key');
-  const cartItemsSaved = document.querySelectorAll('.cart__items');
+const getFromLocal = async () => {
+  savedProduct.innerHTML = await localStorage.getItem('key');
+  const cartItemsSaved = await document.querySelectorAll('.cart__items');
   cartItemsSaved.forEach((item) => item.addEventListener('click', cartItemClickListener));
 };
 
@@ -75,7 +75,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-const addProduct = (list) => {
+const addProductsToSite = (list) => {
   const showItems = document.querySelector('.items');
   list.forEach((product) => {
     showItems.appendChild(createProductItemElement(product));
@@ -86,10 +86,19 @@ const productsSearchApi = async (item) => {
   productsListing = [];
   const productsList = await fetch(`${urlBase}sites/MLB/search?q=${item}`);
   productsListing = await productsList.json();
-  return addProduct(productsListing.results);
+  return addProductsToSite(productsListing.results);
+};
+
+const emptyCart = () => {
+  cleanCart.addEventListener('click', () => {
+    savedProduct.innerHTML = '';
+    saveLocalStorage();
+    sumAllPrices();
+  });
 };
 
 window.onload = () => {
   productsSearchApi('computador');
   getFromLocal();
+  emptyCart();
  };
