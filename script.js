@@ -1,4 +1,5 @@
 const urlBase = 'https://api.mercadolibre.com/';
+let productsListing = [];
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -14,6 +15,33 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+}
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+const saveProduct = async () => {
+  const savedProduct = document.querySelector('.cart__items');
+  localStorage.setItem('key', savedProduct.innerHTML);
+};
+
+const addItemToCart = async (event) => {
+  const cart = document.querySelector('.cart__items');
+  const idProduct = event.target.parentNode.firstChild.innerText;
+  const request = await fetch(`https://api.mercadolibre.com/items/${idProduct}`);
+  const response = await request.json();
+  const cartItem = createCartItemElement(response);
+  cart.appendChild(cartItem);
+  saveProduct();
+};
+
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -21,25 +49,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'))
+    .addEventListener('click', addItemToCart);
   return section;
-}
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
-
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
 }
 
 const addProduct = (list) => {
@@ -50,9 +62,10 @@ const addProduct = (list) => {
 };
 
 const productsSearchApi = async (item) => {
+  productsListing = [];
   const productsList = await fetch(`${urlBase}sites/MLB/search?q=${item}`);
-  const productListJSON = await productsList.json();
-  return addProduct(productListJSON.results);
+  productsListing = await productsList.json();
+  return addProduct(productsListing.results);
 };
 
 window.onload = () => {
