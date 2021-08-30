@@ -1,6 +1,13 @@
+const itemCarrinho = '.cart__items';
+
 function carregando() {
   const carrega = document.querySelector('.loading');
   carrega.remove();
+}
+
+function salvarLs() {
+  const itemsCarro = document.querySelector(itemCarrinho).innerHTML;
+  localStorage.setItem('carrinho', itemsCarro);
 }
 
 function createProductImageElement(imageSource) {
@@ -50,6 +57,7 @@ const addPreco = async () => {
 function cartItemClickListener(event) {
   event.target.remove();
   addPreco();
+  salvarLs();
 } 
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -57,6 +65,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  
   return li;
 }
 
@@ -81,13 +90,14 @@ const fetchId = async (ids) => {
   const responseRaw = await fetch(`https://api.mercadolibre.com/items/${ids}`);
   const responseJson = await responseRaw.json();
   const { id, title, price } = responseJson;
-  const carrinho = document.querySelector('.cart__items');
+  const carrinho = document.querySelector(itemCarrinho);
   carrinho.appendChild(createCartItemElement({
     sku: id,
     name: title,
     salePrice: price,
   }));    
   addPreco();
+  salvarLs();
 };
 
 const eventoBotao = () => {
@@ -103,12 +113,24 @@ const limpaCarrinho = () => {
  botaoLimpar.addEventListener('click', () => {
     ol.innerHTML = '';
     addPreco();
+    salvarLs();
   });  
 };
+
+function carregarLs() {
+  const itemsCarro2 = document.querySelector(itemCarrinho);
+  itemsCarro2.innerHTML = localStorage.getItem('carrinho');
+  itemsCarro2.addEventListener('click', ((event) => {
+    if (event.target.classList.contains(itemCarrinho)) {
+      cartItemClickListener(event);
+    }
+  }));
+}
 
 window.onload = async () => { 
   await fetchMl();
   await eventoBotao();
   await precoTotal();
   await limpaCarrinho();
-};
+  await carregarLs();
+  };
