@@ -29,10 +29,6 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 const precoTotal = () => {
   const precoCarrinho = document.createElement('span');
   const carrinho2 = document.querySelector('.cart');
